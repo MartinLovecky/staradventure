@@ -1,0 +1,26 @@
+{
+    "name": "mlkali/sa",
+    "description": "one page website",
+    "type": "project",
+    "require": {
+        "symfony/var-dumper": "6.2.x-dev",
+        "eftec/bladeone": "dev-master",
+        "phpmailer/phpmailer": "dev-master",
+        "vlucas/phpdotenv": "5.4.x-dev",
+        "envms/fluentpdo": "dev-master",
+        "paragonie/halite": "^5"
+    },
+    "license": "none",
+    "autoload": {
+        "psr-4": {
+            "Mlkali\\Sa\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "MartinLovecky",
+            "email": "mlovecky@seznam.cz"
+        }
+    ],
+    "minimum-stability": "dev"
+}

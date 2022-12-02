@@ -1,0 +1,5 @@
+vendor/
+cache/
+public/img/
+.*
+!.gitignore

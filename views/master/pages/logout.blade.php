@@ -1,0 +1,1 @@
+@php  $member->logout();  @endphp
