@@ -1,12 +1,17 @@
 <?php
 
 namespace Mlkali\Sa\Support;
-
+/**
+ * This encryption class should not be used for storing any data if you want make 
+ * function encrypt() more secure $_ENV['ENON'] must be replaced by $this->generateNonce()
+ * nonce needs to be stored (to be able decrypt) and must be updated every time request to page is made
+ * aka refresh, post, redirected etc for me its not necessary bcs I dont encrypt important data with this Class
+ * @author Martin Lovecky 
+ */
 class Encryption{
 
     /**
-     * Sodium 8.1 encrpytion
-     *
+     * Sodium 8.1 Encryption
      * @param string $_ENV['ENON'] = generateNonce()
      * @param string $_ENV['EKEY'] = generateKey()
      * @return string 

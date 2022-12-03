@@ -33,6 +33,6 @@
     	<input type="hidden" name="action" value="validate_captcha">
         <input type="hidden" name="type" value="login"> 
     </form>
-    <script src="https://www.google.com/recaptcha/api.js?render=6LdNTIUhAAAAAAHOZpqGIC2V_FHPUyKURWGhl1rP"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render=6LdKkYEUAAAAAE5Ykg8LY5gOPNXzgTyIG3FVuCqM"></script>
     <script src="@asset("js/recaptcha.js")"></script>
 </article>

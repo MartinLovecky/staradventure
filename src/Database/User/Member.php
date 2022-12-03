@@ -76,23 +76,22 @@ class Member{
         $idByUsername = $this->getMemberID($username);
         $idByEmail =  $email ?? $this->getMemberID($email); 
 
-        //I would like to rename $x1,x2,x3 to $where but I cant bcs it would overwrite itself. 
         // this two IF blocks are here only because I want use ANY order (email, username <-> username,email, email <-> username)   
         if(filter_var($idByUsername, FILTER_VALIDATE_EMAIL)){
-            $x1 = $idByUsername && $idByEmail ? ['email' => $username, 'username' => $email] : null;
-            $x2 = isset($idByUsername) && !$idByEmail ? ['email' => $username] : null;
-            $x3 = !$idByUsername && isset($idByEmail) ? ['email' => $email] : null;
-            if(isset($x1))$memberID = $idByUsername;
+            $whereOne = $idByUsername && $idByEmail ? ['email' => $username, 'username' => $email] : null;
+            $whereTwo = isset($idByUsername) && !$idByEmail ? ['email' => $username] : null;
+            $whereThree = !$idByUsername && isset($idByEmail) ? ['email' => $email] : null;
+            if(isset($whereOne))$memberID = $idByUsername;
        
         }elseif(!filter_var($idByUsername, FILTER_VALIDATE_EMAIL)){
-            $x1 = $idByUsername && $idByEmail ? ['username' => $username, 'email' => $email] : null;
-            $x2 = isset($idByUsername) && !$idByEmail ? ['username' => $username] : null;
-            if(isset($x1))$memberID = $idByEmail;
+            $whereOne = $idByUsername && $idByEmail ? ['username' => $username, 'email' => $email] : null;
+            $whereTwo = isset($idByUsername) && !$idByEmail ? ['username' => $username] : null;
+            if(isset($whereOne))$memberID = $idByEmail;
         }
-        //change $where based on $x1 or $x2 or $x3
-        if(isset($x1))$where = $x1;
-        if(isset($x2))$where = $x2;$memberID = $idByUsername;
-        if(isset($x3))$where = $x3;$memberID = $idByUsername;
+        //change $where based on $whereOne || $whereTwo || $whereThree
+        if(isset($whereOne))$where = $whereOne;
+        if(isset($whereTwo))$where = $whereTwo;$memberID = $idByUsername;
+        if(isset($whereThree))$where = $whereThree;$memberID = $idByUsername;
 
         //Get ID from DB
         $stmt = $this->db->query
@@ -110,10 +109,17 @@ class Member{
         return true;
     }
 
+    /**
+     * Register must be called only after succefull validation inside Controller
+     *
+     * @param Request $request
+     * @return array maybe not needed
+     */
     public function register(Request $request): array
     {
         $hashPassword = password_hash($request->password, PASSWORD_BCRYPT);
         $randToken = md5(uniqid(rand(), true));
+        $memberID =  $request->username.'|'.$request->email;
 
         $values = [
             'username' => $request->username,
@@ -122,7 +128,7 @@ class Member{
             'active' => $randToken,
             'permission' => 'user', 
             'reset_complete' => 0,
-            'member_id' => $request->username.'|'.$request->email
+            'member_id' => $memberID
         ];
 
         $this->db->query
@@ -132,7 +138,7 @@ class Member{
 
         $id = $this->db->pdo->lastInsertId();
 
-        $this->inserToInfo($request->username,$request->email);
+        $this->insertIntoInfo($memberID);
 
         return ['token' => $randToken, 'id' => $id];
     }
@@ -155,7 +161,7 @@ class Member{
 
     public function setMemberData(string $memberID): void
     {
-        foreach($this->getMemberBy($memberID) as $key => $value) {
+        foreach($this->getMemberInfo($memberID) as $key => $value) {
             
             $_SESSION[$key] = $value;
         }
@@ -238,6 +244,11 @@ class Member{
         return new Response('/login?message=','danger.Aktivace se nezdařila kontaktuje Support','#login');
     }
 
+    /**
+     * Used to get data for /usertable
+     *
+     * @return array
+     */
     public function getAllMembers(): array
     {
         $stmt = $this->db->query->from('members');
@@ -248,7 +259,7 @@ class Member{
     }
     
     /**
-     * Admin can change permission of user at /usertable
+     * Admin can change permission of user /usertable
      *
      * @param  string $permission
      * @param  string $id
@@ -341,9 +352,8 @@ class Member{
         }
     }
 
-    private function getMemberBy(string $memberID): bool|array
+    private function getMemberInfo(string $memberID): bool|array
     {
-
         $stmt = $this->db->query
                 ->from('members')
                 ->leftJoin('info ON members.member_id = info.member')
@@ -351,17 +361,22 @@ class Member{
                 ->where('member', $memberID);
         
         return $stmt->fetch();
-
     }
 
-    private function inserToInfo(string $username, string $email): void
+    /**
+     * This should never fail but if you dont trust me you can use try catch block
+     *
+     * @param string $memberID
+     * @return void
+     */
+    private function insertIntoInfo(string $memberID): void
     {
         $values = [
             'bookmark_count' => 0,
             'bookmarks' => '{}',
             'visible' => false,
             'avatar' => 'empty_profile.png',
-            'member' => $username.'|'.$email
+            'member' => $memberID
         ];
 
         $this->db->query

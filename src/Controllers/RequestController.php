@@ -159,7 +159,6 @@ class RequestController{
     
     public function updateMember(): Response
     {
-        
         $filePath = $_FILES['avatar']['tmp_name'];
         $fileType = mime_content_type($filePath);
         $fileName = basename($filePath);
@@ -184,6 +183,8 @@ class RequestController{
 
         move_uploaded_file($filePath, $newFilePath);
         unlink($filePath);
+
+        //TODO - Update db table
 
         return new Response('/member'.$this->request->username.'?message=','succes.Informace upraveny');
     }
