@@ -20,7 +20,7 @@ class RequestController{
         private Member $member,
         private Encryption $enc
     )
-    {    
+    {   
     }
     
     public function submitRegister(): Response
@@ -67,7 +67,7 @@ class RequestController{
             ];
 
             return new Response('/login?message=',$validate,'#login');
-        } 
+        }
         
         if(isset($this->request->remember)){
             

@@ -11,7 +11,19 @@ class Request{
      */
     public function getRequest() 
     {
-        foreach ($_POST as $key =>$value)
+        foreach ($_POST as $key => $value)
             $this->{$key} = $value; 
     }
+
+    /* DELETE this before production
+    -
+    public function testRequest()
+    {
+        foreach(func_get_args()[0] as $key => $value)
+        {
+            $this->{$key} = $value;
+            return $this;
+        }
+    }
+    */
 }

@@ -3,12 +3,13 @@
 namespace Mlkali\Sa\Support;
 
 use Mlkali\Sa\Http\Request;
+use Mlkali\Sa\Support\Encryption;
 use Mlkali\Sa\Database\User\Member;
 
 class Validator{  
   
     public function __construct(
-        private string $token,
+        private Encryption $enc,
         private Member $member
     )
     {
@@ -22,7 +23,7 @@ class Validator{
             if(isset($recaptcha)){
                 return $recaptcha;
             }
-            if(!$this->validToken()){
+            if(!$this->validToken($request->token)){
                 return 'danger.Csfr validation failed';
             }
             if(!$this->member->isUnique($request->username, $request->email)){
@@ -57,7 +58,7 @@ class Validator{
             return $recaptcha;
         }
 
-        if(!$this->validToken()){
+        if($this->validToken($request->token) === false){
             return 'danger.Csfr validation failed';
         }
         
@@ -105,6 +106,7 @@ class Validator{
         }
         return null;
     }
+    
     //TODO - 
     public function validateForgottenUser(Request $request){
         return null;
@@ -153,22 +155,16 @@ class Validator{
         }
         return null;
     }
-
-    private function ipClient(): string
+    
+    private function validToken(string $token): bool
     {
-        if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])
-            && \preg_match('/^(d{1,3}).(d{1,3}).(d{1,3}).(d{1,3})$/', $_SERVER['HTTP_X_FORWARDED_FOR']))
-        {
-            return $_SERVER['HTTP_X_FORWARDED_FOR'];
-        }
-        return $_SERVER['REMOTE_ADDR'] ?? '';
-    }
+        $decrypted = $this->enc->decrypt($token);
 
-    private function validToken(): bool
-    {
-        if($_SESSION['_token'] === $this->token . '|' . $this->ipClient()){
+        if(strcmp($decrypted, $_ENV['CSRFKEY']) === 0){
             return true;
         }
-        return false;
+            return false;
     }
+
+   
 }

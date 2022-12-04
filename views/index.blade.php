@@ -1,8 +1,5 @@
 @include('master.includes.main_head', ['selector' => $selector])
     {{--Messages --}}
-    @isset($_POST['submit'])
-        @dump($requestController->submitRegister())
-    @endisset
     @if ($message->hasAny())
         @component('component.message', ['message' => $message]) @endcomponent  
     @endif

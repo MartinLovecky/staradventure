@@ -10,4 +10,5 @@ return [
     'enc' => $enc,
     'requestController' => $requestController,
     'articleController' => $articleController,
+    'csrf' => $enc->encrypt($_ENV['CSRFKEY'])
 ];

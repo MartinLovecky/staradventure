@@ -1,38 +1,43 @@
 <?php
 
 namespace Mlkali\Sa\Support;
-/**
- * This encryption class should not be used for storing any data if you want make 
- * function encrypt() more secure $_ENV['ENON'] must be replaced by $this->generateNonce()
- * nonce needs to be stored (to be able decrypt) and must be updated every time request to page is made
- * aka refresh, post, redirected etc for me its not necessary bcs I dont encrypt important data with this Class
- * @author Martin Lovecky 
- */
+
+use Exception;
+
 class Encryption{
 
-    /**
-     * Sodium 8.1 Encryption
-     * @param string $_ENV['ENON'] $this->generateNonce();
-     * @param string $_ENV['EKEY'] $this->generateKey();
-     * @return string static encrypted string
-     */
-    public function encrypt(string $message): string
+    public function encrypt(string $message, $aad = ''): string
     {
-        return bin2hex(sodium_crypto_stream_xchacha20_xor($message, base64_decode($_ENV['ENON']), base64_decode($_ENV['EKEY'])));
+        $nonce = random_bytes(SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES);
+        $ciphertext = sodium_crypto_aead_xchacha20poly1305_ietf_encrypt($message, $aad, $nonce, base64_decode($_ENV['EKEY']));
+        
+        return bin2hex($nonce . $ciphertext);
     }
-
-    public function decrypt(string $ciphertext): string
+    //NOTE - insted of using exception use Response class to display message
+    public function decrypt(string $ciphertext, $aad = ''): string
     {
-        return sodium_crypto_stream_xchacha20_xor(hex2bin($ciphertext), base64_decode($_ENV['ENON']), base64_decode($_ENV['EKEY']));
+        $decoded = hex2bin($ciphertext);
+
+        if ($decoded === false) {
+            throw new Exception('Invalid data format');
+        }
+        if (mb_strlen($decoded, '8bit') < SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES) {
+            throw new Exception('Invalid data length');
+        }
+        $nonce = mb_substr($decoded, 0, SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES, '8bit');
+        $data = mb_substr($decoded, SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES, null, '8bit');
+
+        $decrypted = sodium_crypto_aead_xchacha20poly1305_ietf_decrypt($data, $aad, $nonce, base64_decode($_ENV['EKEY']));
+
+        if ($decrypted === false) {
+            throw new Exception('Decryption failed');
+        }
+
+        return $decrypted;
     }
 
     public function generateKey(): string
     {
-        return base64_encode(sodium_crypto_stream_xchacha20_keygen());
-    }
-
-    public function generateNonce(): string
-    {
-        return base64_encode(random_bytes(SODIUM_CRYPTO_STREAM_XCHACHA20_NONCEBYTES));
+        return base64_encode(sodium_crypto_aead_xchacha20poly1305_ietf_keygen());
     }
 }

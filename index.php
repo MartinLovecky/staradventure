@@ -1,8 +1,13 @@
 <?php
 
-session_start();
+//REVIEW - FOR DEBUG ONLY
+ini_set('display_startup_errors', 1);
+ini_set('display_errors', 1);
+error_reporting(-1);
 
 use eftec\bladeone\BladeOne;
+
+session_start();
 
 require 'vendor/autoload.php';
 
@@ -13,7 +18,6 @@ $enc = new Mlkali\Sa\Support\Encryption();
 $db = new Mlkali\Sa\Database\DB();
 $blade = new BladeOne(__DIR__ . '/views', __DIR__ . '/cache', BladeOne::MODE_AUTO);
 $blade->setBaseUrl('/public');
-$blade->getCsrfToken();
 $selector = new Mlkali\Sa\Support\Selector();
 $selector->getViewName(require_once(__DIR__ . '/app/allowedViews.php'));
 $pagnition = new Mlkali\Sa\Html\Pagnition($selector);
@@ -25,10 +29,13 @@ $mailer = new Mlkali\Sa\Support\Mailer();
 $member = new Mlkali\Sa\Database\User\Member($db, $enc);
 $member->recallUser();
 $article = new Mlkali\Sa\Database\Entity\Article($db, $selector);
-$validator = new Mlkali\Sa\Support\Validator($blade->csrf_token, $member);
+$validator = new Mlkali\Sa\Support\Validator($enc, $member);
 $requestController = new Mlkali\Sa\Controllers\RequestController($request, $db, $mailer, $validator, $member, $enc);
 $articleController = new Mlkali\Sa\Controllers\ArticleController($request, $article);
 $form = new Mlkali\Sa\Html\Form($blade);
+
+//FIXME - submitRegister doest fillsecondary table (info) !important to fix
+//TODO - some Member class methods are really convoluted ......
 
 echo $blade->run($selector->viewName, require_once(__DIR__ . '/app/viewVariables.php'));
 

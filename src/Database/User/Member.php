@@ -5,6 +5,7 @@ namespace Mlkali\Sa\Database\User;
 use Mlkali\Sa\Database\DB;
 use Mlkali\Sa\Http\Request;
 use Mlkali\Sa\Http\Response;
+use Envms\FluentPDO\Exception;
 use Mlkali\Sa\Support\Encryption;
 
 class Member{
@@ -381,10 +382,17 @@ class Member{
             'member' => $memberID
         ];
 
-        $this->db->query
-            ->insertInto('info')
-            ->values($values)
-            ->execute();
+        try {
+            $e = $this->db->query
+                ->insertInto('info')
+                ->values($values)
+                ->execute();
+
+        } catch (Exception $e) {
+            throw $e;
+        }
+
+        
     }
 
 }

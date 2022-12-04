@@ -27,7 +27,7 @@
             <li><button class="button primary" name="submit" value="submit" type="submit">Registrovat</button></li>
         </ul>
         <p class="text-muted text-center">Máte již účet?<a href="/login#login">&nbsp;přihlásit se</a></p>
-        @csrf
+        <input type='hidden' name="token" value="{{$csrf}}">
         <input type="hidden" id="g-recaptcha-response" name="grecaptcharesponse">
     	<input type="hidden" name="action" value="validate_captcha">
         <input type="hidden" name="type" value="register">

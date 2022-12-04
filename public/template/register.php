@@ -16,12 +16,12 @@
                <table class="m_-3655226564915594624pill-car" style="border-collapse:collapse;border-spacing:0;margin:20px 0;vertical-align:top;width:100%">
                   <tbody>
                      <tr>
-                        <td><span style="display:block;font-size:15px;padding:7px 0">Získáváte přístup k našim <strong>všem příběhům ZDARMA</strong></span> <span style="display:block;font-size:15px;padding:7px 0">text</span> <span style="display:block;font-size:15px;padding:7px 0">text</span></td>
+                        <td><span style="display:block;font-size:15px;padding:7px 0">Získáváte přístup k našim <strong>všem příběhům ZDARMA</strong></span><span style="display:block;font-size:15px;padding:7px 0">Profil</span> <span style="display:block;font-size:15px;padding:7px 0">Ukládání záložek</span></td>
                      </tr>
                   </tbody>
                </table>
                <span style="text-align:center;display:block"><a href="URL/activate?x=MemberID&amp;y=ACHASH&amp;z=TOKEN" style="background:#28a745;border-radius:4px;color:#fff;display:inline-block;font-weight:700;margin:16px auto 32px;padding:15px 25px;text-decoration:none" target="_blank">Aktivovat účet &nbsp;»</a></span>
-               <p style="font-size:15px;line-height:22px;margin:15px 0;padding:0">Hezký den Vám přeje Admin StarAdventure</p>
+               <p style="font-size:15px;line-height:22px;margin:15px 0;padding:0">Hezký den Vám přeje Admin StarAdventure &#169; Sensei</p>
             </td>
          </tr>
       </tbody>
