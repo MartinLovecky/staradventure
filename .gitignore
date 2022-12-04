@@ -3,3 +3,4 @@ cache/
 public/img/
 .*
 !.gitignore
+!.htaccess

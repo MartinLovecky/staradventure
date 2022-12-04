@@ -1,3 +1,9 @@
+@use(Mlkali\Sa\Http\Response)
+@if($member->permission == "visit")
+    @php
+        return new Response('/?message=','danger.K zobrazení stránky se musíte přihlásit','#');
+    @endphp
+@endif
 <main id="main">
 @if ($article->getArticleChapter() !== null && !empty($article->getArticleChapter()))
     <div class="chapter">

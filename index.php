@@ -22,11 +22,11 @@ $request->getRequest();
 $message = new Mlkali\Sa\Support\Messages($selector, $enc);
 $message->getQueryMessage($selector->fristQueryValue);
 $mailer = new Mlkali\Sa\Support\Mailer();
-$member = new Mlkali\Sa\Database\User\Member($db);
+$member = new Mlkali\Sa\Database\User\Member($db, $enc);
 $member->recallUser();
 $article = new Mlkali\Sa\Database\Entity\Article($db, $selector);
 $validator = new Mlkali\Sa\Support\Validator($blade->csrf_token, $member);
-$requestController = new Mlkali\Sa\Controllers\RequestController($request, $db, $mailer, $validator, $member);
+$requestController = new Mlkali\Sa\Controllers\RequestController($request, $db, $mailer, $validator, $member, $enc);
 $articleController = new Mlkali\Sa\Controllers\ArticleController($request, $article);
 $form = new Mlkali\Sa\Html\Form($blade);
 

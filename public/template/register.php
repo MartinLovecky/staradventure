@@ -6,7 +6,7 @@
                <table cellspacing="0" cellpadding="0" style="width:100%">
                   <tbody>
                      <tr>
-                        <td class="m_-3655226564915594624header__logo" style="padding:10px 0;text-align:left"><a href="URL/#index" style="color:#ec028c" target="_blank"><img src="URL/public/img/logo.png" width="200" height="44" border="0" class="CToWUd" alt="logo"></a></td>
+                        <td class="m_-3655226564915594624header__logo" style="padding:10px 0;text-align:left"><a href="URL/#index" style="color:#ec028c" target="_blank"><img src="URL/public/img/android-chrome-256x256.png" width="200" height="44" border="0" class="CToWUd" alt="logo"></a></td>
                      </tr>
                   </tbody>
                </table>

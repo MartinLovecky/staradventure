@@ -5,11 +5,13 @@ namespace Mlkali\Sa\Database\User;
 use Mlkali\Sa\Database\DB;
 use Mlkali\Sa\Http\Request;
 use Mlkali\Sa\Http\Response;
+use Mlkali\Sa\Support\Encryption;
 
 class Member{
 
     public function __construct(
         private DB $db,
+        private Encryption $enc,
         public bool $logged = false,
         public bool $remember = false,
         public bool $visible = false,
@@ -219,7 +221,7 @@ class Member{
     public function activateMember($selector): Response
     {
         // x=$fristQueryValue&y=$secondQueryValue&z=$thirdQueryValue
-        $userData = explode('-', base64_decode($selector->secondQueryValue));
+        $userData = explode('-', $this->enc->decrypt($selector->secondQueryValue));
 
         //get data from DB
         $stmt = $this->db->query

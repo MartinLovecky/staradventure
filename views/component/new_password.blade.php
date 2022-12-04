@@ -20,7 +20,7 @@
     <input type="hidden" name="type" value="new_password">
     <input type="hidden" name="etoken" value="{{ base64_decode($query) }}">
 </form>
-<script src="https://www.google.com/recaptcha/api.js?render=6LdNTIUhAAAAAAHOZpqGIC2V_FHPUyKURWGhl1rP"></script>
+<script src="https://www.google.com/recaptcha/api.js?render=6LclhVIjAAAAAAUcH7r8tvwJl3GIUg8bLJmr2alF"></script>
 <script src="@asset("js/recaptcha.js")"></script>
 </article>
 @endisset

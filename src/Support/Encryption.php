@@ -12,9 +12,9 @@ class Encryption{
 
     /**
      * Sodium 8.1 Encryption
-     * @param string $_ENV['ENON'] = generateNonce()
-     * @param string $_ENV['EKEY'] = generateKey()
-     * @return string 
+     * @param string $_ENV['ENON'] $this->generateNonce();
+     * @param string $_ENV['EKEY'] $this->generateKey();
+     * @return string static encrypted string
      */
     public function encrypt(string $message): string
     {

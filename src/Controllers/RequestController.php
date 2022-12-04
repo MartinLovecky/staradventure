@@ -8,6 +8,7 @@ use Mlkali\Sa\Http\Response;
 use Mlkali\Sa\Support\Mailer;
 use Mlkali\Sa\Support\Validator;
 use Mlkali\Sa\Database\User\Member;
+use Mlkali\Sa\Support\Encryption;
 
 class RequestController{
 
@@ -16,7 +17,8 @@ class RequestController{
         private DB $db,
         private Mailer $mailer,
         private Validator $validator,
-        private Member $member
+        private Member $member,
+        private Encryption $enc
     )
     {    
     }
@@ -34,14 +36,16 @@ class RequestController{
             
             return new Response('/register?message=',$validate,'#register');           
         }
+      
         //Progress with registration
-        $activate = base64_encode($this->request->username.'-'.$this->request->email);
+        $encMemberID = $this->enc->encrypt($this->request->username.'-'.$this->request->email);
         $data = $this->member->register($this->request);
 
         //Parse data to email template and send email
+        //TODO - Finish register template aka remove placeholders
         $body = str_replace(
             ['YourUsername', 'MemberID', 'ACHASH', 'TOKEN', 'URL'], 
-            [$this->request->username, $data['id'], $activate, $data['token'], $_SERVER['HTTP_ORIGIN']], 
+            [$this->request->username, $data['id'], $encMemberID, $data['token'], $_SERVER['HTTP_ORIGIN']], 
             file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/public/template/register.php')
         );
 

@@ -24,7 +24,7 @@ class Selector {
         $this->queryAction = $this->queryValues[0] ?? $this->queryAction;
         $this->fristQueryValue = !empty($this->queryValues[0]) ? filter_input(INPUT_GET, trim($this->queryValues[0]), FILTER_SANITIZE_FULL_SPECIAL_CHARS) : $this->fristQueryValue;
         $this->secondQueryValue = isset($this->queryValues[1]) ? $this->getQueryValue($this->queryValues[1]) : $this->secondQueryValue;
-        $this->thirdQueryValue =  $this->thirdQueryValue();
+        $this->thirdQueryValue =  isset($this->queryValues[2]) ? $this->getQueryValue($this->queryValues[2]) : $this->thirdQueryValue;
         // normal url values /action/article/page
         $this->url = explode('/', trim(str_replace(['<','>','!','@','$'], '', urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)))));
         $this->action = isset($this->url[1]) ? $this->url[1] : $this->action;
@@ -84,21 +84,6 @@ class Selector {
             $this->viewName = 'app';
             $this->title = 'SA | 404';
         }
-    }
-    
-    /**
-     * If in the end of secondQueryValue is separator (=) that  means array_key is pushed by 1
-     * @return null|string
-     */
-    private function thirdQueryValue(): ?string
-    {
-        if(array_key_exists(3, $this->queryValues) && !strpbrk($this->queryValues[3], '&')){
-            return $this->getQueryValue($this->queryValues[2]);
-        }
-        elseif(array_key_exists(4, $this->queryValues)){
-            return $this->getQueryValue($this->queryValues[3]);
-        }
-        return $this->thirdQueryValue;
     }
     
     /**
