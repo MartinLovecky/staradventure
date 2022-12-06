@@ -1,18 +1,22 @@
 <?php
 
-namespace Mlkali\Sa\Database\User;
+namespace Mlkali\Sa\Controllers;
 
 use Mlkali\Sa\Database\DB;
 use Mlkali\Sa\Http\Request;
 use Mlkali\Sa\Http\Response;
 use Envms\FluentPDO\Exception;
 use Mlkali\Sa\Support\Encryption;
+use Mlkali\Sa\Database\Entity\Member;
 
-class Member{
+
+//TODO: implement Entity and remove no longer neccesary code
+class MemberController{
 
     public function __construct(
         private DB $db,
         private Encryption $enc,
+        private Member $member,
         public bool $logged = false,
         public bool $remember = false,
         public bool $visible = false,

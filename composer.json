@@ -6,9 +6,10 @@
         "symfony/var-dumper": "6.2.x-dev",
         "eftec/bladeone": "dev-master",
         "phpmailer/phpmailer": "dev-master",
-        "vlucas/phpdotenv": "5.4.x-dev",
+        "vlucas/phpdotenv": "5.5.x-dev",
         "envms/fluentpdo": "dev-master",
-        "paragonie/halite": "^5"
+        "paragonie/halite": "^5",
+        "league/container": "4.x-dev"
     },
     "license": "none",
     "autoload": {
