@@ -18,8 +18,6 @@ $container->add('message', Mlkali\Sa\Support\Messages::class)
 $container->add('mailer', Mlkali\Sa\Support\Mailer::class);
 $container->add('member', Mlkali\Sa\Database\Entity\Member::class);
 $container->add('memberController', Mlkali\Sa\Controllers\MemberController::class)
-    ->addArgument($container->get('db'))
-    ->addArgument($container->get('enc'))
     ->addArgument($container->get('member'));
 $container->add('article', Mlkali\Sa\Database\Entity\Article::class)
     ->addArgument($container->get('db'))

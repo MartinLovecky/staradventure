@@ -7,8 +7,7 @@ use Mlkali\Sa\Http\Request;
 use Mlkali\Sa\Http\Response;
 use Mlkali\Sa\Support\Mailer;
 use Mlkali\Sa\Support\Validator;
-use Mlkali\Sa\Database\User\Member;
-use Mlkali\Sa\Support\Encryption;
+use Mlkali\Sa\Controllers\MemberController;
 
 class RequestController{
 
@@ -17,8 +16,7 @@ class RequestController{
         private DB $db,
         private Mailer $mailer,
         private Validator $validator,
-        private Member $member,
-        private Encryption $enc
+        private MemberController $memberController,
     )
     {   
     }
@@ -37,21 +35,7 @@ class RequestController{
             return new Response('/register?message=',$validate,'#register');           
         }
       
-        //Progress with registration
-        $encMemberID = $this->enc->encrypt($this->request->username.'-'.$this->request->email);
-        $data = $this->member->register($this->request);
-
-        //Parse data to email template and send email
-        //TODO - Finish register template aka remove placeholders
-        $body = str_replace(
-            ['YourUsername', 'MemberID', 'ACHASH', 'TOKEN', 'URL'], 
-            [$this->request->username, $data['id'], $encMemberID, $data['token'], $_SERVER['HTTP_ORIGIN']], 
-            file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/public/template/register.php')
-        );
-
-        $info = ['subject' => 'Potvrzení registrace', 'to' => $this->request->email];
-
-        $this->mailer->sender($body, $info);
+        $this->memberController->register($this->request);
 
         return new Response('/login?message=','success.Byl vám odeslán aktivační email (zkontrolujte prosím i spam)','#login');
     }

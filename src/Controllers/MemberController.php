@@ -2,17 +2,46 @@
 
 namespace Mlkali\Sa\Controllers;
 
-use Mlkali\Sa\Database\DB;
 use Mlkali\Sa\Http\Request;
-use Mlkali\Sa\Http\Response;
-use Envms\FluentPDO\Exception;
-use Mlkali\Sa\Support\Encryption;
 use Mlkali\Sa\Database\Entity\Member;
+use Mlkali\Sa\Support\Selector;
 
-
-//TODO: implement Entity and remove no longer neccesary code
 class MemberController{
 
+    public function __construct(
+        private Member $member,
+        private Selector $selector
+    )
+    { 
+    }
+
+    public function register(Request $request)
+    {
+        $this->member->username = $request->username;
+        $this->member->memberEmail = $request->email;
+        $this->member->permission = 'user';
+        $this->member->avatar = 'empty_profile.png';
+        $this->member->registerMember($request);
+    }
+
+    public function activate()
+    {
+        $this->member->activeMember = 'yes';
+        
+        $memberID = $this->selector?->secondQueryValues;
+        $token = $this->selector?->thirdQueryValue;
+
+        $this->member->activateMember($memberID, $token);
+    }
+
+    public function login(Request $request)
+    {
+        $this->member->logged = true;
+
+        $this->member->getMemberID($request->username);
+    }
+
+    /*
     public function __construct(
         private DB $db,
         private Encryption $enc,
@@ -54,11 +83,6 @@ class MemberController{
         $this->links = $this->getBookmarkLinks();
     }
         
-    /**
-     * check if user used remeber me box, if yes then user will be rembered until logged out or cookie expires
-     *
-     * @return void
-     */
     public function recallUser(): void
     {
         if($this->remember){
@@ -71,13 +95,6 @@ class MemberController{
         }
     }
 
-    /**
-     *  username, email || email, username || alone username || alone email (You can use any order you want )
-     * @param string $username must be provided
-     * @param null|string $email 
-     *
-     * @return bool true if username|email (or both) dont exist in DATABASE false otherwise
-     */
     public function isUnique(string $username, ?string $email = null): bool
     {
         $idByUsername = $this->getMemberID($username);
@@ -116,12 +133,6 @@ class MemberController{
         return true;
     }
 
-    /**
-     * Register must be called only after succefull validation inside Controller
-     *
-     * @param Request $request
-     * @return array maybe not needed
-     */
     public function register(Request $request): array
     {
         $hashPassword = password_hash($request->password, PASSWORD_BCRYPT);
@@ -217,12 +228,7 @@ class MemberController{
         return new Response('/member'.'/'.$this->username,'success.Záložka '.$bookmarkID.' smazána');
     }
 
-    /**
-     * activate Member based on query parameters
-     *
-     * @param  Selector $selector
-     * @return Response 
-     */
+
     public function activateMember($selector): Response
     {
         // x=$fristQueryValue&y=$secondQueryValue&z=$thirdQueryValue
@@ -251,11 +257,7 @@ class MemberController{
         return new Response('/login?message=','danger.Aktivace se nezdařila kontaktuje Support','#login');
     }
 
-    /**
-     * Used to get data for /usertable
-     *
-     * @return array
-     */
+
     public function getAllMembers(): array
     {
         $stmt = $this->db->query->from('members');
@@ -265,13 +267,7 @@ class MemberController{
         return $result;
     }
     
-    /**
-     * Admin can change permission of user /usertable
-     *
-     * @param  string $permission
-     * @param  string $id
-     * @return Response
-     */
+
     public function setPermission(string $permission, string $id): Response
     {
         $this->permission = $permission;
@@ -285,12 +281,7 @@ class MemberController{
         return new Response('usertable');
     }
     
-    /**
-     * Admin can delete User data 
-     *
-     * @param  string $id
-     * @return Response
-     */
+
     public function deleteUser(string $id): Response
     {
         $this->db->query
@@ -370,12 +361,7 @@ class MemberController{
         return $stmt->fetch();
     }
 
-    /**
-     * This should never fail but if you dont trust me you can use try catch block
-     *
-     * @param string $memberID
-     * @return void
-     */
+
     private function insertIntoInfo(string $memberID): void
     {
         $values = [
@@ -398,5 +384,6 @@ class MemberController{
 
         
     }
+    */
 
 }
