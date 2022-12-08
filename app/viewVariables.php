@@ -1,14 +1,17 @@
 <?php
 
 return [
-    'message' => $message, 
-    'form' => $form,
+    'article' => $container->get(Mlkali\Sa\Database\Entity\Article::class),
+    'articleController' => $container->get(Mlkali\Sa\Controllers\ArticleController::class),
+    'enc' => $container->get(Mlkali\Sa\Support\Encryption::class),
+    'db' =>  $container->get(Mlkali\Sa\Database\DB::class),
+    'mailer' => $container->get(Mlkali\Sa\Support\Mailer::class),
+    'pagnition' => $container->get(Mlkali\Sa\Html\Pagnition::class),
+    'form' => $container->get(Mlkali\Sa\Html\Form::class),
+    'validator' => $container->get(Mlkali\Sa\Support\Validator::class),
+    'member' => $container->get(Mlkali\Sa\Database\Entity\Member::class),
+    'memberController' => $container->get(Mlkali\Sa\Controllers\MemberController::class),
+    'requestController' => $container->get(Mlkali\Sa\Controllers\RequestController::class),
     'selector' => $selector,
-    'pagnition' => $pagnition,
-    'member' => $member,
-    'article' => $article,
-    'enc' => $enc,
-    'requestController' => $requestController,
-    'articleController' => $articleController,
-    'csrf' => $enc->encrypt($_ENV['CSRFKEY'])
+    'message' => $message
 ];

@@ -4,30 +4,52 @@ namespace Mlkali\Sa\Controllers;
 
 use Mlkali\Sa\Http\Request;
 use Mlkali\Sa\Database\Entity\Member;
+use Mlkali\Sa\Support\Encryption;
 use Mlkali\Sa\Support\Selector;
 
-class MemberController{
+class MemberController
+{
 
     public function __construct(
-        private Member $member,
-        private Selector $selector
-    )
-    { 
+        private Selector $selector,
+        private Encryption $enc
+    ) 
+    {
     }
 
     public function register(Request $request)
     {
-        $this->member->username = $request->username;
-        $this->member->memberEmail = $request->email;
-        $this->member->permission = 'user';
-        $this->member->avatar = 'empty_profile.png';
-        $this->member->registerMember($request);
+        $member = new Member();
+        $member->username = $request->username;
+        $member->memberEmail = $request->email;
+        $member->activeMember = md5(uniqid(rand(), true));
+        $member->permission = 'user';
+        $member->avatar = 'empty_profile.png';
+        $member->memberID = $request->username . '|' . $request->email;
+        // Insret Into Database
+        $member->insertIntoInfo($member->__get('memberID'));
+        $this->member->insertIntoMember($request,
+            [
+                'memberID' => $member->__get('memberID'),
+                'active' => $member->__get('active')
+            ]
+        );
+        $encryptedID = $this->enc->encrypt($member->__get('memberID'));
+        // Send email to user
+        $this->member->sendActivationEmail(
+            [
+                'username' => $request->username,
+                'encryptedID' => $encryptedID,
+                'active' => $member->__get('active'),
+                'recipient' => $member->__get('memberEmail'),
+            ]
+        );
     }
 
     public function activate()
     {
         $this->member->activeMember = 'yes';
-        
+
         $memberID = $this->selector?->secondQueryValues;
         $token = $this->selector?->thirdQueryValue;
 
@@ -40,6 +62,13 @@ class MemberController{
 
         $this->member->getMemberID($request->username);
     }
+
+    public function logout()
+    {
+        $this->member->logged = false;
+    }
+
+    
 
     /*
     public function __construct(
@@ -95,87 +124,11 @@ class MemberController{
         }
     }
 
-    public function isUnique(string $username, ?string $email = null): bool
-    {
-        $idByUsername = $this->getMemberID($username);
-        $idByEmail =  $email ?? $this->getMemberID($email); 
+    
 
-        // this two IF blocks are here only because I want use ANY order (email, username <-> username,email, email <-> username)   
-        if(filter_var($idByUsername, FILTER_VALIDATE_EMAIL)){
-            $whereOne = $idByUsername && $idByEmail ? ['email' => $username, 'username' => $email] : null;
-            $whereTwo = isset($idByUsername) && !$idByEmail ? ['email' => $username] : null;
-            $whereThree = !$idByUsername && isset($idByEmail) ? ['email' => $email] : null;
-            if(isset($whereOne))$memberID = $idByUsername;
-       
-        }elseif(!filter_var($idByUsername, FILTER_VALIDATE_EMAIL)){
-            $whereOne = $idByUsername && $idByEmail ? ['username' => $username, 'email' => $email] : null;
-            $whereTwo = isset($idByUsername) && !$idByEmail ? ['username' => $username] : null;
-            if(isset($whereOne))$memberID = $idByEmail;
-        }
-        //change $where based on $whereOne || $whereTwo || $whereThree
-        if(isset($whereOne))$where = $whereOne;
-        if(isset($whereTwo))$where = $whereTwo;$memberID = $idByUsername;
-        if(isset($whereThree))$where = $whereThree;$memberID = $idByUsername;
+  
 
-        //Get ID from DB
-        $stmt = $this->db->query
-                ->from('members')
-                ->select('member_id')
-                ->where($where);
-        
-        //IF Email or Username or both exist = memberID if not false
-        $data = $stmt->fetch('member_id');
-
-       if($data || $memberID)
-       {
-            return false;    
-       }
-        return true;
-    }
-
-    public function register(Request $request): array
-    {
-        $hashPassword = password_hash($request->password, PASSWORD_BCRYPT);
-        $randToken = md5(uniqid(rand(), true));
-        $memberID =  $request->username.'|'.$request->email;
-
-        $values = [
-            'username' => $request->username,
-            'password' => $hashPassword,
-            'email' => $request->email,
-            'active' => $randToken,
-            'permission' => 'user', 
-            'reset_complete' => 0,
-            'member_id' => $memberID
-        ];
-
-        $this->db->query
-            ->insertInto('members')
-            ->values($values)
-            ->execute();
-
-        $id = $this->db->pdo->lastInsertId();
-
-        $this->insertIntoInfo($memberID);
-
-        return ['token' => $randToken, 'id' => $id];
-    }
-
-    public function resetCompleted(string $email): bool
-    {
-        $stmt = $this->db->query
-                ->from('members')
-                ->select('reset_complete')
-                ->where('email', $email);
-
-        $result = $stmt->fetch();
-
-        if($result && $result['reset_complete'] == true)
-        {
-            return false;
-        }
-            return true;
-    }
+   
 
     public function setMemberData(string $memberID): void
     {
@@ -385,5 +338,4 @@ class MemberController{
         
     }
     */
-
 }

@@ -1,9 +1,9 @@
 <?php
 
 return [
-    'index', 
-    'show', 
-    'create', 
+    'index',
+    'show',
+    'create',
     'update',
     'delete',
     '',
@@ -23,4 +23,4 @@ return [
     'notfound',
     'savebookmark',
     'removebookmark'
-    ];
+];

@@ -2,7 +2,7 @@
 
 namespace Mlkali\Sa\Support;
 
-use Mlkali\Sa\Controllers\MemberController;
+use Mlkali\Sa\Database\Entity\Member;
 use Mlkali\Sa\Http\Request;
 use Mlkali\Sa\Support\Encryption;
 
@@ -11,7 +11,7 @@ class Validator{
   
     public function __construct(
         private Encryption $enc,
-        private MemberController $memberController
+        private Member $member
     )
     {
     }
@@ -27,7 +27,7 @@ class Validator{
             if(!$this->validToken($request->token)){
                 return 'danger.Csfr validation failed';
             }
-            if(!$this->memberController->isUnique($request->username, $request->email)){
+            if(!$this->member->isUnique($request->username, $request->email)){
                 return 'danger.Member '.$request->username.' alredy exists';
             }
             if(mb_strlen($request->password) < 6){
@@ -63,7 +63,7 @@ class Validator{
             return 'danger.Csfr validation failed';
         }
         
-        if($this->memberController->isUnique($request->username)){
+        if($this->member->isUnique($request->username)){
             return 'danger.Uživatel '.$request->username.' neexistuje';
         }
         return null;
@@ -79,10 +79,10 @@ class Validator{
         if(!filter_var($request->email, FILTER_VALIDATE_EMAIL)){
             return 'danger.Nesprávný formát emailu';
         }
-        if(!$this->memberController->isUnique($request->email)){
+        if(!$this->member->isUnique($request->email)){
             return 'danger.Email neexistuje v database';
         }
-        if($this->memberController->resetCompleted($request->email) === false){
+        if($this->member->resetCompleted($request->email) === false){
             return 'danger.Zkontrolujte si svůj email';
         }
         return null;
@@ -108,7 +108,7 @@ class Validator{
         return null;
     }
     
-    //TODO - 
+    //TODO 
     public function validateForgottenUser(Request $request){
         return null;
     }

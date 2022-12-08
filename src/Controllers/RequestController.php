@@ -2,10 +2,8 @@
 
 namespace Mlkali\Sa\Controllers;
 
-use Mlkali\Sa\Database\DB;
 use Mlkali\Sa\Http\Request;
 use Mlkali\Sa\Http\Response;
-use Mlkali\Sa\Support\Mailer;
 use Mlkali\Sa\Support\Validator;
 use Mlkali\Sa\Controllers\MemberController;
 
@@ -13,8 +11,6 @@ class RequestController{
 
     public function __construct(
         private Request $request, 
-        private DB $db,
-        private Mailer $mailer,
         private Validator $validator,
         private MemberController $memberController,
     )
@@ -39,7 +35,7 @@ class RequestController{
 
         return new Response('/login?message=','success.Byl vám odeslán aktivační email (zkontrolujte prosím i spam)','#login');
     }
-
+    /*
     public function submitLogin(): Response
     {
         $validate = $this->validator->validateLogin($this->request);
@@ -61,8 +57,8 @@ class RequestController{
         }
         else
         {
-            $memberID = $this->member->getMemberID($this->request->username);
-            $this->member->setMemberData($memberID);
+            $this->memberController->login($this->request);
+
             return new Response('member/'.$this->request->username.'?message=','success.Vítejte zpět '.$this->request->username);
         }
     }
@@ -172,8 +168,8 @@ class RequestController{
         move_uploaded_file($filePath, $newFilePath);
         unlink($filePath);
 
-        //TODO - Update db table
 
         return new Response('/member'.$this->request->username.'?message=','succes.Informace upraveny');
     }
+    */
 }

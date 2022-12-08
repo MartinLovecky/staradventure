@@ -9,13 +9,12 @@ Before you can use this application you need to create .env file in root directo
 - EMAIL_PASS = ""
 - EMAIL_PORT = 587
 - EKEY = $enc->generateKey();
-- ENON = $enc->generateNonce();
 - RECAPTCHA = ""
 
 inside public directory is sql dir for all necessary tables
 
 # Important
-you need also creare these files / folders [cache/ public/img/ .htaccess .gitignore]
+you need also creare these files / folders [compiles/ public/img/ .htaccess .gitignore]
 
 and run in terminal
 ```bash
