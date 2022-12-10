@@ -17,43 +17,49 @@ class MemberController
     {
     }
 
-    public function register(Request $request)
+    /**
+     * Sets $member and inserts values into DB
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function register(Request $request): void
     {
+        // Create a new Member object and initialize its fields
         $member = new Member();
         $member->username = $request->username;
         $member->memberEmail = $request->email;
+        $member->password = password_hash($request->password, PASSWORD_BCRYPT);
         $member->activeMember = md5(uniqid(rand(), true));
         $member->permission = 'user';
         $member->avatar = 'empty_profile.png';
         $member->memberID = $request->username . '|' . $request->email;
-        // Insret Into Database
-        $member->insertIntoInfo($member->__get('memberID'));
-        $this->member->insertIntoMember($request,
+        // Insert the member into the database
+        $member->insertIntoInfo($member->memberID);
+        $member->insertIntoMember($member);
+        //Encrypt memberID
+        $encryptedID = $this->enc->encrypt($member->memberID);
+        // Send an activation email to the user
+        $member->sendActivationEmail(
             [
-                'memberID' => $member->__get('memberID'),
-                'active' => $member->__get('active')
-            ]
-        );
-        $encryptedID = $this->enc->encrypt($member->__get('memberID'));
-        // Send email to user
-        $this->member->sendActivationEmail(
-            [
-                'username' => $request->username,
+                'username' => $member->username,
                 'encryptedID' => $encryptedID,
-                'active' => $member->__get('active'),
-                'recipient' => $member->__get('memberEmail'),
+                'active' => $member->active,
+                'recipient' => $member->memberEmail
             ]
         );
     }
 
-    public function activate()
+    public function activate(Member $member)
     {
-        $this->member->activeMember = 'yes';
-
-        $memberID = $this->selector?->secondQueryValues;
+        $memberID = $this->enc->decrypt($this->selector?->secondQueryValues);
         $token = $this->selector?->thirdQueryValue;
 
-        $this->member->activateMember($memberID, $token);
+        $memberDB = $member->getMemberInfo($memberID);
+
+        dd($memberDB);
+
+        //$member->activateMember($memberID, $token, $member);
     }
 
     public function login(Request $request)
@@ -67,8 +73,6 @@ class MemberController
     {
         $this->member->logged = false;
     }
-
-    
 
     /*
     public function __construct(
@@ -123,13 +127,7 @@ class MemberController
             $this->setMemberData($memberID);
         }
     }
-
     
-
-  
-
-   
-
     public function setMemberData(string $memberID): void
     {
         foreach($this->getMemberInfo($memberID) as $key => $value) {

@@ -11,6 +11,7 @@ class Member extends MemberRepository
         private bool $logged = false,
         private bool $visible = false,
         private string $username = 'visitor',
+        protected ?string $password = null,
         private ?string $memberEmail = null,
         private ?string $activeMember = null,
         private string $permission = 'visit',
@@ -36,7 +37,6 @@ class Member extends MemberRepository
     public function __get(string $name)
     {
         if (property_exists($this, $name)) {
-            $this->name = $this->getMemberInfo($this->memberID, $name);
             return $this->$name;
         }
     }

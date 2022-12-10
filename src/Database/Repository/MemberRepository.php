@@ -3,61 +3,16 @@
 namespace Mlkali\Sa\Database\Repository;
 
 use Mlkali\Sa\Database\DB;
-use Mlkali\Sa\Http\Request;
 use Mlkali\Sa\Support\Mailer;
 
-class MemberRepository
-{
+class MemberRepository extends DB{
 
-    public function insertIntoInfo(string $memberID): void
+    public function getMemberInfo($memberID, $item = null)
     {
-        $this->db->query
-            ->insertInto('info')
-            ->values(['member' => $memberID])
-            ->execute();
-    }
-
-    public function insertIntoMember(Request $request, array $memberData): void
-    {
-        $values = [
-            'username' => $request->username,
-            'email' => $request->email,
-            'password' => password_hash($request->password, PASSWORD_BCRYPT),
-            'active' => $memberData['active'],
-            'permission' => 'user',
-            'member_id' => $memberData['memberID']
-        ];
-
-        $this->db->query
-            ->insertInto('members')
-            ->values($values)
-            ->execute();
-    }
-
-    public function sendActivationEmail(array $data): void
-    {
-        //not ussed for activation but I dont want to rebuild $selector
-        $ID = rand();
-        
-        $info = ['subject' => 'Potvrzení registrace', 'to' => $data['recipient']];
-        $body = str_replace(
-            ['YourUsername', 'MemberID', 'ACHASH', 'TOKEN', 'URL'],
-            [$data['username'], $ID, $data['encryptedID'], $data['active'], $_SERVER['HTTP_ORIGIN']],
-            file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/public/template/register.php')
-        );
-
-        $mailer = new Mailer();
-        $mailer->sender($body, $info);
-    }
-
-    public function getMemberInfo(string $memberID, $item = null): bool|array
-    {
-        $db = new DB;
-        $stmt = $db->query
-            ->from('members')
-            ->leftJoin('info ON members.member_id = info.member')
-            ->select('info.*')
-            ->where('member', $memberID);
+        $stmt = $this->con()->from('members')
+                ->leftJoin('info ON members.member_id = info.member')
+                ->select('info.*')
+                ->where('member', $memberID);
 
         $result =  $stmt->fetch($item);
 
@@ -66,11 +21,67 @@ class MemberRepository
         }
         return $result;
     }
+
+    public function insertIntoInfo(string $memberID): void
+    {
+      
+        $this->con()->insertInto('info')->values(['member' => $memberID])->execute();
+    }
+
+    public function insertIntoMember($member): void
+    {
+        $values = [
+            'username' => $member->username,
+            'email' => $member->email,
+            'password' => $member->password,
+            'active' => $member->activeMember,
+            'permission' => $member->permission,
+            'member_id' => $member->memberID
+        ];
+
+        $this->con()->insertInto('members')->values($values)->execute();
+    }
+
+    public function sendActivationEmail(array $data): void
+    {
+        //not ussed for activation but I dont want to rebuild $selector
+        $ID = rand();
+
+        $info = ['subject' => 'Potvrzení registrace', 'to' => $data['recipient']];
+        $body = str_replace(
+            ['YourUsername', 'MemberID', 'ACHASH', 'TOKEN', 'URL'],
+            [$data['username'], $ID, $data['encryptedID'], $data['active'], $_SERVER['SERVER_NAME']],
+            file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/public/template/register.php')
+        );
+
+        $mailer = new Mailer();
+        $mailer->sender($body, $info);
+    }
+/*
+    public function activateMember($memberID, $token, $member)
+    {
+        
+
+        if (
+            strcmp($token, $memberToken) === 0 &&
+            strcmp($decryptID, $memberTID) === 0
+        ) {
+            $this->updateMember($decryptID, ['active' => 'yes']);
+        }
+    }
+*/
+    /*
+    
+    public function getMemberInfo(string $memberID, $item = null): bool|array
+    {
+        $db = new DB;
+        
+    }
 //STUB - This whole section works but in current "scope" of project dont make sence
     public function getMemberID(?string $check = null): bool|string
     {
         if(!filter_var($check, FILTER_VALIDATE_EMAIL)){
-            $stmt = $this->db->query
+            $stmt = $this->query
                     ->from('members')
                     ->select('username')
                     ->where('username', $check);
@@ -81,7 +92,7 @@ class MemberRepository
         }
         if(filter_var($check, FILTER_VALIDATE_EMAIL))
         {
-            $stmt = $this->db->query
+            $stmt = $this->query
                     ->from('members')
                     ->select('email')
                     ->where('email', $check);
@@ -115,7 +126,7 @@ class MemberRepository
         if(isset($whereThree))$where = $whereThree;$memberID = $idByUsername;
 
         //Get ID from DB
-        $stmt = $this->db->query
+        $stmt = $this->query
                 ->from('members')
                 ->select('member_id')
                 ->where($where);
@@ -132,7 +143,7 @@ class MemberRepository
 
     public function resetCompleted(string $email): bool
     {
-        $stmt = $this->db->query
+        $stmt = $this->query
                 ->from('members')
                 ->select('reset_complete')
                 ->where('email', $email);
@@ -164,7 +175,7 @@ class MemberRepository
 
     public function updateMember(string $memberID, array $set)
     {
-        $this->db->query
+        $this->query
             ->update('members')
             ->set($set)
             ->where('member_id', $memberID)
@@ -173,7 +184,7 @@ class MemberRepository
 
     public function updateInfoMember(string $memberID, array $set)
     {
-        $this->db->query
+        $this->query
             ->update('info')
             ->set($set)
             ->where('member', $memberID)
@@ -182,7 +193,7 @@ class MemberRepository
 
     public function getMemberInfo(string $memberID, $item = null): bool|array
     {
-        $stmt = $this->db->query
+        $stmt = $this->query
             ->from('members')
             ->leftJoin('info ON members.member_id = info.member')
             ->select('info.*')
@@ -208,19 +219,6 @@ class MemberRepository
         $this->mailer->sender($body, $info);
     }
 
-    public function activateMember($memberID, $token)
-    {
-        $decryptID = $this->enc->decrypt($memberID);
-
-        $memberToken = $this->getMemberInfo($decryptID, 'active');
-        $memberTID = $this->getMemberInfo($decryptID, 'member_id');
-
-        if (
-            strcmp($token, $memberToken) === 0 &&
-            strcmp($decryptID, $memberTID) === 0
-        ) {
-            $this->updateMember($decryptID, ['active' => 'yes']);
-        }
-    }
+    
 */
 }

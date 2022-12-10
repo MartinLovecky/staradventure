@@ -20,7 +20,7 @@ $container->delegate(new League\Container\ReflectionContainer());
 $blade = new BladeOne(__DIR__ . '/views', __DIR__ . '/compiles', BladeOne::MODE_AUTO);
 $blade->setBaseUrl('/public');
 $request = $container->get(Mlkali\Sa\Http\Request::class);
-$request->getRequest();  
+// Sets viewName and $queryValues
 $selector = $container->get(Mlkali\Sa\Support\Selector::class);
 $selector->getViewName(require_once(__DIR__ . '/app/allowedViews.php'));
 // Get &message=encrypted($msg)
@@ -28,9 +28,5 @@ $message = $container->get(Mlkali\Sa\Support\Messages::class);
 $message->getQueryMessage();
 
 echo $blade->run($selector->viewName, require_once(__DIR__ . '/app/viewVariables.php'));
-
-
 //FIXME - submitRegister doest fillsecondary table (info) !important to fix.
 //memberController->recallUser();
-
-?>

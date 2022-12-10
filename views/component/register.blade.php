@@ -6,14 +6,15 @@
 @endif
 <article id="register">
     <h2 class="major">Přidej se</h2>
-    {!! 
-	    $form->options(['target'=>'requestHandler','class'=>'text-left'])
+    {!! //form has more options but I mostly using default
+	    $form
+        ->options(['target'=>'requestHandler'])
 		->vars(['requestController'=>$requestController])
 		->run() 
 	!!}
         <div class="fields">
             <div class="field half"><input class="form-control text-white" type="text" name="username" placeholder="Username" value="@isset($_SESSION['old_username']){{ $_SESSION['old_username'] }}@endisset" required></div>
-            <div class="field half"><input class="form-control text-white" type="email" name="email" placeholder="Email" required></div>
+            <div class="field half"><input class="form-control text-white" type="email" name="email" placeholder="Email" value="@isset($_SESSION['old_email']){{ $_SESSION['old_email'] }}@endisset" required></div>
             <div class="field"><input class="form-control text-white" type="password" name="password" placeholder="Heslo" passwordrules="required: upper, lower, digit, [-().&@?'#,/&quot;+]; minlength: 25; max-consecutive: 2" autocomplete="new-password" required></div>
             <div class="field"><input class="form-control text-white" type="password" name="password_again" placeholder="Heslo (znovu)" passwordrules="required: upper, lower, digit, [-().&@?'#,/&quot;+]; max-consecutive: 2" required></div>
             <div class="field half">
@@ -27,7 +28,7 @@
             <li><button class="button primary" name="submit" value="submit" type="submit">Registrovat</button></li>
         </ul>
         <p class="text-muted text-center">Máte již účet?<a href="/login#login">&nbsp;přihlásit se</a></p>
-        <input type='hidden' name="token" value="{{$csrf}}">
+        <input type='hidden' name="token" value="{{$enc->encrypt($csrf)}}">
         <input type="hidden" id="g-recaptcha-response" name="grecaptcharesponse">
     	<input type="hidden" name="action" value="validate_captcha">
         <input type="hidden" name="type" value="register">

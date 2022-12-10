@@ -19,7 +19,9 @@ class RequestController{
     
     public function submitRegister(): Response
     {
-        $validate = $this->validator->validateRegister($this->request);
+        $request = $this->request->getRequest();
+        
+        $validate = $this->validator->validateRegister($request);
 
         if(isset($validate)){
 
@@ -30,8 +32,8 @@ class RequestController{
             
             return new Response('/register?message=',$validate,'#register');           
         }
-      
-        $this->memberController->register($this->request);
+    
+        $this->memberController->register($request);
 
         return new Response('/login?message=','success.Byl vám odeslán aktivační email (zkontrolujte prosím i spam)','#login');
     }

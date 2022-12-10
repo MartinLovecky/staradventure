@@ -15,15 +15,14 @@ class Request{
             $this->{$key} = $value; 
     }
 
-    /* DELETE this before production
-    -
+    //* DELETE this before production
+    
     public function testRequest()
     {
         foreach(func_get_args()[0] as $key => $value)
         {
             $this->{$key} = $value;
-            return $this;
         }
     }
-    */
+    //*/
 }

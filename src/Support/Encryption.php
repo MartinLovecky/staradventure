@@ -16,6 +16,10 @@ class Encryption{
     //NOTE - insted of using exception use Response class to display message
     public function decrypt(string $ciphertext, $aad = ''): string
     {
+        if (empty($ciphertext)) {
+            return '';
+        }
+
         $decoded = hex2bin($ciphertext);
 
         if ($decoded === false) {

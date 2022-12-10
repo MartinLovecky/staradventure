@@ -11,11 +11,13 @@ class Form{
         private string $class = 'text-center',
         private string $method = 'POST',
         private ?string $target = null,
+        private string $id = 'contact-form',
         private array $values = [],
         private string $autocomplete = 'off',
         private string $enctype = 'url-encoded'
     )
-    {}
+    {
+    }
     
     public function options(array $options)
     {
@@ -24,6 +26,7 @@ class Form{
         $this->target = isset($options['target']) ? $options['target'] : $this->target;
         $this->autocomplete = isset($options['autocomplete']) ? $options['autocomplete'] : $this->autocomplete;
         $this->enctype = isset($options['enctype']) ? $options['enctype'] : $this->enctype;
+        $this->id = isset($options['id'])? $options['id'] : $this->id;
             return $this;
     }
     
@@ -36,7 +39,7 @@ class Form{
     public function run()
     {
         if(!empty($this->target)){
-            return "<form method='$this->method' target='".$this->blade->run($this->target,$this->values)."' class='$this->class' autocomplete='$this->autocomplete' enctype='$this->enctype'>";
+            return "<form method='$this->method' target='".$this->blade->run($this->target,$this->values)."' class='$this->class' id='$this->id' autocomplete='$this->autocomplete' enctype='$this->enctype'>";
         }
     }
 }

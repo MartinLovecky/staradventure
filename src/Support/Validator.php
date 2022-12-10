@@ -48,7 +48,7 @@ class Validator{
             }
             return null;
        }
-       return 'danger.checkbox failed';
+       return 'danger.checkbox failed'.dd($request);
     }
     
     public function validateLogin(Request $request): ?string

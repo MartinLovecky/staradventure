@@ -1,1 +1,1 @@
-@php  $member->activateMember($selector); @endphp
+@php  $memberController->activate($member); @endphp
