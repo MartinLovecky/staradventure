@@ -7,8 +7,8 @@
 <article id="login">
     <h2 class="major">Přihlášení</h2>
     {!! 
-        $form->options(['target'=>'requestHandler','class'=>'text-left'])
-        ->vars(['requestController'=>$requestController])
+        $form->options(['target'=>'requestHandler'])
+        ->vars(['requestController'=>$requestController, 'request' => $request])
         ->run() 
     !!}
     <div class="fields">

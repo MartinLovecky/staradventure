@@ -1,18 +1,21 @@
 <?php
-if(isset($_POST['submit'])){
-    match($_POST['type']){
-        'register'      => $requestController->submitRegister(),
-        'login'         => $requestController->submitLogin(),
-        'reset_send'    => $requestController->submitResetSend(),
-        'reset_user'    => $requestController->submitForgottenUser(),
-        'new_password'  => $requestController->setNewPassword(),
-        'bookmark'      => $requestController->submitBookmark(),
-        'kontakt'       => $requestController->submitKontakt(),
-        'update_member' => $requestController->updateMember(),
-        'update'        => $articleController->update(),
-        'delete'        => $articleController->delete(),
-        'create'        => $articleController->create(),
+$request->getRequest();
+
+if(isset($request->type))
+{
+    match($request->type){
+        'register'      => $requestController->submitRegister($request),
+        'login'         => $requestController->submitLogin($request),
+        'reset_send'    => $requestController->submitResetSend($request),
+        'reset_user'    => $requestController->submitForgottenUser($request),
+        'new_password'  => $requestController->setNewPassword($request),
+        'bookmark'      => $requestController->submitBookmark($request),
+        'kontakt'       => $requestController->submitKontakt($request),
+        'update_member' => $requestController->updateMember($request),
+        'update'        => $articleController->update($request),
+        'delete'        => $articleController->delete($request),
+        'create'        => $articleController->create($request),
         default => null,
     };
-}
+}  
 ?>

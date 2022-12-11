@@ -8,8 +8,8 @@
     <h2 class="major">Přidej se</h2>
     {!! //form has more options but I mostly using default
 	    $form
-        ->options(['target'=>'requestHandler'])
-		->vars(['requestController'=>$requestController])
+        ->options(['target' => 'requestHandler'])
+		->vars(['requestController' => $requestController, 'request' => $request])
 		->run() 
 	!!}
         <div class="fields">

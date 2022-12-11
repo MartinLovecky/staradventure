@@ -7,7 +7,7 @@ use Mlkali\Sa\Support\Mailer;
 
 class MemberRepository extends DB{
 
-    public function getMemberInfo($memberID, $item = null)
+    public function getMemberInfo(?string $memberID, ?string $item = null): bool|string
     {
         $stmt = $this->con()->from('members')
                 ->leftJoin('info ON members.member_id = info.member')
@@ -22,87 +22,7 @@ class MemberRepository extends DB{
         return $result;
     }
 
-    public function insertIntoInfo(string $memberID): void
-    {
-      
-        $this->con()->insertInto('info')->values(['member' => $memberID])->execute();
-    }
-
-    public function insertIntoMember($member): void
-    {
-        $values = [
-            'username' => $member->username,
-            'email' => $member->email,
-            'password' => $member->password,
-            'active' => $member->activeMember,
-            'permission' => $member->permission,
-            'member_id' => $member->memberID
-        ];
-
-        $this->con()->insertInto('members')->values($values)->execute();
-    }
-
-    public function sendActivationEmail(array $data): void
-    {
-        //not ussed for activation but I dont want to rebuild $selector
-        $ID = rand();
-
-        $info = ['subject' => 'Potvrzení registrace', 'to' => $data['recipient']];
-        $body = str_replace(
-            ['YourUsername', 'MemberID', 'ACHASH', 'TOKEN', 'URL'],
-            [$data['username'], $ID, $data['encryptedID'], $data['active'], $_SERVER['SERVER_NAME']],
-            file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/public/template/register.php')
-        );
-
-        $mailer = new Mailer();
-        $mailer->sender($body, $info);
-    }
-/*
-    public function activateMember($memberID, $token, $member)
-    {
-        
-
-        if (
-            strcmp($token, $memberToken) === 0 &&
-            strcmp($decryptID, $memberTID) === 0
-        ) {
-            $this->updateMember($decryptID, ['active' => 'yes']);
-        }
-    }
-*/
-    /*
-    
-    public function getMemberInfo(string $memberID, $item = null): bool|array
-    {
-        $db = new DB;
-        
-    }
-//STUB - This whole section works but in current "scope" of project dont make sence
-    public function getMemberID(?string $check = null): bool|string
-    {
-        if(!filter_var($check, FILTER_VALIDATE_EMAIL)){
-            $stmt = $this->query
-                    ->from('members')
-                    ->select('username')
-                    ->where('username', $check);
-            
-            $result = $stmt->fetch('member_id');
-
-            return $result;
-        }
-        if(filter_var($check, FILTER_VALIDATE_EMAIL))
-        {
-            $stmt = $this->query
-                    ->from('members')
-                    ->select('email')
-                    ->where('email', $check);
-            
-            $result = $stmt->fetch('member_id');
-
-            return $result;
-        }
-    }
-
+    //TODO - CHANGE
     public function isUnique(string $username, ?string $email = null): bool
     {
         $idByUsername = $this->getMemberID($username);
@@ -140,6 +60,73 @@ class MemberRepository extends DB{
        }
         return true;
     }
+
+    public function insertIntoInfo(string $memberID): void
+    {
+        $this->con()->insertInto('info')->values(['member' => $memberID])->execute();
+    }
+
+    public function insertIntoMember($member): void
+    {
+        $values = [
+            'username' => $member->username,
+            'email' => $member->email,
+            'password' => $member->password,
+            'active' => $member->activeMember,
+            'permission' => $member->permission,
+            'member_id' => $member->memberID
+        ];
+
+        $this->con()->insertInto('members')->values($values)->execute();
+    }
+
+    public function sendActivationEmail(array $data): void
+    {
+        //not ussed for activation but I dont want to rebuild $selector
+        $ID = rand();
+
+        $info = ['subject' => 'Potvrzení registrace', 'to' => $data['recipient']];
+        $body = str_replace(
+            ['YourUsername', 'MemberID', 'ACHASH', 'TOKEN', 'URL'],
+            [$data['username'], $ID, $data['encryptedID'], $data['active'], $_SERVER['SERVER_NAME']],
+            file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/public/template/register.php')
+        );
+
+        $mailer = new Mailer();
+        $mailer->sender($body, $info);
+    }
+
+    /**
+     * Get memberID for requested login
+     *
+     * @param string $value of $username or $email
+     * @param string $select row 'username' or 'email'
+     * @return boolean|string false if row doesnt exist
+     */
+    public function getMemberID(string $value = null, string $select): bool|string
+    {
+        $stmt = $this->con()->from('members')->select($select)->where($select, $value);
+            
+        $result = $stmt->fetch('member_id');
+
+        return $result;
+    }
+/*
+    public function activateMember($memberID, $token, $member)
+    {
+        
+
+        if (
+            strcmp($token, $memberToken) === 0 &&
+            strcmp($decryptID, $memberTID) === 0
+        ) {
+            $this->updateMember($decryptID, ['active' => 'yes']);
+        }
+    }
+//STUB - This whole section works but in current "scope" of project dont make sence
+    
+
+   
 
     public function resetCompleted(string $email): bool
     {

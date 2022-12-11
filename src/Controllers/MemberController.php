@@ -66,7 +66,7 @@ class MemberController
     {
         $this->member->logged = true;
 
-        $this->member->getMemberID($request->username);
+        $memberID = $this->member->getMemberID($request->username);
     }
 
     public function logout()
@@ -275,31 +275,7 @@ class MemberController
         return [];
     }
 
-    public function getMemberID(?string $check = null): bool|string
-    {
-        if(!filter_var($check, FILTER_VALIDATE_EMAIL)){
-            $stmt = $this->db->query
-                    ->from('members')
-                    ->select('username')
-                    ->where('username', $check);
-            
-            $result = $stmt->fetch('member_id');
-
-            return $result;
-        }
-
-        if(filter_var($check, FILTER_VALIDATE_EMAIL))
-        {
-            $stmt = $this->db->query
-                    ->from('members')
-                    ->select('email')
-                    ->where('email', $check);
-            
-            $result = $stmt->fetch('member_id');
-
-            return $result;
-        }
-    }
+   
 
     private function getMemberInfo(string $memberID): bool|array
     {

@@ -10,17 +10,14 @@ use Mlkali\Sa\Controllers\MemberController;
 class RequestController{
 
     public function __construct(
-        private Request $request, 
         private Validator $validator,
         private MemberController $memberController,
     )
     {   
     }
     
-    public function submitRegister(): Response
-    {
-        $request = $this->request->getRequest();
-        
+    public function submitRegister(Request $request): Response
+    {   
         $validate = $this->validator->validateRegister($request);
 
         if(isset($validate)){
@@ -37,34 +34,35 @@ class RequestController{
 
         return new Response('/login?message=','success.Byl vám odeslán aktivační email (zkontrolujte prosím i spam)','#login');
     }
-    /*
-    public function submitLogin(): Response
+
+    public function submitLogin(Request $request): Response
     {
-        $validate = $this->validator->validateLogin($this->request);
-
+        $validate = $this->validator->validateLogin($request);
+        
         if(isset($validate)){
-
+            
             @$_SESSION = [
-                'old_username' => $this->request->username,
+                'old_username' => $request->username,
             ];
 
             return new Response('/login?message=',$validate,'#login');
         }
         
-        if(isset($this->request->remember)){
+        if(isset($request->remember)){
             
-            setcookie('remember' , $this->request->username, time() + (86400 * 7), '/');
+            setcookie('remember' , $request->username, time() + (86400 * 7), '/');
             
-            return new Response('member/'.$this->request->username.'?message=','success.Vítejte zpět '.$this->request->username);
+            return new Response('member/'.$request->username.'?message=','success.Vítejte zpět '.$request->username);
         }
         else
         {
-            $this->memberController->login($this->request);
-
-            return new Response('member/'.$this->request->username.'?message=','success.Vítejte zpět '.$this->request->username);
+            $this->memberController->login($request);
+            
+            return new Response('member/'.$request->username.'?message=','success.Vítejte zpět '.$request->username);
         }
     }
-
+    
+    /*
     public function submitResetSend(): Response
     {
         $validate = $this->validator->validateResetSend($this->request);

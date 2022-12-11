@@ -12,6 +12,7 @@ return [
     'member' => $container->get(Mlkali\Sa\Database\Entity\Member::class),
     'memberController' => $container->get(Mlkali\Sa\Controllers\MemberController::class),
     'requestController' => $container->get(Mlkali\Sa\Controllers\RequestController::class),
+    'request' => $container->get(Mlkali\Sa\Http\Request::class),
     'selector' => $selector,
     'message' => $message,
     'csrf' => $_ENV['CSRFKEY']

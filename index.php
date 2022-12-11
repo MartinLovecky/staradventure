@@ -19,7 +19,6 @@ $container->delegate(new League\Container\ReflectionContainer());
 // Blade Template engine
 $blade = new BladeOne(__DIR__ . '/views', __DIR__ . '/compiles', BladeOne::MODE_AUTO);
 $blade->setBaseUrl('/public');
-$request = $container->get(Mlkali\Sa\Http\Request::class);
 // Sets viewName and $queryValues
 $selector = $container->get(Mlkali\Sa\Support\Selector::class);
 $selector->getViewName(require_once(__DIR__ . '/app/allowedViews.php'));
