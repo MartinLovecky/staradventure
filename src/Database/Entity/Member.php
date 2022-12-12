@@ -12,7 +12,7 @@ class Member extends MemberRepository
         private bool $visible = false,
         private string $username = 'visitor',
         protected ?string $password = null,
-        private ?string $memberEmail = null,
+        private ?string $email = null,
         private ?string $activeMember = null,
         private string $permission = 'visit',
         private ?string $memberName = null,
@@ -22,7 +22,7 @@ class Member extends MemberRepository
         private bool $resetComplete = false,
         private int $bookmarkCount = 0,
         private array $bookmarks = [],
-        private ?string $memberID = 'visitor|123456789'
+        private ?string $memberID = 'visitor|visitor@gmail.com'
     )
     {
     }

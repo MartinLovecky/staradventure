@@ -34,7 +34,7 @@ class RequestController{
 
         return new Response('/login?message=','success.Byl vám odeslán aktivační email (zkontrolujte prosím i spam)','#login');
     }
-
+/*
     public function submitLogin(Request $request): Response
     {
         $validate = $this->validator->validateLogin($request);
@@ -62,7 +62,7 @@ class RequestController{
         }
     }
     
-    /*
+    
     public function submitResetSend(): Response
     {
         $validate = $this->validator->validateResetSend($this->request);

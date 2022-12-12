@@ -5,69 +5,42 @@ namespace Mlkali\Sa\Database\Repository;
 use Mlkali\Sa\Database\DB;
 use Mlkali\Sa\Support\Mailer;
 
-class MemberRepository extends DB{
 
-    public function getMemberInfo(?string $memberID, ?string $item = null): bool|string
+class MemberRepository{
+    
+    /**
+     * Undocumented function
+     *
+     * @param string|null $column DB
+     * @param string|null $item
+     * @return void
+     */
+    public function getMemberInfo(?string $column, ?string $item = null)
     {
-        $stmt = $this->con()->from('members')
+        $db = new DB;
+
+        $stmt = $db->query->from('members')
                 ->leftJoin('info ON members.member_id = info.member')
                 ->select('info.*')
-                ->where('member', $memberID);
+                ->where($column, $item);
 
         $result =  $stmt->fetch($item);
 
         if(!$result){
-            return 'visitor|123456789';
+            return 'visitor|vistor@gmail.com';
         }
         return $result;
     }
 
-    //TODO - CHANGE
-    public function isUnique(string $username, ?string $email = null): bool
-    {
-        $idByUsername = $this->getMemberID($username);
-        $idByEmail =  $email ?? $this->getMemberID($email); 
-
-        // this two IF blocks are here only because I want use ANY order (email, username <-> username,email, email <-> username)   
-        if(filter_var($idByUsername, FILTER_VALIDATE_EMAIL)){
-            $whereOne = $idByUsername && $idByEmail ? ['email' => $username, 'username' => $email] : null;
-            $whereTwo = isset($idByUsername) && !$idByEmail ? ['email' => $username] : null;
-            $whereThree = !$idByUsername && isset($idByEmail) ? ['email' => $email] : null;
-            if(isset($whereOne))$memberID = $idByUsername;
-       
-        }elseif(!filter_var($idByUsername, FILTER_VALIDATE_EMAIL)){
-            $whereOne = $idByUsername && $idByEmail ? ['username' => $username, 'email' => $email] : null;
-            $whereTwo = isset($idByUsername) && !$idByEmail ? ['username' => $username] : null;
-            if(isset($whereOne))$memberID = $idByEmail;
-        }
-        //change $where based on $whereOne || $whereTwo || $whereThree
-        if(isset($whereOne))$where = $whereOne;
-        if(isset($whereTwo))$where = $whereTwo;$memberID = $idByUsername;
-        if(isset($whereThree))$where = $whereThree;$memberID = $idByUsername;
-
-        //Get ID from DB
-        $stmt = $this->query
-                ->from('members')
-                ->select('member_id')
-                ->where($where);
-        
-        //IF Email or Username or both exist = memberID if not false
-        $data = $stmt->fetch('member_id');
-
-       if($data || $memberID)
-       {
-            return false;    
-       }
-        return true;
-    }
-
     public function insertIntoInfo(string $memberID): void
     {
-        $this->con()->insertInto('info')->values(['member' => $memberID])->execute();
+        $db = new DB;
+        $db->query->insertInto('info')->values(['member' => $memberID])->execute();
     }
 
     public function insertIntoMember($member): void
     {
+        $db = new DB;
         $values = [
             'username' => $member->username,
             'email' => $member->email,
@@ -77,7 +50,7 @@ class MemberRepository extends DB{
             'member_id' => $member->memberID
         ];
 
-        $this->con()->insertInto('members')->values($values)->execute();
+        $db->query->insertInto('members')->values($values)->execute();
     }
 
     public function sendActivationEmail(array $data): void
@@ -96,21 +69,6 @@ class MemberRepository extends DB{
         $mailer->sender($body, $info);
     }
 
-    /**
-     * Get memberID for requested login
-     *
-     * @param string $value of $username or $email
-     * @param string $select row 'username' or 'email'
-     * @return boolean|string false if row doesnt exist
-     */
-    public function getMemberID(string $value = null, string $select): bool|string
-    {
-        $stmt = $this->con()->from('members')->select($select)->where($select, $value);
-            
-        $result = $stmt->fetch('member_id');
-
-        return $result;
-    }
 /*
     public function activateMember($memberID, $token, $member)
     {

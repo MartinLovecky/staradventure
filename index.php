@@ -27,5 +27,5 @@ $message = $container->get(Mlkali\Sa\Support\Messages::class);
 $message->getQueryMessage();
 
 echo $blade->run($selector->viewName, require_once(__DIR__ . '/app/viewVariables.php'));
-//FIXME - submitRegister doest fillsecondary table (info) !important to fix.
+
 //memberController->recallUser();

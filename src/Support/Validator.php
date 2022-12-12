@@ -7,50 +7,49 @@ use Mlkali\Sa\Http\Request;
 use Mlkali\Sa\Support\Encryption;
 
 
-class Validator{  
-  
+class Validator{
+
     public function __construct(
         private Encryption $enc,
         private Member $member
-    )
+    ) 
     {
     }
 
     public function validateRegister(Request $request): ?string
     {
-        if(property_exists($request, 'vops') && property_exists($request, 'terms')){
-            $recaptcha = $this->validateCaptcha($request->grecaptcharesponse);
-
-            if(isset($recaptcha)){
-                return $recaptcha;
-            }
-            if(!$this->validToken($request->token)){
-                return 'danger.Csfr validation failed';
-            }
-            if(!$this->member->isUnique($request->username, $request->email)){
-                return 'danger.Member '.$request->username.' alredy exists';
-            }
-            if(mb_strlen($request->password) < 6){
-                return 'danger.Heslo musí obsahovat nejméně 6 znaků';
-            }
-            if($request->password != $request->password_again){
-                return 'danger.Hesla se musí schodovat';
-            }
-            //lowercase,uppercase,special symbol,number
-            if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$%^&]).*$/', $request->password)) {
-                return 'danger.Heslo musí obasahovat nejméně jedno malé a velké písmeno a jeden specialní znak(!@$%^&)';
-            }
-            if(!filter_var($request->email, FILTER_VALIDATE_EMAIL)){
-                return 'danger.Nesprávný formát emailu ('.$request->email.')';
-            }
-            if(mb_strlen($request->username) < 4){
-                return 'danger.Username ('.$request->username.') musí mít nejméně 4 znaky';
-            }
-            return null;
-       }
-       return 'danger.checkbox failed';
+        if ($request->vops !== 'on' && $request->terms !== 'on') {
+            return 'danger.checkbox failed';
+        }
+        $recaptcha = $this->validateCaptcha($request->grecaptcharesponse);
+        if (isset($recaptcha)) {
+            return $recaptcha;
+        }
+        if (!$this->validToken($request->token)) {
+            return 'danger.Csfr validation failed';
+        }
+        if (!$this->member->getMemberInfo('member_id', $request->username.'|'.$request->email)) {
+            return 'danger.Member ' . $request->username . ' alredy exists';
+        }
+        if (mb_strlen($request->password) < 6) {
+            return 'danger.Heslo musí obsahovat nejméně 6 znaků';
+        }
+        if ($request->password != $request->password_again) {
+            return 'danger.Hesla se musí schodovat';
+        }
+        //lowercase,uppercase,special symbol,number
+        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$%^&*]).*$/', $request->password)) {
+            return 'danger.Heslo musí obasahovat nejméně jedno malé a velké písmeno a jeden specialní znak(!@$%^&)';
+        }
+        if (!filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
+            return 'danger.Nesprávný formát emailu (' . $request->email . ')';
+        }
+        if (mb_strlen($request->username) < 4) {
+            return 'danger.Username (' . $request->username . ') musí mít nejméně 4 znaky';
+        }
+        return null;
     }
-    
+ /*   
     public function validateLogin(Request $request): ?string
     {
         $recaptcha = $this->validateCaptcha($request->grecaptcharesponse);
@@ -63,11 +62,14 @@ class Validator{
             return 'danger.Csfr validation failed';
         }
         
-        if($this->member->isUnique($request->username)){
+        if($this->member->getMemberInfo($request->username)){
             return 'danger.Uživatel '.$request->username.' neexistuje';
         }
         return null;
     }
+    
+   
+    
 
     public function validateResetSend(Request $request): ?string
     {
@@ -135,7 +137,7 @@ class Validator{
         }
         return null;
     }
-
+*/
     private function validateCaptcha(?string $response): ?string
     {
         $ch = curl_init();
@@ -148,24 +150,22 @@ class Validator{
         curl_close($ch);
         $res = json_decode($response, true);
 
-        if(!$res['success']){
+        if (!$res['success']) {
             $err =  $res['error-codes'];
-                foreach ($err as $msg) {
-                    return 'danger.'.$msg;
-                }
+            foreach ($err as $msg) {
+                return 'danger.' . $msg;
+            }
         }
         return null;
     }
-    
+
     private function validToken(string $token): bool
     {
         $decrypted = $this->enc->decrypt($token);
 
-        if(strcmp($decrypted, $_ENV['CSRFKEY']) === 0){
+        if (strcmp($decrypted, $_ENV['CSRFKEY']) === 0) {
             return true;
         }
-            return false;
+        return false;
     }
-
-   
 }

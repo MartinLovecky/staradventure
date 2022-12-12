@@ -28,15 +28,16 @@ class MemberController
         // Create a new Member object and initialize its fields
         $member = new Member();
         $member->username = $request->username;
-        $member->memberEmail = $request->email;
+        $member->email = $request->email;
         $member->password = password_hash($request->password, PASSWORD_BCRYPT);
         $member->activeMember = md5(uniqid(rand(), true));
         $member->permission = 'user';
         $member->avatar = 'empty_profile.png';
         $member->memberID = $request->username . '|' . $request->email;
         // Insert the member into the database
-        $member->insertIntoInfo($member->memberID);
-        $member->insertIntoMember($member);
+        dd($member);
+        //$member->insertIntoInfo($member->memberID);
+        //$member->insertIntoMember($member);
         //Encrypt memberID
         $encryptedID = $this->enc->encrypt($member->memberID);
         // Send an activation email to the user
@@ -49,7 +50,7 @@ class MemberController
             ]
         );
     }
-
+/*
     public function activate(Member $member)
     {
         $memberID = $this->enc->decrypt($this->selector?->secondQueryValues);
