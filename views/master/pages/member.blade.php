@@ -1,7 +1,25 @@
 @use(Mlkali\Sa\Http\Response)
-@if (!$member->logged)
+@if(isset($selector->article) && !$member->logged) 
     @php
-        return new Response('/?message=','danger.Nemáte přístup k zobrazení stránky','#');
+        $memberData = $member->getMemberInfo('username', $selector->article);
+        
+        if($memberData)
+        {
+            $member->logged = true;
+
+            foreach($memberData as $key => $value)
+            {
+                $member->{$key} = $value;
+            }   
+        }
+        else
+        {
+            return new Response('/register?message=', 'danger.Uživatel neexistuje', '#register');
+        }
+    @endphp
+@elseif(!isset($selector->article))
+    @php
+        return new Response('/?message=', 'danger.Nemáte přístup k zobrazení stránky', '#');
     @endphp
 @endif
 @if ($message->hasAny())
@@ -33,7 +51,7 @@
                         </div>
                     </div>
                     @else
-                    @foreach ($member->bookmarks as $key => $value)
+                    @foreach(json_encode($member->bookmarks, true) as $key => $value)
                     <div class="col-sm-6 col-md-5 col-lg-4 item">
                         <div class="box">
                             <a class="learn-more" href="{{$value}}">Záložka - {{$key}} »</a>

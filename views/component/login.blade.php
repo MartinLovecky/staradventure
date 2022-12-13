@@ -28,7 +28,7 @@
             <a href="/reset#reset">Zapomenutné heslo?</a><br>
             <a href="/reset?action={{base64_encode('forgotenUser')}}#reset">Zapomenutný Username?</a>
         </p>
-        <input type='hidden' name="token" value="{{$csrf}}">
+        <input type='hidden' name="token" value="{{$enc->encrypt($csrf)}}">
         <input type="hidden" id="g-recaptcha-response" name="grecaptcharesponse">
     	<input type="hidden" name="action" value="validate_captcha">
         <input type="hidden" name="type" value="login"> 

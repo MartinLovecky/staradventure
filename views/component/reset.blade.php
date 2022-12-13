@@ -18,7 +18,7 @@
         <li><button class="button primary" name="submit" type="submit">Poslat email</button></li>
     </ul>
 
-    <input type='hidden' name="token" value="{{$csrf}}">
+    <input type='hidden' name="token" value="{{$enc->encrypt($csrf)}}">
     <input type="hidden" id="g-recaptcha-response" name="grecaptcharesponse">
     <input type="hidden" name="action" value="validate_captcha">
     <input type="hidden" name="type" value= @if(isset($query)) {{ "reset_user" }} @else {{"reset_send"}} @endif>

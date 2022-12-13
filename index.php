@@ -26,6 +26,7 @@ $selector->getViewName(require_once(__DIR__ . '/app/allowedViews.php'));
 $message = $container->get(Mlkali\Sa\Support\Messages::class);
 $message->getQueryMessage();
 
-echo $blade->run($selector->viewName, require_once(__DIR__ . '/app/viewVariables.php'));
+$enc = $container->get(Mlkali\Sa\Support\Encryption::class);
 
+echo $blade->run($selector->viewName, require_once(__DIR__ . '/app/viewVariables.php'));
 //memberController->recallUser();

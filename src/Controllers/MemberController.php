@@ -3,16 +3,18 @@
 namespace Mlkali\Sa\Controllers;
 
 use Mlkali\Sa\Http\Request;
-use Mlkali\Sa\Database\Entity\Member;
-use Mlkali\Sa\Support\Encryption;
+use Mlkali\Sa\Http\Response;
 use Mlkali\Sa\Support\Selector;
+use Mlkali\Sa\Support\Encryption;
+use Mlkali\Sa\Database\Entity\Member;
 
 class MemberController
 {
 
     public function __construct(
         private Selector $selector,
-        private Encryption $enc
+        private Encryption $enc,
+        private Member $member
     ) 
     {
     }
@@ -35,40 +37,38 @@ class MemberController
         $member->avatar = 'empty_profile.png';
         $member->memberID = $request->username . '|' . $request->email;
         // Insert the member into the database
-        dd($member);
-        //$member->insertIntoInfo($member->memberID);
-        //$member->insertIntoMember($member);
-        //Encrypt memberID
-        $encryptedID = $this->enc->encrypt($member->memberID);
+        $member->insertIntoInfo($member->memberID);
+        $member->insertIntoMember($member);
         // Send an activation email to the user
         $member->sendActivationEmail(
             [
                 'username' => $member->username,
-                'encryptedID' => $encryptedID,
+                'encryptedID' => $this->enc->encrypt($member->memberID),
                 'active' => $member->active,
-                'recipient' => $member->memberEmail
+                'recipient' => $member->email
             ]
         );
     }
-/*
-    public function activate(Member $member)
+
+    public function activate(Member $member): Response
     {
-        $memberID = $this->enc->decrypt($this->selector?->secondQueryValues);
-        $token = $this->selector?->thirdQueryValue;
+        $memberID = $this->enc->decrypt($this->selector->secondQueryValue);
+        $token = $this->selector->thirdQueryValue;
+        
+        $memberDB = $member->getMemberInfo('member_id', $memberID, 'member_id');
+        $tokenDB = $member->getMemberInfo('member_id', $memberID, 'active');
+     
+        if(strcmp($memberID, $memberDB) == 0 && strcmp($token, $tokenDB) == 0)
+        {
+            $member->activateMember($memberID);
 
-        $memberDB = $member->getMemberInfo($memberID);
+            return new Response('/login?message=', 'success.Aktivace úspšná můžete se přihlásit', '#login');
+        }
 
-        dd($memberDB);
-
-        //$member->activateMember($memberID, $token, $member);
+        return new Response('/register?message=', 'danger.Aktivace účtu se nezdařila kontaktujte podporu', '#register');
     }
-
-    public function login(Request $request)
-    {
-        $this->member->logged = true;
-
-        $memberID = $this->member->getMemberID($request->username);
-    }
+    
+    /*
 
     public function logout()
     {
@@ -76,46 +76,7 @@ class MemberController
     }
 
     /*
-    public function __construct(
-        private DB $db,
-        private Encryption $enc,
-        private Member $member,
-        public bool $logged = false,
-        public bool $remember = false,
-        public bool $visible = false,
-        public string $username = 'visitor',
-        public ?string $memberID = null,
-        public ?string $memberEmail = null,
-        public ?string $activeMember = null,
-        public string $permission = 'visit',
-        public ?string $memberName = null,
-        public ?string $memberSurname = null,
-        public string $avatar = 'empty_profile.png',
-        public ?int $age = null,
-        public ?string $location = null,
-        public ?string $resetToken = null,
-        public bool $resetComplete = false,
-        public int $bookmarkCount = 0,
-        public array $bookmarks = [],
-        private array $links = []
-    )
-    {
-        $this->logged = isset($_SESSION['id']) ? true : $this->logged;
-        $this->remember = isset($_COOKIE['remember']) ? true : $this->remember;
-        $this->visible = $_SESSION['visible'] ?? $this->visible;
-        $this->username = $_SESSION['username'] ?? $this->username;
-        $this->memberID = $_SESSION['member_id'] ?? $this->memberID;
-        $this->memberEmail = $_SESSION['email'] ?? $this->memberEmail;
-        $this->activeMember = $_SESSION['active'] ?? $this->activeMember;
-        $this->permission = $_SESSION['permission'] ?? $this->permission;
-        $this->memberName = $_SESSION['member_name'] ?? $this->memberName;
-        $this->memberSurname = $_SESSION['member_surname'] ?? $this->memberSurname;
-        $this->avatar = $_SESSION['avatar'] ?? $this->avatar;
-        $this->location = $_SESSION['location'] ?? $this->location;
-        $this->bookmarkCount = $_SESSION['bookmark_count'] ?? $this->bookmarkCount;
-        $this->bookmarks = isset($_SESSION['bookmarks']) ? json_decode($_SESSION['bookmarks'], true) : $this->bookmarks;
-        $this->links = $this->getBookmarkLinks();
-    }
+
         
     public function recallUser(): void
     {

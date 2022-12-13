@@ -5,24 +5,27 @@ namespace Mlkali\Sa\Database\Repository;
 use Mlkali\Sa\Database\DB;
 use Mlkali\Sa\Support\Mailer;
 
-
 class MemberRepository{
     
     /**
-     * Undocumented function
+     * This function gets data from specific member not all members data
      *
-     * @param string|null $column DB
+     * @param string $column name form DB example: 'member_id' etc..
+     * @param string $value  of column we search
      * @param string|null $item
-     * @return void
+     *  - null and DB row exits $result will be array
+     *  - string $result will return specific column value
+     *  - false if row does not exist
+     * @return mixed — string, array or false if there is no row
      */
-    public function getMemberInfo(?string $column, ?string $item = null)
+    public function getMemberInfo(string $column, string $value = null, ?string $item = null)
     {
         $db = new DB;
 
         $stmt = $db->query->from('members')
                 ->leftJoin('info ON members.member_id = info.member')
                 ->select('info.*')
-                ->where($column, $item);
+                ->where($column, $value);
 
         $result =  $stmt->fetch($item);
 
@@ -69,18 +72,13 @@ class MemberRepository{
         $mailer->sender($body, $info);
     }
 
-/*
-    public function activateMember($memberID, $token, $member)
+    public function activateMember(string $memberID): void
     {
-        
-
-        if (
-            strcmp($token, $memberToken) === 0 &&
-            strcmp($decryptID, $memberTID) === 0
-        ) {
-            $this->updateMember($decryptID, ['active' => 'yes']);
-        }
+        $db = new DB;
+        $db->query->update('members')->set(['active' => 'yes'])->where('member_id', $memberID)->execute();
     }
+    
+/*
 //STUB - This whole section works but in current "scope" of project dont make sence
     
 

@@ -49,7 +49,7 @@ class Validator{
         }
         return null;
     }
- /*   
+
     public function validateLogin(Request $request): ?string
     {
         $recaptcha = $this->validateCaptcha($request->grecaptcharesponse);
@@ -58,19 +58,17 @@ class Validator{
             return $recaptcha;
         }
 
-        if($this->validToken($request->token) === false){
+        if(!$this->validToken($request->token)){
             return 'danger.Csfr validation failed';
         }
         
-        if($this->member->getMemberInfo($request->username)){
+        if(!$this->member->getMemberInfo('username', $request->username, 'username')){
             return 'danger.Uživatel '.$request->username.' neexistuje';
         }
         return null;
     }
-    
-   
-    
 
+    /*   
     public function validateResetSend(Request $request): ?string
     {
         $recaptcha = $this->validateCaptcha($request->grecaptcharesponse);

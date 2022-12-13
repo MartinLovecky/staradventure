@@ -21,7 +21,7 @@ class Member extends MemberRepository
         private ?string $resetToken = null,
         private bool $resetComplete = false,
         private int $bookmarkCount = 0,
-        private array $bookmarks = [],
+        private string $bookmarks = '{}',
         private ?string $memberID = 'visitor|visitor@gmail.com'
     )
     {
