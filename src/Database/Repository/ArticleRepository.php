@@ -2,6 +2,7 @@
 
 namespace Mlkali\Sa\Database\Repository;
 
+use Mlkali\Sa\Database\DB;
 use Mlkali\Sa\Support\Selector;
 
 class ArticleRepository{
@@ -16,13 +17,14 @@ class ArticleRepository{
      * @param Mlkali\Sa\Database\DB $db
      * @return mixed
      */
-    public function getCurrentArticle($db)
+    public function getCurrentArticle()
     {
         $selector = new Selector();
+        $db = new DB;   
        
         if(in_array(strtolower($selector->article), $this->allowedArticles)){
 
-            $articleId = $selector->article.$selector->page;
+            $articleId = $selector->article.'|'.$selector->page;
 
             $stmt = $db->query
                     ->from('articles')
@@ -55,7 +57,7 @@ class ArticleRepository{
                     return $this->articleData['article_chapter'];  
                 break;
                 case 'body':
-                    return json_decode($this->articleData['article_body'], true);
+                    return $this->articleData['article_body'];
                 break;             
             }
         }

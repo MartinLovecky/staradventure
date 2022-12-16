@@ -2,25 +2,21 @@
 
 namespace Mlkali\Sa\Database\Entity;
 
-use Mlkali\Sa\Database\DB;
-use Mlkali\Sa\Support\Selector;
 use Mlkali\Sa\Database\Repository\ArticleRepository;
 
 class Article extends ArticleRepository{
 
-    public function __construct(
-        private DB $db, 
-        private Selector $selector,
+    public function __construct( 
         private ?string $articleChapter = null,
         private ?string $articleId = null,
-        private ?array $articleBody = []
+        private ?string $articleBody = ''
     )
     {
     }
 
     public function getArticleId(): ?string
     {
-        $this->articleId = $this->getCurrentArticle($this->db)->get('id');
+        $this->articleId = $this->getCurrentArticle()->get('id');
 
         return $this->articleId;
     }
@@ -34,7 +30,7 @@ class Article extends ArticleRepository{
 
     public function getArticleChapter(): ?string
     {
-        $this->articleChapter = $this->getCurrentArticle($this->db)->get('chapter');
+        $this->articleChapter = $this->getCurrentArticle()->get('chapter');
         
         return $this->articleChapter;
     }
@@ -46,9 +42,9 @@ class Article extends ArticleRepository{
         return $this;
     }
 
-    public function getArticleBody(): ?array
+    public function getArticleBody(): ?string
     {
-        $this->articleBody = $this->getCurrentArticle($this->db)->get('body');
+        $this->articleBody = $this->getCurrentArticle()->get('body');
 
         return $this->articleBody;
     }

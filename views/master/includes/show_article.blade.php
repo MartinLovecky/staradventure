@@ -11,8 +11,8 @@
     </div>        
 @endif
 @if ($article->getArticleBody() !== null && !empty($article->getArticleBody()))
-    @foreach ($article->getArticleBody() as $item)
-        {!! $item   !!}
+    @foreach (json_decode($article->getArticleBody()) as $item)
+        {!!  $item  !!}
     @endforeach
 @endif
 </main>

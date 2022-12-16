@@ -57,18 +57,15 @@ class Validator{
         if(isset($recaptcha)){
             return $recaptcha;
         }
-
         if(!$this->validToken($request->token)){
             return 'danger.Csfr validation failed';
         }
-        
         if(!$this->member->getMemberInfo('username', $request->username, 'username')){
             return 'danger.Uživatel '.$request->username.' neexistuje';
         }
         return null;
     }
 
-    /*   
     public function validateResetSend(Request $request): ?string
     {
         $recaptcha = $this->validateCaptcha($request->grecaptcharesponse);
@@ -76,17 +73,18 @@ class Validator{
         if(isset($recaptcha)){
             return $recaptcha;
         }
+        if(!$this->validToken($request->token)){
+            return 'danger.Csfr validation failed';
+        }
         if(!filter_var($request->email, FILTER_VALIDATE_EMAIL)){
             return 'danger.Nesprávný formát emailu';
         }
-        if(!$this->member->isUnique($request->email)){
+        if(!$this->member->getMemberInfo('email', $request->email, 'email')){
             return 'danger.Email neexistuje v database';
-        }
-        if($this->member->resetCompleted($request->email) === false){
-            return 'danger.Zkontrolujte si svůj email';
         }
         return null;
     }
+    /*   
 
     public function validatePassword(Request $request): ?string
     {

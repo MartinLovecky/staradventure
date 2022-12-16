@@ -5,7 +5,15 @@ namespace Mlkali\Sa\Database\Repository;
 use Mlkali\Sa\Database\DB;
 use Mlkali\Sa\Support\Mailer;
 
+
 class MemberRepository{
+
+    public function __construct(
+        private DB $db,
+        private Mailer $mailer
+    )
+    {
+    }
     
     /**
      * This function gets data from specific member not all members data
@@ -20,8 +28,7 @@ class MemberRepository{
      */
     public function getMemberInfo(string $column, string $value = null, ?string $item = null)
     {
-        $db = new DB;
-
+        $db = new DB();
         $stmt = $db->query->from('members')
                 ->leftJoin('info ON members.member_id = info.member')
                 ->select('info.*')
@@ -35,15 +42,24 @@ class MemberRepository{
         return $result;
     }
 
-    public function insertIntoInfo(string $memberID): void
+    public function getAllMembers(): array
     {
-        $db = new DB;
+        $db = new DB();
+        $stmt = $db->query->from('members');
+        
+        $result = $stmt->fetchAll();
+
+        return $result;
+    }
+
+    public function insertIntoInfo(string $memberID): void
+    {   
+        $db = new DB();
         $db->query->insertInto('info')->values(['member' => $memberID])->execute();
     }
 
     public function insertIntoMember($member): void
     {
-        $db = new DB;
         $values = [
             'username' => $member->username,
             'email' => $member->email,
@@ -52,7 +68,7 @@ class MemberRepository{
             'permission' => $member->permission,
             'member_id' => $member->memberID
         ];
-
+        $db = new DB();
         $db->query->insertInto('members')->values($values)->execute();
     }
 
@@ -68,54 +84,37 @@ class MemberRepository{
             file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/public/template/register.php')
         );
 
-        $mailer = new Mailer();
-        $mailer->sender($body, $info);
+        $this->mailer->sender($body, $info);
     }
 
     public function activateMember(string $memberID): void
-    {
-        $db = new DB;
+    {   
+        $db = new DB();
         $db->query->update('members')->set(['active' => 'yes'])->where('member_id', $memberID)->execute();
+    }
+
+    public function sendResetToken(array $data): void
+    {
+        $db = new DB();
+        $db->query
+            ->update('members')
+            ->set(['reset_token' => $data['token']])
+            ->where('member_id', $data['memberID'])
+        ->execute();
+
+        $info = ['subject '=> 'Reset hesla','to'=> $data['email']];
+        $body = str_replace(
+            ['YourUsername', 'TOKEN', 'URL', 'ACHASH'], 
+            [$data['email'], $data['token'], $_SERVER['SERVER_NAME'], $data['id']], 
+            file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/public/template/reset.php')
+        );
+
+        $this->mailer->sender($body, $info);
     }
     
 /*
 //STUB - This whole section works but in current "scope" of project dont make sence
     
-
-   
-
-    public function resetCompleted(string $email): bool
-    {
-        $stmt = $this->query
-                ->from('members')
-                ->select('reset_complete')
-                ->where('email', $email);
-
-        $result = $stmt->fetch();
-
-        if($result && $result['reset_complete'] == true)
-        {
-            return false;
-        }
-            return true;
-    }
-//STUB - Should be changed in next update hopefully I jusr need to see if Register works as need
-//NOTE - Before I will make more changes [ I dont want "rollback" to old code anymore ]
-//REVIEW -  All commented section will be deleted soon
-    /*
-    public function getUserBy($memberID): self
-    {
-        $stmt = $this->query
-                ->from('members')
-                ->where('member_id', $memberID);
-
-        return $this;
-    }
-
-    
-
-
-
     public function updateMember(string $memberID, array $set)
     {
         $this->query
@@ -133,35 +132,11 @@ class MemberRepository{
             ->where('member', $memberID)
             ->execute();
     }
+   
 
-    public function getMemberInfo(string $memberID, $item = null): bool|array
-    {
-        $stmt = $this->query
-            ->from('members')
-            ->leftJoin('info ON members.member_id = info.member')
-            ->select('info.*')
-            ->where('member', $memberID);
-
-        return $stmt->fetch($item);
-    }
-
-    public function registerMember($request)
-    {
-        $this->insertIntoInfo($request->username . '|' . $request->email);
-        $data = $this->insertIntoMember($request);
-
-        $memberEncryptedID = $this->enc->encrypt($request->username . '|' . $request->email);
-
-        $info = ['subject' => 'Potvrzení registrace', 'to' => $request->email];
-        $body = str_replace(
-            ['YourUsername', 'MemberID', 'ACHASH', 'TOKEN', 'URL'],
-            [$request->username, $data['id'], $memberEncryptedID, $data['token'], $_SERVER['HTTP_ORIGIN']],
-            file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/public/template/register.php')
-        );
-
-        $this->mailer->sender($body, $info);
-    }
-
-    
+   
+//STUB - Should be changed in next update hopefully I jusr need to see if Register works as need
+//NOTE - Before I will make more changes [ I dont want "rollback" to old code anymore ]
+//REVIEW -  All commented section will be deleted soon
 */
 }

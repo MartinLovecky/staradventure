@@ -1,1 +1,1 @@
-@php  $member->logout();  @endphp
+@php  $memberController->logout();  @endphp

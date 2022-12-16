@@ -2,6 +2,7 @@
 
 namespace Mlkali\Sa\Http;
 
+#[AllowDynamicProperties]
 class Request{
 
     /**
@@ -15,8 +16,7 @@ class Request{
             $this->{$key} = $value; 
     }
 
-    //* DELETE this before production
-    
+    //* DELETE this before productionl 
     public function testRequest()
     {
         foreach(func_get_args()[0] as $key => $value)

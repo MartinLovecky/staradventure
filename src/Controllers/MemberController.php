@@ -67,17 +67,41 @@ class MemberController
 
         return new Response('/register?message=', 'danger.Aktivace účtu se nezdařila kontaktujte podporu', '#register');
     }
-    
-    /*
 
-    public function logout()
+    public function login(string $username): void
     {
-        $this->member->logged = false;
+        $memberData = $this->member->getMemberInfo('username', $username);
+
+        foreach($memberData as $key => $value)
+        {
+            @$_SESSION[$key] = $value;
+        }
     }
 
-    /*
-
+    public function logout(): Response
+    {
+        @$_SESSION = array();
+        session_destroy();
+        unset($_COOKIE['remember']);
+        setcookie('remember', '', time() - 3600, '/'); 
         
+        return new Response('/#');
+    }
+
+    public function sendResetToken(Request $request): void
+    {
+        $memberID = $this->member->getMemberInfo('email', $request->email, 'member_id');
+
+        $this->member->sendResetToken(
+            [
+                'email' => $request->email,
+                'token' => md5(uniqid(rand(), true)),
+                'memberID' => $memberID,
+                'id' => $this->enc->encrypt($memberID)
+            ]
+        );
+    }
+    /*  
     public function recallUser(): void
     {
         if($this->remember){
@@ -89,14 +113,7 @@ class MemberController
             $this->setMemberData($memberID);
         }
     }
-    
-    public function setMemberData(string $memberID): void
-    {
-        foreach($this->getMemberInfo($memberID) as $key => $value) {
-            
-            $_SESSION[$key] = $value;
-        }
-    }
+   
 
     public function saveBookmark(string $article, string $page): void
     {
@@ -142,43 +159,7 @@ class MemberController
     }
 
 
-    public function activateMember($selector): Response
-    {
-        // x=$fristQueryValue&y=$secondQueryValue&z=$thirdQueryValue
-        $userData = explode('-', $this->enc->decrypt($selector->secondQueryValue));
-
-        //get data from DB
-        $stmt = $this->db->query
-                ->from('members')
-                ->where('id', $selector->fristQueryValue);
-
-        $result = $stmt->fetch();
-    
-        if(hash_equals($result['active'], $selector->thirdQueryValue) &&
-           $result['username'] === $userData[0] &&
-           $result['email'] === $userData[1])
-        {
-            $stmt = $this->db->query
-                    ->update('members')
-                    ->set(['active' => 'yes'])
-                    ->where('id', $selector->fristQueryValue)
-                    ->execute();
-            
-            return new Response('/login?message=','success.Aktivace úspěšná','#login');
-        }
-        
-        return new Response('/login?message=','danger.Aktivace se nezdařila kontaktuje Support','#login');
-    }
-
-
-    public function getAllMembers(): array
-    {
-        $stmt = $this->db->query->from('members');
-        
-        $result = $stmt->fetchAll();
-
-        return $result;
-    }
+   
     
 
     public function setPermission(string $permission, string $id): Response
@@ -205,16 +186,7 @@ class MemberController
         return new Response('usertable');
     }
 
-    public function logout(): Response
-    {
-        $this->remember .= false;
-        @$_SESSION = array();
-        session_destroy();
-        unset($_COOKIE['remember']);
-        setcookie('remember', '', time() - 3600, '/'); 
-        
-        return new Response('/#');
-    }
+    
 
     private function getBookmarkLinks(): array
     {
@@ -237,41 +209,5 @@ class MemberController
         return [];
     }
 
-   
-
-    private function getMemberInfo(string $memberID): bool|array
-    {
-        $stmt = $this->db->query
-                ->from('members')
-                ->leftJoin('info ON members.member_id = info.member')
-                ->select('info.*')
-                ->where('member', $memberID);
-        
-        return $stmt->fetch();
-    }
-
-
-    private function insertIntoInfo(string $memberID): void
-    {
-        $values = [
-            'bookmark_count' => 0,
-            'bookmarks' => '{}',
-            'visible' => false,
-            'avatar' => 'empty_profile.png',
-            'member' => $memberID
-        ];
-
-        try {
-            $e = $this->db->query
-                ->insertInto('info')
-                ->values($values)
-                ->execute();
-
-        } catch (Exception $e) {
-            throw $e;
-        }
-
-        
-    }
     */
 }

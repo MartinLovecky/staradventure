@@ -1,23 +1,5 @@
 @use(Mlkali\Sa\Http\Response)
-@if(isset($selector->article) && !$member->logged) 
-    @php
-        $memberData = $member->getMemberInfo('username', $selector->article);
-        
-        if($memberData)
-        {
-            $member->logged = true;
-
-            foreach($memberData as $key => $value)
-            {
-                $member->{$key} = $value;
-            }   
-        }
-        else
-        {
-            return new Response('/register?message=', 'danger.Uživatel neexistuje', '#register');
-        }
-    @endphp
-@elseif(!isset($selector->article))
+@if(!isset($selector->article))
     @php
         return new Response('/?message=', 'danger.Nemáte přístup k zobrazení stránky', '#');
     @endphp

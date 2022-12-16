@@ -19,6 +19,7 @@ class DB extends Query{
         
         $this->query = new Query($this->pdo);
     }
+    
 
 }
 

@@ -13,8 +13,7 @@ class RequestController{
         private Validator $validator,
         private MemberController $memberController,
     )
-    {   
-    }
+    {}
     
     public function submitRegister(Request $request): Response
     {   
@@ -55,17 +54,16 @@ class RequestController{
             return new Response('member/'.$request->username.'?message=','success.Vítejte zpět '.$request->username);
         }
         else
-        {            
+        {   
+            $this->memberController->login($request->username);
+
             return new Response('member/'.$request->username.'?message=','success.Vítejte zpět '.$request->username);
         }
     }
-/*
-    
-    
-    
-    public function submitResetSend(): Response
+
+    public function submitResetSend(Request $request): Response
     {
-        $validate = $this->validator->validateResetSend($this->request);
+        $validate = $this->validator->validateResetSend($request);
 
         if(isset($validate)){
 
@@ -76,21 +74,12 @@ class RequestController{
             return new Response('/?message=',$validate,'#reset');
         }
 
-        $token = md5(uniqid(rand(), true));
+        $this->memberController->sendResetToken($request);
 
-        $body = str_replace(
-            ['YourUsername', 'TOKEN', 'URL', 'ACHASH'], 
-            [$this->request->email, base64_encode($this->request->email), $_SERVER['HTTP_ORIGIN'], $token], 
-            file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/public/template/reset.php')
-        );
-
-        $info = ['subject'=>'Reset hesla','to'=>$this->request->email];
-
-        if($this->mailer->sender($body, $info)){
-
-            return new Response('/?message=','success.Odkaz na změnu hesla byl odeslán na email','#');
-        }
+        return new Response('/?message=','success.Odkaz na změnu hesla byl odeslán na email','#');
+        
     }
+/*
         
     public function setNewPassword(): Response
     {
