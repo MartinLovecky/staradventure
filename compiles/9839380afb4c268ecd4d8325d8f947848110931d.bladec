@@ -1,5 +1,0 @@
-<?php if($selector->article && $selector->page): ?>
- <?php echo $this->runChild('master.includes.show_article'); ?>
-<?php else: ?>
- <?php echo $this->runChild('master.includes.list_of_articles'); ?>    
-<?php endif; ?>

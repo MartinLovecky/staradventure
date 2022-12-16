@@ -1,5 +1,5 @@
+compiles
 vendor/
-compiles/
 public/img/
 .*
 !.gitignore
