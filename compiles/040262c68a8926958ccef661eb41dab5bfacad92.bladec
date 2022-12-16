@@ -1,0 +1,5 @@
+<pre><code>
+<?php 
+ var_dump('404 Not Found',$selector->action);
+ ?>
+</code></pre>

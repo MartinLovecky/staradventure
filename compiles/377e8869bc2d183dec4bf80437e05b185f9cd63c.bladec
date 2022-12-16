@@ -1,0 +1,51 @@
+<?php use Mlkali\Sa\Http\Response; ?>
+<?php if(!isset($selector->article)): ?>
+ <?php 
+ return new Response('/?message=', 'danger.Nemáte přístup k zobrazení stránky', '#');
+ ?>
+<?php endif; ?>
+<?php if($message->hasAny()): ?>
+ <?php  $this->startComponent('component.message'); ?><?php echo $this->renderComponent(); ?>
+<?php endif; ?>
+<div class="article-list">
+ <div class="container-fluid features-boxed">
+ <div class="row" style="padding-top: 16px;">
+ <div class="col-md-6 col-xl-3 offset-xl-1">
+ <img class="img-fluid" src="<?php echo (isset($this->assetDict[('img/avatars/'.$member->avatar)]))?$this->assetDict[('img/avatars/'.$member->avatar)]:$this->baseUrl.'/'.('img/avatars/'.$member->avatar); ?>" alt="member-avatar" />
+ </div>
+ <div class="col-xl-6 offset-xl-0 member_page_info" style="margin-top: 1vh;">
+ <p>Uživatel: <a href="/member/<?php echo \htmlentities($member->username??'', ENT_QUOTES, 'UTF-8', false); ?>"><?php echo \htmlentities($member->username??'', ENT_QUOTES, 'UTF-8', false); ?></a></p>
+ <?php if($member->visible): ?>
+ <p>Jméno: <?php echo \htmlentities($member->memberName??'', ENT_QUOTES, 'UTF-8', false); ?></p>
+ <p>Příjmení: <?php echo \htmlentities($member->memberSurname??'', ENT_QUOTES, 'UTF-8', false); ?></p>
+ <p>Datum narození: <?php echo \htmlentities($member->age??'', ENT_QUOTES, 'UTF-8', false); ?></p>
+ <p>Město: <?php echo \htmlentities($member->location??'', ENT_QUOTES, 'UTF-8', false); ?></p>
+ <?php endif; ?>
+ </div>
+ <div class="col-xl-9 offset-xl-1">
+ <h2 style="margin-top:10vh;">Uložené záložky </h2>
+ <p style="color:#73b6ff">* Maximální počet záložek je 12. Uložit záložku lze pouze při čtení příběhu v menu uživatele. 
+ <div class="row justify-content-center features" id="bookmarks">
+ <?php if($member->bookmarkCount == 0): ?>
+ <div class="col-sm-6 col-md-5 col-lg-4 item">
+ <div class="box">
+ <a class="learn-more" style="pointer-events: none; cursor: default;"> Nemáte žádnou uloženou záložku </a>
+ </div>
+ </div>
+ <?php else: ?>
+ <?php $__currentLoopData = json_encode($member->bookmarks, true); $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $key => $value): $loop = $this->incrementLoopIndices();  ?>
+ <div class="col-sm-6 col-md-5 col-lg-4 item">
+ <div class="box">
+ <a class="learn-more" href="<?php echo \htmlentities($value??'', ENT_QUOTES, 'UTF-8', false); ?>">Záložka - <?php echo \htmlentities($key??'', ENT_QUOTES, 'UTF-8', false); ?> »</a>
+ <br>
+ <a class="learn-more" href="/removebookmark?x=<?php echo \htmlentities($key??'', ENT_QUOTES, 'UTF-8', false); ?>&y=<?php echo \htmlentities($enc->encrypt($member->memberID)??'', ENT_QUOTES, 'UTF-8', false); ?>">Smazat</a>
+ </div>
+ </div>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ <?php endif; ?>
+ </div>
+ </div>
+ </div>
+ </div>
+</div>

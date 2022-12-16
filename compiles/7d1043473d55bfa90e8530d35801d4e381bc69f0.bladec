@@ -1,0 +1,6 @@
+<?php echo $this->runChild('master.includes.head'); ?>
+<?php if($selector->action != 'show'): ?>    
+ <?php echo $this->runChild('master.includes.menu'); ?>
+<?php endif; ?>
+<?php echo $this->runChild("master.pages.$selector->viewPage"); ?> 
+<?php echo $this->runChild('master.includes.footer'); ?>

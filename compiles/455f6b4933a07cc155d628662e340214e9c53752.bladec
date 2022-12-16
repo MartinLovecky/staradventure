@@ -1,0 +1,1 @@
+<?php   $memberController->activate($member);  ?>

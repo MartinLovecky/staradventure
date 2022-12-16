@@ -1,0 +1,72 @@
+<?php echo $this->runChild('master.includes.main_head', ['selector' => $selector]); ?>
+ <?php /*Messages */ ?>
+ <?php if($message->hasAny()): ?>
+ <?php  $this->startComponent('component.message', ['message' => $message]); ?> <?php echo $this->renderComponent(); ?>  
+ <?php endif; ?>
+ <?php /* Header Links */ ?>
+ <?php  $this->startComponent('component.header'); ?><?php echo $this->renderComponent(); ?>
+ <div id="main">
+ <?php /* intro */ ?>    
+ <?php if($selector->action === 'intro'): ?>
+ <?php  $this->startComponent('component.intro'); ?><?php echo $this->renderComponent(); ?>
+ <?php /* register */ ?>    
+ <?php elseif($selector->action === 'register'): ?>
+ <?php  $this->startComponent('component.register', 
+ [
+ 'form' => $form, 
+ 'requestController' => $requestController
+ ]); ?>
+ <?php echo $this->renderComponent(); ?>    
+ <?php /* login */ ?>
+ <?php elseif($selector->action === 'login'): ?>
+ <?php  $this->startComponent('component.login', 
+ [
+ 'form' => $form, 
+ 'requestController' => $requestController
+ ]); ?>
+ <?php echo $this->renderComponent(); ?>
+ <?php /* vop */ ?>
+ <?php elseif($selector->action === 'vop'): ?>
+ <?php  $this->startComponent('component.vop'); ?><?php echo $this->renderComponent(); ?>
+ <?php /* terms */ ?>
+ <?php elseif($selector->action === 'terms'): ?>
+ <?php  $this->startComponent('component.terms'); ?><?php echo $this->renderComponent(); ?>
+ <?php /* reset */ ?>
+ <?php elseif($selector->action === 'reset'): ?>
+ <?php  $this->startComponent('component.reset', 
+ [
+ 'form' => $form, 
+ 'requestController' => $requestController, 
+ 'query' => $selector->fristQueryValue
+ ]); ?>
+ <?php echo $this->renderComponent(); ?>
+ <?php /* new password */ ?>         
+ <?php elseif($selector->action === 'newpassword'): ?>
+ <?php  $this->startComponent('component.new_password', 
+ [
+ 'form' => $form, 
+ 'requestController' => $requestController, 
+ 'query' => $selector->fristQueryValue
+ ]); ?>
+ <?php echo $this->renderComponent(); ?>
+ <?php /* storylist */ ?>
+ <?php elseif($selector->action === 'storylist'): ?>
+ <?php  $this->startComponent('component.story_list'); ?><?php echo $this->renderComponent(); ?>
+ <?php /* update member */ ?>
+ <?php elseif($selector->action === 'updatemember'): ?>
+ <?php  $this->startComponent('component.update_member', 
+ [
+ 'form' => $form, 
+ 'requestController' => $requestController,
+ 'query' => $selector->fristQueryValue
+ ]); ?>
+ <?php echo $this->renderComponent(); ?>
+ <?php /* Save bookmark */ ?>    
+ <?php elseif($selector->action === 'savebookmark'): ?>
+ <?php  $this->startComponent('component.save_bookmark'); ?><?php echo $this->renderComponent(); ?>
+ <?php endif; ?>
+ </div>
+ <?php /* Footer */ ?>
+ <?php  $this->startComponent('component.footer'); ?><?php echo $this->renderComponent(); ?>
+</div>
+<?php echo $this->runChild('master.includes.end_page'); ?>
