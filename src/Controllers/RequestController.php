@@ -6,11 +6,13 @@ use Mlkali\Sa\Http\Request;
 use Mlkali\Sa\Http\Response;
 use Mlkali\Sa\Support\Validator;
 use Mlkali\Sa\Controllers\MemberController;
+use Mlkali\Sa\Database\Entity\Member;
 
 class RequestController{
 
     public function __construct(
         private Validator $validator,
+        private Member $member,
         private MemberController $memberController,
     )
     {}
@@ -22,8 +24,8 @@ class RequestController{
         if(isset($validate)){
 
             @$_SESSION = [
-                'old_username' => $this->request->username, 
-                'old_email' => $this->request->email
+                'old_username' => $request->username, 
+                'old_email' => $request->email
             ];
             
             return new Response('/register?message=',$validate,'#register');           
@@ -38,15 +40,12 @@ class RequestController{
     {
         $validate = $this->validator->validateLogin($request);
         
-        if(isset($validate)){
-            
-            @$_SESSION = [
-                'old_username' => $request->username,
-            ];
+        if(isset($validate))
+        {    
+            @$_SESSION = ['old_username' => $request->username];
 
             return new Response('/login?message=',$validate,'#login');
         }
-        
         if(isset($request->remember)){
             
             setcookie('remember' , $request->username, time() + (86400 * 7), '/');
@@ -65,71 +64,47 @@ class RequestController{
     {
         $validate = $this->validator->validateResetSend($request);
 
-        if(isset($validate)){
-
-            @$_SESSION = [
-                'old_email' => $this->request->email
-            ];
+        if(isset($validate))
+        {
+            @$_SESSION = ['old_email' => $request->email];
 
             return new Response('/?message=',$validate,'#reset');
         }
 
-        $this->memberController->sendResetToken($request);
+        $this->member->sendResetToken($request);
 
         return new Response('/?message=','success.Odkaz na změnu hesla byl odeslán na email','#');
         
     }
-/*
-        
-    public function setNewPassword(): Response
+
+    public function setNewPassword(Request $request): Response
     {
-        $validate = $this->validator->validatePassword($this->request);
-
-        if(isset($validate)){
-
+        $validate = $this->validator->validatePassword($request);
+    
+        if(isset($validate))
+        {
             return new Response('/?message=',$validate,'#newpassword');    
         }
 
-        $hash = password_hash($this->request->password, PASSWORD_BCRYPT);
-        
-        $this->db->query
-                ->update('members')
-                ->set(['password' => $hash])
-                ->where('email', $this->request->email)
-                ->execute();
+        $this->member->setNewPassword($request);
                 
         return new Response('/?message=','success.Heslo bylo úspěšně změněno','#login');           
     }
-    
-    public function submitForgottenUser() : Response
+
+    public function submitForgottenUser(Request $request) : Response
     {
-        $validate = $this->validator->validateForgottenUser($this->request);
-
-        if(isset($validate)){
-
-            return new Response('/reset?message=','danger.Neplatný email ('.$this->request->email.')','#reset');
+        $validate = $this->validator->validateResetSend($request);
+    
+        if(isset($validate))
+        {
+            return new Response('/reset?message=','danger.Neplatný email ('.$request->email.')','#reset');
         }
 
-        $stmt = $this->db->query
-                ->from('members')
-                ->select('username')
-                ->where('email', $this->request->email);
-        
-        $username = $stmt->fetch('username');
-
-        $body = str_replace(
-                ['YourUsername', 'URL'], 
-                [$username, $_SERVER['HTTP_ORIGIN']], 
-                file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/public/template/username.php')
-        );
-
-        $info = ['subject' => 'Zapomenutné Username', 'to' => $this->request->email];
-
-        $this->mailer->sender($body, $info);
-
+        $this->member->sendForgottenUser($request->email);
+    
         return new Response('/login?message=','succes.Uživatelské jméno bylo zaslíno na váš email','#login');
     }
-    
+    /*
     public function updateMember(): Response
     {
         $filePath = $_FILES['avatar']['tmp_name'];

@@ -88,19 +88,6 @@ class MemberController
         return new Response('/#');
     }
 
-    public function sendResetToken(Request $request): void
-    {
-        $memberID = $this->member->getMemberInfo('email', $request->email, 'member_id');
-
-        $this->member->sendResetToken(
-            [
-                'email' => $request->email,
-                'token' => md5(uniqid(rand(), true)),
-                'memberID' => $memberID,
-                'id' => $this->enc->encrypt($memberID)
-            ]
-        );
-    }
     /*  
     public function recallUser(): void
     {
@@ -114,7 +101,6 @@ class MemberController
         }
     }
    
-
     public function saveBookmark(string $article, string $page): void
     {
         //Frist bookmark
@@ -158,10 +144,6 @@ class MemberController
         return new Response('/member'.'/'.$this->username,'success.Záložka '.$bookmarkID.' smazána');
     }
 
-
-   
-    
-
     public function setPermission(string $permission, string $id): Response
     {
         $this->permission = $permission;
@@ -175,7 +157,6 @@ class MemberController
         return new Response('usertable');
     }
     
-
     public function deleteUser(string $id): Response
     {
         $this->db->query
@@ -185,8 +166,6 @@ class MemberController
 
         return new Response('usertable');
     }
-
-    
 
     private function getBookmarkLinks(): array
     {
@@ -208,6 +187,5 @@ class MemberController
         
         return [];
     }
-
-    */
+*/
 }

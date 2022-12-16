@@ -3,6 +3,7 @@
 namespace Mlkali\Sa\Database\Repository;
 
 use Mlkali\Sa\Database\DB;
+use Mlkali\Sa\Support\Encryption;
 use Mlkali\Sa\Support\Mailer;
 
 
@@ -10,10 +11,10 @@ class MemberRepository{
 
     public function __construct(
         private DB $db,
-        private Mailer $mailer
+        private Mailer $mailer,
+        private Encryption $enc
     )
-    {
-    }
+    {}
     
     /**
      * This function gets data from specific member not all members data
@@ -93,28 +94,54 @@ class MemberRepository{
         $db->query->update('members')->set(['active' => 'yes'])->where('member_id', $memberID)->execute();
     }
 
-    public function sendResetToken(array $data): void
+    public function sendResetToken($request): void
     {
+        $memberID = $this->getMemberInfo('email', $request->email, 'member_id');
+        $token = md5(uniqid(rand(), true));
+
         $db = new DB();
         $db->query
             ->update('members')
-            ->set(['reset_token' => $data['token']])
-            ->where('member_id', $data['memberID'])
+            ->set(['reset_token' => $token])
+            ->where('member_id', $memberID)
         ->execute();
 
-        $info = ['subject '=> 'Reset hesla','to'=> $data['email']];
+        $info = ['subject '=> 'Reset hesla','to'=> $request->email];
         $body = str_replace(
             ['YourUsername', 'TOKEN', 'URL', 'ACHASH'], 
-            [$data['email'], $data['token'], $_SERVER['SERVER_NAME'], $data['id']], 
+            [$request->email, $token, $_SERVER['SERVER_NAME'], $this->enc->encrypt($memberID)], 
             file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/public/template/reset.php')
         );
 
         $this->mailer->sender($body, $info);
     }
+
+    public function setNewPassword($request): void
+    {
+        $db = new DB();
+
+        $db->query
+            ->update('members')
+            ->set(['password' => password_hash($request->password, PASSWORD_BCRYPT)])
+            ->where('email', $request->email)
+        ->execute();
+    }
+
+    public function sendForgottenUser(string $email): void
+    {   
+        $username = $this->getMemberInfo('email', $email, 'username');
     
+        $body = str_replace(
+            ['YourUsername', 'URL'], 
+            [$username, $_SERVER['SERVER_NAME']], 
+            file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/public/template/username.php')
+        );
+    
+        $info = ['subject' => 'Zapomenutné Username', 'to' => $email];
+    
+        $this->mailer->sender($body, $info);
+    }
 /*
-//STUB - This whole section works but in current "scope" of project dont make sence
-    
     public function updateMember(string $memberID, array $set)
     {
         $this->query
@@ -132,11 +159,5 @@ class MemberRepository{
             ->where('member', $memberID)
             ->execute();
     }
-   
-
-   
-//STUB - Should be changed in next update hopefully I jusr need to see if Register works as need
-//NOTE - Before I will make more changes [ I dont want "rollback" to old code anymore ]
-//REVIEW -  All commented section will be deleted soon
 */
 }

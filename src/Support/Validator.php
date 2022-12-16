@@ -84,7 +84,6 @@ class Validator{
         }
         return null;
     }
-    /*   
 
     public function validatePassword(Request $request): ?string
     {
@@ -93,6 +92,9 @@ class Validator{
         if(isset($recaptcha)){
             return $recaptcha;
         }
+        if(!$this->validToken($request->token)){
+            return 'danger.Csfr validation failed';
+        }
         if(mb_strlen($request->password) < 6){
             return 'danger.Heslo musí obsahovat nejméně 6 znaků';
         }
@@ -100,17 +102,12 @@ class Validator{
             return 'danger.Hesla se musí schodovat';
         }
         //lowercase,uppercase,special symbol,number
-        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$%^&]).*$/', $request->password)) {
+        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$%^&*]).*$/', $request->password)) {
             return 'danger.Heslo musí obasahovat nejméně jedno malé a velké písmeno a jeden specialní znak(!@$%^&)';
         }
         return null;
     }
-    
-    //TODO 
-    public function validateForgottenUser(Request $request){
-        return null;
-    }
-    
+    /*   
     public function validateAvatar($filePath,$fileType,$fileSize): ?string
     {
         if(!is_uploaded_file($filePath)){
@@ -133,7 +130,7 @@ class Validator{
         }
         return null;
     }
-*/
+    */
     private function validateCaptcha(?string $response): ?string
     {
         $ch = curl_init();
