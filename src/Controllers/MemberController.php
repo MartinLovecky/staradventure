@@ -88,6 +88,35 @@ class MemberController
         return new Response('/#');
     }
 
+    public function update(Request $request, string $avatar): void
+    {
+        $this->member->username = (property_exists($request, 'username')) ? $request->username : $this->member->username;
+        $this->member->email = (property_exists($request, 'email')) ? $request->email : $this->member->email;
+        $this->member->name = (property_exists($request, 'name')) ? $request->name : $this->member->name;
+        $this->member->surname = (property_exists($request, 'surname')) ? $request->surname : $this->member->surname;
+        $this->member->age = (property_exists($request, 'age')) ? $request->age : $this->member->age;
+        $this->member->location = (property_exists($request, 'location')) ? $request->location : $this->member->location;
+        $this->member->visible = (property_exists($request, 'visible')) ? true : $this->member->visible;
+        $this->member->avatar = $avatar;
+
+        $this->updateMember($this->member);
+        $this->updateInfoMember($this->member);
+    }
+
+    public function permission(string $permission, string $memberID): Response
+    {
+        $this->member->setPermission($permission, $memberID);
+
+        return new Response('/usertable');
+    }
+
+    public function delete(string $memberID): Response
+    {
+        $this->member->deleteMember($memberID);
+
+        return new Response('/usertable');
+    }
+
     /*  
     public function recallUser(): void
     {
@@ -142,29 +171,6 @@ class MemberController
         $this->setMemberData($memberID);
 
         return new Response('/member'.'/'.$this->username,'success.Záložka '.$bookmarkID.' smazána');
-    }
-
-    public function setPermission(string $permission, string $id): Response
-    {
-        $this->permission = $permission;
-
-        $this->db->query
-            ->update('members')
-            ->set(['permission' => $permission])
-            ->where('id', $id)
-            ->execute();
-        
-        return new Response('usertable');
-    }
-    
-    public function deleteUser(string $id): Response
-    {
-        $this->db->query
-            ->deleteFrom('members')
-            ->where('id', $id)
-            ->execute();
-
-        return new Response('usertable');
     }
 
     private function getBookmarkLinks(): array

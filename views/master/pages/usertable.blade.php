@@ -39,10 +39,10 @@
               <span>{{$data['permission']}}</span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a href="/usertable?id={{$data['id']}}&action={{$enc->encrypt('visitor')}}" class="dropdown-item">visitor</a>
-              <a href="/usertable?id={{$data['id']}}&action={{$enc->encrypt('user')}}" class="dropdown-item">user</a>
-              <a href="/usertable?id={{$data['id']}}&action={{$enc->encrypt('rewriter')}}" class="dropdown-item">rewriter</a>
-              <a href="/usertable?id={{$data['id']}}&action={{$enc->encrypt('admin')}}" class="dropdown-item">admin</a>
+              <a href="/usertable?id={{$enc->encrypt($data['member_id'])}}&action={{$enc->encrypt('visitor')}}" class="dropdown-item">visitor</a>
+              <a href="/usertable?id={{$enc->encrypt($data['member_id'])}}&action={{$enc->encrypt('user')}}" class="dropdown-item">user</a>
+              <a href="/usertable?id={{$enc->encrypt($data['member_id'])}}&action={{$enc->encrypt('rewriter')}}" class="dropdown-item">rewriter</a>
+              <a href="/usertable?id={{$enc->encrypt($data['member_id'])}}&action={{$enc->encrypt('admin')}}" class="dropdown-item">admin</a>
             </ul>
           </div>
         </td>
@@ -55,19 +55,19 @@
   if(isset($selector->secondQueryValue)){
     switch ($enc->decrypt($selector->secondQueryValue)) {
       case 'visitor':
-        $member->setPermission('visitor', $selector->fristQueryValue);
+        $memberController->permission('visitor', $enc->decrypt($selector->fristQueryValue));
       break;
       case 'user':
-        $member->setPermission('user', $selector->fristQueryValue);
+        $memberController->permission('user', $enc->decrypt($selector->fristQueryValue));
       break;
       case 'rewriter':
-        $member->setPermission('rewriter', $selector->fristQueryValue);
+        $memberController->permission('rewriter', $enc->decrypt($selector->fristQueryValue));
       break;
       case 'admin':
-        $member->setPermission('admin', $selector->fristQueryValue);
+        $memberController->permission('admin', $enc->decrypt($selector->fristQueryValue));
       break;
       case 'delete':
-        $member->deleteUser($selector->fristQueryValue);
+        $memberController->delete($enc->decrypt($selector->fristQueryValue));
       break;
     }
   }

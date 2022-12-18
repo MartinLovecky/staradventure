@@ -107,9 +107,17 @@ class Validator{
         }
         return null;
     }
-    /*   
-    public function validateAvatar($filePath,$fileType,$fileSize): ?string
+    
+    public function validateAvatar($filePath, $fileType ,$fileSize, $request): ?string
     {
+        $recaptcha = $this->validateCaptcha($request->grecaptcharesponse);
+
+        if(isset($recaptcha)){
+            return $recaptcha;
+        }
+        if(!$this->validToken($request->token)){
+            return 'danger.Csfr validation failed';
+        }
         if(!is_uploaded_file($filePath)){
             return 'danger.Avatar musí být nahrán přes formulář';
         }
@@ -130,7 +138,7 @@ class Validator{
         }
         return null;
     }
-    */
+
     private function validateCaptcha(?string $response): ?string
     {
         $ch = curl_init();

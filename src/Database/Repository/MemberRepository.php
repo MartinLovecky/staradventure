@@ -3,8 +3,9 @@
 namespace Mlkali\Sa\Database\Repository;
 
 use Mlkali\Sa\Database\DB;
-use Mlkali\Sa\Support\Encryption;
 use Mlkali\Sa\Support\Mailer;
+use Mlkali\Sa\Support\Encryption;
+use Mlkali\Sa\Database\Entity\Member;
 
 
 class MemberRepository{
@@ -59,17 +60,19 @@ class MemberRepository{
         $db->query->insertInto('info')->values(['member' => $memberID])->execute();
     }
 
-    public function insertIntoMember($member): void
+    public function insertIntoMember(Member $member): void
     {
+        $db = new DB();
         $values = [
             'username' => $member->username,
             'email' => $member->email,
             'password' => $member->password,
             'active' => $member->activeMember,
             'permission' => $member->permission,
+            'location' => $member->location,
+            'age' => $member->age,
             'member_id' => $member->memberID
         ];
-        $db = new DB();
         $db->query->insertInto('members')->values($values)->execute();
     }
 
@@ -96,10 +99,10 @@ class MemberRepository{
 
     public function sendResetToken($request): void
     {
+        $db = new DB();
         $memberID = $this->getMemberInfo('email', $request->email, 'member_id');
         $token = md5(uniqid(rand(), true));
 
-        $db = new DB();
         $db->query
             ->update('members')
             ->set(['reset_token' => $token])
@@ -141,23 +144,61 @@ class MemberRepository{
     
         $this->mailer->sender($body, $info);
     }
-/*
-    public function updateMember(string $memberID, array $set)
+
+    public function setPermission(string $permission, string $memberID): void
     {
-        $this->query
+        $db = new DB();
+
+        $db->query
             ->update('members')
-            ->set($set)
+            ->set(['permission' => $permission])
             ->where('member_id', $memberID)
-            ->execute();
+        ->execute();
     }
 
-    public function updateInfoMember(string $memberID, array $set)
+    public function deleteMember(string $memberID): void
     {
-        $this->query
+        $db = new DB();
+
+        $db->query
+            ->deleteFrom('members')
+            ->where('member_id', $memberID)
+        ->execute();
+    }
+
+    public function updateMember(Member $member): void
+    {
+        $db = new DB();
+
+        $set = [
+            'username' => $member->username,
+            'email' => $member->email,
+            'avatar' => $member->avatar
+        ];
+
+        $db->query
+            ->update('members')
+            ->set($set)
+            ->where('member_id', $member->memberID)
+        ->execute();
+    }
+
+    public function updateInfoMember(Member $member): void
+    {
+        $db = new DB();
+
+        $set = [
+            'member_name' => $member->name,
+            'member_surname' => $member->surname,
+            'visible' => $member->visible,
+            'location' => $member->location,
+            'age' => $member->age
+        ];
+
+        $db->query
             ->update('info')
             ->set($set)
-            ->where('member', $memberID)
-            ->execute();
+            ->where('member', $member->memberID)
+        ->execute();
     }
-*/
 }

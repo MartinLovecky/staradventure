@@ -104,15 +104,15 @@ class RequestController{
     
         return new Response('/login?message=','succes.Uživatelské jméno bylo zaslíno na váš email','#login');
     }
-    /*
-    public function updateMember(): Response
+    
+    public function updateMember(Request $request): Response
     {
         $filePath = $_FILES['avatar']['tmp_name'];
         $fileType = mime_content_type($filePath);
         $fileName = basename($filePath);
         $fileSize = filesize($filePath);
-        
-        $validate = $this->validator->validateAvatar($filePath,$fileType,$fileSize);
+    
+        $validate = $this->validator->validateAvatar($filePath, $fileType, $fileSize, $request);
 
         if(isset($validate)){
             return new Response('/reset?message=',$validate,'#updatemember');
@@ -125,6 +125,7 @@ class RequestController{
         ];
 
         $extension = $allowedTypes[$fileType];
+        $uploadName = $fileName.'.'.$extension;
         $targetDir = $_SERVER['DOCUMENT_ROOT'] . '/public/img/avatars/';
 
         $newFilePath = $targetDir.$fileName.'.'.$extension;
@@ -132,8 +133,8 @@ class RequestController{
         move_uploaded_file($filePath, $newFilePath);
         unlink($filePath);
 
+        $this->memberController->update($request, $uploadName);
 
-        return new Response('/member'.$this->request->username.'?message=','succes.Informace upraveny');
+        return new Response('/member'.$request->username.'?message=','succes.Informace upraveny');
     }
-    */
 }

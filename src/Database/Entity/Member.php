@@ -17,6 +17,8 @@ class Member extends MemberRepository
         private string $permission = 'visit',
         private ?string $memberName = null,
         private ?string $memberSurname = null,
+        private ?string $location = null,
+        private $age = null, //not sure about type
         private string $avatar = 'empty_profile.png',
         private ?string $resetToken = null,
         private bool $resetComplete = false,
