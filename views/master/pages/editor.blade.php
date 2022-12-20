@@ -40,20 +40,22 @@
                     <span class="text-white"><span style="color:#009933;">#009933</span> (použít na důležité)
                  @endif
                 {!!
-                    $form->options(['target'=>'requestHandler','method'=>'POST','class'=>'text-center'])
-                        ->vars(['articleController'=>$articleController])
+                    $form->options(['target'=>'requestHandler'])
+                        ->vars(['articleController'=>$articleController, 'request' => $request])
                         ->run()
                 !!}
                 @if (!isset($selector->action) || !isset($selector->page))
                     <p class="text-warning">*Zvolte <span class="text-info">Action:</span> a poté <span class="text-info">Příběh:</span></p>
                 @endif
+                @isset($selector->article)
                 <div id="toolbar-container" style="margin-top:2vh;"></div>
-                @foreach ($article->getArticleBody() as $body)
+                @foreach (json_decode($article->getArticleBody()) as $body)
                     <label class="text-white">Nadpis:</label><input type="text" name="chapter"  placeholder="Může zůstat prázdný">
                     <textarea name="editor1">
                     {{  $body }}
                     </textarea>
                 @endforeach
+                @endisset
                 <script>
                     CKEDITOR.replace('editor1');
                 </script>

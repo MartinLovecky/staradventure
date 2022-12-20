@@ -2,10 +2,7 @@
 
 namespace Mlkali\Sa\Database\Entity;
 
-use Mlkali\Sa\Database\Repository\MemberRepository;
-
-class Member extends MemberRepository
-{
+class Member{
 
     public function __construct(
         private bool $logged = false,

@@ -5,7 +5,7 @@ namespace Mlkali\Sa\Database;
 use PDO;
 use Envms\FluentPDO\Query;
 
-class DB extends Query{
+class DB{
 
     public $pdo;
     public $query;
@@ -19,7 +19,5 @@ class DB extends Query{
         
         $this->query = new Query($this->pdo);
     }
-    
-
 }
 

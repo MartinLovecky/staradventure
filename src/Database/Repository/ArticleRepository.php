@@ -20,9 +20,9 @@ class ArticleRepository{
     public function getCurrentArticle()
     {
         $selector = new Selector();
-        $db = new DB;   
+        $db = new DB();   
        
-        if(in_array(strtolower($selector->article), $this->allowedArticles)){
+        if(in_array(mb_strtolower($selector->article), $this->allowedArticles)){
 
             $articleId = $selector->article.'|'.$selector->page;
 

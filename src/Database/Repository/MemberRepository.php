@@ -7,7 +7,6 @@ use Mlkali\Sa\Support\Mailer;
 use Mlkali\Sa\Support\Encryption;
 use Mlkali\Sa\Database\Entity\Member;
 
-
 class MemberRepository{
 
     public function __construct(
@@ -30,10 +29,10 @@ class MemberRepository{
      */
     public function getMemberInfo(string $column, string $value = null, ?string $item = null)
     {
-        $db = new DB();
-        $stmt = $db->query->from('members')
-                ->leftJoin('info ON members.member_id = info.member')
-                ->select('info.*')
+        $stmt = $this->db->query
+                    ->from('members')
+                    ->leftJoin('info ON members.member_id = info.member')
+                    ->select('info.*')
                 ->where($column, $value);
 
         $result =  $stmt->fetch($item);
@@ -46,8 +45,7 @@ class MemberRepository{
 
     public function getAllMembers(): array
     {
-        $db = new DB();
-        $stmt = $db->query->from('members');
+        $stmt = $this->db->query->from('members');
         
         $result = $stmt->fetchAll();
 
@@ -56,13 +54,11 @@ class MemberRepository{
 
     public function insertIntoInfo(string $memberID): void
     {   
-        $db = new DB();
-        $db->query->insertInto('info')->values(['member' => $memberID])->execute();
+        $this->db->query->insertInto('info')->values(['member' => $memberID])->execute();
     }
 
     public function insertIntoMember(Member $member): void
     {
-        $db = new DB();
         $values = [
             'username' => $member->username,
             'email' => $member->email,
@@ -73,12 +69,12 @@ class MemberRepository{
             'age' => $member->age,
             'member_id' => $member->memberID
         ];
-        $db->query->insertInto('members')->values($values)->execute();
+        
+        $this->db->query->insertInto('members')->values($values)->execute();
     }
 
     public function sendActivationEmail(array $data): void
     {
-        //not ussed for activation but I dont want to rebuild $selector
         $ID = rand();
 
         $info = ['subject' => 'Potvrzení registrace', 'to' => $data['recipient']];
@@ -93,17 +89,19 @@ class MemberRepository{
 
     public function activateMember(string $memberID): void
     {   
-        $db = new DB();
-        $db->query->update('members')->set(['active' => 'yes'])->where('member_id', $memberID)->execute();
+        $this->db->query
+            ->update('members')
+            ->set(['active' => 'yes'])
+            ->where('member_id', $memberID)
+        ->execute();
     }
 
     public function sendResetToken($request): void
     {
-        $db = new DB();
         $memberID = $this->getMemberInfo('email', $request->email, 'member_id');
         $token = md5(uniqid(rand(), true));
 
-        $db->query
+        $this->db->query
             ->update('members')
             ->set(['reset_token' => $token])
             ->where('member_id', $memberID)
@@ -121,9 +119,7 @@ class MemberRepository{
 
     public function setNewPassword($request): void
     {
-        $db = new DB();
-
-        $db->query
+        $this->db->query
             ->update('members')
             ->set(['password' => password_hash($request->password, PASSWORD_BCRYPT)])
             ->where('email', $request->email)
@@ -147,9 +143,7 @@ class MemberRepository{
 
     public function setPermission(string $permission, string $memberID): void
     {
-        $db = new DB();
-
-        $db->query
+        $this->db->query
             ->update('members')
             ->set(['permission' => $permission])
             ->where('member_id', $memberID)
@@ -158,9 +152,7 @@ class MemberRepository{
 
     public function deleteMember(string $memberID): void
     {
-        $db = new DB();
-
-        $db->query
+        $this->db->query
             ->deleteFrom('members')
             ->where('member_id', $memberID)
         ->execute();
@@ -168,15 +160,13 @@ class MemberRepository{
 
     public function updateMember(Member $member): void
     {
-        $db = new DB();
-
         $set = [
             'username' => $member->username,
             'email' => $member->email,
             'avatar' => $member->avatar
         ];
 
-        $db->query
+        $this->db->query
             ->update('members')
             ->set($set)
             ->where('member_id', $member->memberID)
@@ -185,8 +175,6 @@ class MemberRepository{
 
     public function updateInfoMember(Member $member): void
     {
-        $db = new DB();
-
         $set = [
             'member_name' => $member->name,
             'member_surname' => $member->surname,
@@ -195,7 +183,7 @@ class MemberRepository{
             'age' => $member->age
         ];
 
-        $db->query
+        $this->db->query
             ->update('info')
             ->set($set)
             ->where('member', $member->memberID)

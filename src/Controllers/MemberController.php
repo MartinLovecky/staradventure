@@ -7,6 +7,7 @@ use Mlkali\Sa\Http\Response;
 use Mlkali\Sa\Support\Selector;
 use Mlkali\Sa\Support\Encryption;
 use Mlkali\Sa\Database\Entity\Member;
+use Mlkali\Sa\Database\Repository\MemberRepository;
 
 class MemberController
 {
@@ -14,7 +15,8 @@ class MemberController
     public function __construct(
         private Selector $selector,
         private Encryption $enc,
-        private Member $member
+        private Member $member,
+        private MemberRepository $memRepo
     ) 
     {
     }
@@ -37,10 +39,10 @@ class MemberController
         $member->avatar = 'empty_profile.png';
         $member->memberID = $request->username . '|' . $request->email;
         // Insert the member into the database
-        $member->insertIntoInfo($member->memberID);
-        $member->insertIntoMember($member);
+        $this->memRepo->insertIntoInfo($member->memberID);
+        $this->memRepo->insertIntoMember($member);
         // Send an activation email to the user
-        $member->sendActivationEmail(
+        $this->memRepo->sendActivationEmail(
             [
                 'username' => $member->username,
                 'encryptedID' => $this->enc->encrypt($member->memberID),
@@ -55,12 +57,12 @@ class MemberController
         $memberID = $this->enc->decrypt($this->selector->secondQueryValue);
         $token = $this->selector->thirdQueryValue;
         
-        $memberDB = $member->getMemberInfo('member_id', $memberID, 'member_id');
-        $tokenDB = $member->getMemberInfo('member_id', $memberID, 'active');
+        $memberDB = $this->memRepo->getMemberInfo('member_id', $memberID, 'member_id');
+        $tokenDB = $this->memRepo->getMemberInfo('member_id', $memberID, 'active');
      
         if(strcmp($memberID, $memberDB) == 0 && strcmp($token, $tokenDB) == 0)
         {
-            $member->activateMember($memberID);
+            $this->memRepo->activateMember($memberID);
 
             return new Response('/login?message=', 'success.Aktivace úspšná můžete se přihlásit', '#login');
         }
@@ -70,7 +72,7 @@ class MemberController
 
     public function login(string $username): void
     {
-        $memberData = $this->member->getMemberInfo('username', $username);
+        $memberData = $this->memRepo->getMemberInfo('username', $username);
 
         foreach($memberData as $key => $value)
         {
@@ -99,20 +101,20 @@ class MemberController
         $this->member->visible = (property_exists($request, 'visible')) ? true : $this->member->visible;
         $this->member->avatar = $avatar;
 
-        $this->updateMember($this->member);
-        $this->updateInfoMember($this->member);
+        $this->memRepo->updateMember($this->member);
+        $this->memRepo->updateInfoMember($this->member);
     }
 
     public function permission(string $permission, string $memberID): Response
     {
-        $this->member->setPermission($permission, $memberID);
+        $this->memRepo->setPermission($permission, $memberID);
 
         return new Response('/usertable');
     }
 
     public function delete(string $memberID): Response
     {
-        $this->member->deleteMember($memberID);
+        $this->memRepo->deleteMember($memberID);
 
         return new Response('/usertable');
     }
