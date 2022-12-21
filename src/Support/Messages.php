@@ -2,19 +2,20 @@
 
 namespace Mlkali\Sa\Support;
 
+use Mlkali\Sa\Support\Enum;
 use Mlkali\Sa\Support\Selector;
 use Mlkali\Sa\Support\Encryption;
 
-class Messages{
-    
+class Messages extends Enum
+{
+
     public function __construct(
         private Selector $selector,
         private Encryption $enc,
         public ?string $style = null,
         public ?string $message = null,
         private array $messageBag = []
-    )
-    {  
+    ) {
     }
 
     public function getMessageBag(): array
@@ -29,7 +30,7 @@ class Messages{
 
         return $this;
     }
-    
+
     /**
      * check if messageBag has any messages
      *
@@ -37,7 +38,7 @@ class Messages{
      */
     public function hasAny(): bool
     {
-        if(!empty($this->messageBag)){
+        if (!empty($this->messageBag)) {
             return true;
         }
         return false;
@@ -48,11 +49,11 @@ class Messages{
      * encrypted, also dont use ?message if you dont provide encrypted message 
      *
      * @return void adds message to messageBag
-    */
-    public function getQueryMessage()
+     */
+    public function getQueryMessage(): void
     {
-        if(isset($this->selector->fristQueryValue) && $this->selector->queryAction === 'message'){
-            
+        if (isset($this->selector->fristQueryValue) && $this->selector->queryAction === 'message') {
+
             $this->setMessageBag($this->enc->decrypt($this->selector->fristQueryValue));
         }
     }
@@ -62,16 +63,15 @@ class Messages{
      *
      * @return void sets style and message
      */
-    private function getFristMessage()
+    private function getFristMessage(): void
     {
-        if($this->hasAny()){
+        if ($this->hasAny()) {
 
-            foreach($this->getMessageBag() as $key => $value)
-            {
+            foreach ($this->getMessageBag() as $key => $value) {
                 $exploded = explode('.', $value);
-					
-				$this->style = $exploded[0];
-				$this->message = $exploded[1];
+
+                $this->style = $exploded[0];
+                $this->message = $exploded[1];
             }
         }
     }

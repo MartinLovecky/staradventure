@@ -2,7 +2,8 @@
 
 namespace Mlkali\Sa\Database\Entity;
 
-class Member{
+class Member
+{
 
     public function __construct(
         private bool $logged = false,
@@ -22,15 +23,13 @@ class Member{
         private int $bookmarkCount = 0,
         private string $bookmarks = '{}',
         private ?string $memberID = 'visitor|visitor@gmail.com'
-    )
-    {
-        if(isset($_SESSION['member_id']))
-        {
+    ) {
+        if (isset($_SESSION['member_id'])) {
             $this->logged = true;
 
-            foreach($_SESSION as $key => $value){
+            foreach ($_SESSION as $key => $value) {
                 $this->{$key} = $value;
-            }   
+            }
         }
     }
 
@@ -43,8 +42,7 @@ class Member{
 
     public function __get(string $name)
     {
-        if(property_exists($this, $name))
-        {
+        if (property_exists($this, $name)) {
             return $this->$name;
         }
     }

@@ -7,15 +7,16 @@ use Mlkali\Sa\Support\Mailer;
 use Mlkali\Sa\Support\Encryption;
 use Mlkali\Sa\Database\Entity\Member;
 
-class MemberRepository{
+class MemberRepository
+{
 
     public function __construct(
         private DB $db,
         private Mailer $mailer,
         private Encryption $enc
-    )
-    {}
-    
+    ) {
+    }
+
     /**
      * This function gets data from specific member not all members data
      *
@@ -30,14 +31,14 @@ class MemberRepository{
     public function getMemberInfo(string $column, string $value = null, ?string $item = null)
     {
         $stmt = $this->db->query
-                    ->from('members')
-                    ->leftJoin('info ON members.member_id = info.member')
-                    ->select('info.*')
-                ->where($column, $value);
+            ->from('members')
+            ->leftJoin('info ON members.member_id = info.member')
+            ->select('info.*')
+            ->where($column, $value);
 
         $result =  $stmt->fetch($item);
 
-        if(!$result){
+        if (!$result) {
             return 'visitor|vistor@gmail.com';
         }
         return $result;
@@ -46,14 +47,14 @@ class MemberRepository{
     public function getAllMembers(): array
     {
         $stmt = $this->db->query->from('members');
-        
+
         $result = $stmt->fetchAll();
 
         return $result;
     }
 
     public function insertIntoInfo(string $memberID): void
-    {   
+    {
         $this->db->query->insertInto('info')->values(['member' => $memberID])->execute();
     }
 
@@ -69,7 +70,7 @@ class MemberRepository{
             'age' => $member->age,
             'member_id' => $member->memberID
         ];
-        
+
         $this->db->query->insertInto('members')->values($values)->execute();
     }
 
@@ -88,12 +89,12 @@ class MemberRepository{
     }
 
     public function activateMember(string $memberID): void
-    {   
+    {
         $this->db->query
             ->update('members')
             ->set(['active' => 'yes'])
             ->where('member_id', $memberID)
-        ->execute();
+            ->execute();
     }
 
     public function sendResetToken($request): void
@@ -105,12 +106,12 @@ class MemberRepository{
             ->update('members')
             ->set(['reset_token' => $token])
             ->where('member_id', $memberID)
-        ->execute();
+            ->execute();
 
-        $info = ['subject '=> 'Reset hesla','to'=> $request->email];
+        $info = ['subject ' => 'Reset hesla', 'to' => $request->email];
         $body = str_replace(
-            ['YourUsername', 'TOKEN', 'URL', 'ACHASH'], 
-            [$request->email, $token, $_SERVER['SERVER_NAME'], $this->enc->encrypt($memberID)], 
+            ['YourUsername', 'TOKEN', 'URL', 'ACHASH'],
+            [$request->email, $token, $_SERVER['SERVER_NAME'], $this->enc->encrypt($memberID)],
             file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/public/template/reset.php')
         );
 
@@ -123,21 +124,21 @@ class MemberRepository{
             ->update('members')
             ->set(['password' => password_hash($request->password, PASSWORD_BCRYPT)])
             ->where('email', $request->email)
-        ->execute();
+            ->execute();
     }
 
     public function sendForgottenUser(string $email): void
-    {   
+    {
         $username = $this->getMemberInfo('email', $email, 'username');
-    
+
         $body = str_replace(
-            ['YourUsername', 'URL'], 
-            [$username, $_SERVER['SERVER_NAME']], 
+            ['YourUsername', 'URL'],
+            [$username, $_SERVER['SERVER_NAME']],
             file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/public/template/username.php')
         );
-    
+
         $info = ['subject' => 'Zapomenutné Username', 'to' => $email];
-    
+
         $this->mailer->sender($body, $info);
     }
 
@@ -147,7 +148,7 @@ class MemberRepository{
             ->update('members')
             ->set(['permission' => $permission])
             ->where('member_id', $memberID)
-        ->execute();
+            ->execute();
     }
 
     public function deleteMember(string $memberID): void
@@ -155,7 +156,7 @@ class MemberRepository{
         $this->db->query
             ->deleteFrom('members')
             ->where('member_id', $memberID)
-        ->execute();
+            ->execute();
     }
 
     public function updateMember(Member $member): void
@@ -170,7 +171,7 @@ class MemberRepository{
             ->update('members')
             ->set($set)
             ->where('member_id', $member->memberID)
-        ->execute();
+            ->execute();
     }
 
     public function updateInfoMember(Member $member): void
@@ -187,6 +188,6 @@ class MemberRepository{
             ->update('info')
             ->set($set)
             ->where('member', $member->memberID)
-        ->execute();
+            ->execute();
     }
 }

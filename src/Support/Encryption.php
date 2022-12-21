@@ -4,13 +4,14 @@ namespace Mlkali\Sa\Support;
 
 use Exception;
 
-class Encryption{
+class Encryption
+{
 
     public function encrypt(string $message, $aad = ''): string
     {
         $nonce = random_bytes(SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES);
         $ciphertext = sodium_crypto_aead_xchacha20poly1305_ietf_encrypt($message, $aad, $nonce, base64_decode($_ENV['EKEY']));
-        
+
         return bin2hex($nonce . $ciphertext);
     }
     //NOTE - insted of using exception use Response class to display message

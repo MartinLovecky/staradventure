@@ -5,69 +5,73 @@ namespace Mlkali\Sa\Controllers;
 use Mlkali\Sa\Http\Request;
 use Mlkali\Sa\Http\Response;
 use Mlkali\Sa\Database\Entity\Article;
+use Mlkali\Sa\Database\Repository\ArticleRepository;
+use Mlkali\Sa\Support\Messages;
 
-class ArticleController{
-   
+class ArticleController
+{
+
     public function __construct(
-        private Request $request, 
-        private Article $article
-    )
-    {
+        private Article $article,
+        private ArticleRepository $artRepo
+    ) {
     }
 
-    public function update(): Response
+    public function update(Request $request): Response
     {
-        $articleId = $this->request->articleName.$this->request->articlePage;
+        $articleID = $request->articleName .'|'. $request->articlePage;
 
-        if($this->article->exist($articleId)){
+        if ($this->artRepo->exist($articleID) && $this->artRepo->allowedArticle()) {
 
-            $chapter = !empty($this->request->chapter) ? $this->request->chapter : null;
-            $article_body = isset($this->request->editor1) ? json_encode(['article_body' =>$this->request->editor1]) : '{"article_body":"error"}'; 
-            
+            $chapter = !empty($request->chapter) ? $request->chapter : null;
+            $article_body = isset($request->editor1) ? json_encode(['article_body' => $request->editor1]) : '{"article_body":"error"}';
+
             $this->article
-                ->setArticleId($articleId)
+                ->setArticleID($articleID)
                 ->setArticleChapter($chapter)
-                ->setArticleBody($article_body)
-                ->update();
+                ->setArticleBody($article_body);
 
-            return new Response('/update'.'/'.$this->request->articleName.'/'.$this->request->articlePage.'?message=','success.Příběh '.$articleId.' upraven');
+            $this->artRepo->update($this->article);
+
+            return new Response('/update' . '/' . $request->articleName . '/' . $request->articlePage . '?message=', sprintf(Messages::ARTICLE_UPDATED, $articleID));
         }
 
-        return new Response('/update?message=','warning.Stránka '.$articleId.' neexistuje použite <a href="/create/'.$this->request->articleName.'/'.$this->request->articlePage.'">create</a>');
+        return new Response('/update?message=', sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $articleID, $request->articleName, $request->articlePage));
     }
 
-    public function create(): Response
+    public function create(Request $request): Response
     {
-        $articleId = $this->request->articleName.$this->request->articlePage;
-
-        if($this->article->exist($articleId) === false){
-
-            $chapter = !empty($this->request->chapter) ? $this->request->chapter : null;
-            $article_body = isset($this->request->editor1) ? json_encode(['article_body' =>$this->request->editor1]) : '{"article_body":"empty"}'; 
-
-            $this->article
-                ->setArticleId($articleId)
-                ->setArticleChapter($chapter)
-                ->setArticleBody($article_body)
-                ->add();
+        $articleID = $request->articleName .'|'. $request->articlePage;
         
-            return new Response('/update?message=','success.Stránka '.$articleId.' vytvořena');
+        if (!$this->artRepo->exist($articleID) && $this->artRepo->allowedArticle()) {
+
+            $chapter = !empty($request->chapter) ? $request->chapter : null;
+            $article_body = isset($request->editor1) ? json_encode(['article_body' => $request->editor1]) : '{"article_body":"empty"}';
+
+            $this->article
+                ->setArticleID($articleID)
+                ->setArticleChapter($chapter)
+                ->setArticleBody($article_body);
+            
+            $this->artRepo->add($this->article);
+
+            return new Response('/update?message=', sprintf(Messages::ARTICLE_CREATED, $articleID));
         }
 
-        return new Response('/update?message=','warning.Stránka '.$articleId.' již existuje použite <a href="/update/'.$this->request->articleName.'/'.$this->request->articlePage.'">update</a>');
+        return new Response('/update?message=', sprintf(Messages::ARTICLE_DOES_ALLREADY_EXIST, $articleID, $request->articleName, $request->articlePage));
     }
 
-    public function delete(): Response
+    public function delete(Request $request): Response
     {
-        $articleId = $this->request->articleName.$this->request->articlePage;
+        $articleID = $request->articleName .'|'. $request->articlePage;
 
-        if($this->article->exist($articleId)){
+        if ($this->artRepo->exist($articleID) && $this->artRepo->allowedArticle()) {
 
-            $this->article->remove($articleId);
-    
-            return new Response('/update?message=','success.Stránka '.$articleId.' smazána');
+            $this->artRepo->remove($articleID);
+
+            return new Response('/update?message=', sprintf(Messages::ARTICLE_DELETED, $articleID));
         }
 
-        return new Response('/update?message=','warning.Stránka '.$articleId.' neexistuje použite <a href="/create/'.$this->request->articleName.'/'.$this->request->articlePage.'">create</a>');
+        return new Response('/update?message=', sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $articleID, $request->articleName, $request->articlePage));
     }
 }

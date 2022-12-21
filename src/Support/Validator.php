@@ -2,158 +2,132 @@
 
 namespace Mlkali\Sa\Support;
 
-use Mlkali\Sa\Database\Repository\MemberRepository;
 use Mlkali\Sa\Http\Request;
+use Mlkali\Sa\Support\Messages;
 use Mlkali\Sa\Support\Encryption;
+use Mlkali\Sa\Database\Repository\MemberRepository;
 
 
-class Validator{
+class Validator
+{
 
     public function __construct(
         private Encryption $enc,
         private MemberRepository $memRepo
-    ) 
-    {
+    ) {
     }
 
     public function validateRegister(Request $request): ?string
     {
-        if ($request->vops !== 'on' && $request->terms !== 'on') 
-        {
-            return 'danger.checkbox failed';
+        if ($request->vops !== 'on' && $request->terms !== 'on') {
+            return Messages::VALIDATION_REG_CHECKBOX_FAIL;
         }
-        if (!is_null($this->validateCaptcha($request->grecaptcharesponse)))
-        {
+        if (!is_null($this->validateCaptcha($request->grecaptcharesponse))) {
             return $this->validateCaptcha($request->grecaptcharesponse);
         }
-        if (!$this->validToken($request->token)) 
-        {
-            return 'danger.Csfr validation failed';
+        if (!$this->validToken($request->token)) {
+            return Messages::VALIDATION_CRSF_ERROR;
         }
-        if (!$this->memRepo->getMemberInfo('member_id', $request->username.'|'.$request->email)) 
-        {
-            return 'danger.Member ' . $request->username . ' alredy exists';
+        if (!$this->memRepo->getMemberInfo('member_id', $request->username . '|' . $request->email)) {
+            return sprintf(Messages::VALIDATION_USER_ALREADY_EXISTS, $request->username);
         }
-        if (mb_strlen($request->password) < 6) 
-        {
-            return 'danger.Heslo musí obsahovat nejméně 6 znaků';
+        if (mb_strlen($request->password) < 6) {
+            return Messages::VALIDATION_LEN_PASSWORD;
         }
-        if ($request->password != $request->password_again) 
-        {
-            return 'danger.Hesla se musí schodovat';
+        if ($request->password != $request->password_again) {
+            return Messages::VALIDATION_PASSWORD_AGAIN;
         }
         //lowercase,uppercase,special symbol,number
-        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$%^&*]).*$/', $request->password)) 
-        {
-            return 'danger.Heslo musí obasahovat nejméně jedno malé a velké písmeno a jeden specialní znak(!@$%^&)';
+        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$%^&*]).*$/', $request->password)) {
+            return Messages::VALIDATION_PASSWORD_REGEX;
         }
         // email validation structure
-        if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $request->email)) 
-        {
-            return 'danger.Nesprávný formát emailu (' . $request->email . ')';
+        if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $request->email)) {
+            return sprintf(Messages::VALIDATION_EMAIL_FORMAT, $request->email);
         }
-        if (mb_strlen($request->username) < 4) 
-        {
-            return 'danger.Username (' . $request->username . ') musí mít nejméně 4 znaky';
+        if (mb_strlen($request->username) < 4) {
+            return sprintf(Messages::VALIDATION_LEN_USER, $request->username);
         }
         return null;
     }
 
     public function validateLogin(Request $request): ?string
     {
-        if(!is_null($this->validateCaptcha($request->grecaptcharesponse)))
-        {
+        if (!is_null($this->validateCaptcha($request->grecaptcharesponse))) {
             return $this->validateCaptcha($request->grecaptcharesponse);
         }
-        if(!$this->validToken($request->token))
-        {
-            return 'danger.Csfr validation failed';
+        if (!$this->validToken($request->token)) {
+            return Messages::VALIDATION_CRSF_ERROR;
         }
-        if(!$this->memRepo->getMemberInfo('username', $request->username, 'username'))
-        {
-            return 'danger.Uživatel '.$request->username.' neexistuje';
+        if (!$this->memRepo->getMemberInfo('username', $request->username, 'username')) {
+            return sprintf(Messages::VALIDATION_USER_NOT_EXIST, $request->username);
         }
         return null;
     }
 
     public function validateResetSend(Request $request): ?string
     {
-        if(!is_null($this->validateCaptcha($request->grecaptcharesponse)))
-        {
+        if (!is_null($this->validateCaptcha($request->grecaptcharesponse))) {
             return $this->validateCaptcha($request->grecaptcharesponse);
         }
-        if(!$this->validToken($request->token))
-        {
-            return 'danger.Csfr validation failed';
+        if (!$this->validToken($request->token)) {
+            return Messages::VALIDATION_CRSF_ERROR;
         }
-        if(!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $request->email))
-        {
-            return 'danger.Nesprávný formát emailu';
+        if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $request->email)) {
+            return sprintf(Messages::VALIDATION_EMAIL_FORMAT, $request->email);
         }
-        if(!$this->memRepo->getMemberInfo('email', $request->email, 'email'))
-        {
-            return 'danger.Email neexistuje v database';
+        if (!$this->memRepo->getMemberInfo('email', $request->email, 'email')) {
+            return sprintf(Messages::VALIDATION_USER_NOT_EXIST, $request->email);
         }
         return null;
     }
 
     public function validatePassword(Request $request): ?string
     {
-        if (!is_null($this->validateCaptcha($request->grecaptcharesponse)))
-        {
+        if (!is_null($this->validateCaptcha($request->grecaptcharesponse))) {
             return $this->validateCaptcha($request->grecaptcharesponse);
         }
-        if(!$this->validToken($request->token))
-        {
-            return 'danger.Csfr validation failed';
+        if (!$this->validToken($request->token)) {
+            return Messages::VALIDATION_CRSF_ERROR;
         }
-        if(mb_strlen($request->password) < 6)
-        {
-            return 'danger.Heslo musí obsahovat nejméně 6 znaků';
+        if (mb_strlen($request->password) < 6) {
+            return Messages::VALIDATION_LEN_PASSWORD;
         }
-        if($request->password != $request->password_again)
-        {
-            return 'danger.Hesla se musí schodovat';
+        if ($request->password != $request->password_again) {
+            return Messages::VALIDATION_PASSWORD_AGAIN;
         }
         //lowercase,uppercase,special symbol,number
-        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$%^&*]).*$/', $request->password)) 
-        {
-            return 'danger.Heslo musí obasahovat nejméně jedno malé a velké písmeno a jeden specialní znak(!@$%^&)';
+        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$%^&*]).*$/', $request->password)) {
+            return Messages::VALIDATION_PASSWORD_REGEX;
         }
         return null;
     }
-    
-    public function validateAvatar($filePath, $fileType ,$fileSize, $request): ?string
+
+    public function validateAvatar($filePath, $fileType, $fileSize, $request): ?string
     {
-        if (!is_null($this->validateCaptcha($request->grecaptcharesponse)))
-        {
+        if (!is_null($this->validateCaptcha($request->grecaptcharesponse))) {
             return $this->validateCaptcha($request->grecaptcharesponse);
         }
-        if(!$this->validToken($request->token))
-        {
-            return 'danger.Csfr validation failed';
+        if (!$this->validToken($request->token)) {
+            return Messages::VALIDATION_CRSF_ERROR;
         }
-        if(!is_uploaded_file($filePath))
-        {
-            return 'danger.Avatar musí být nahrán přes formulář';
+        if (!is_uploaded_file($filePath)) {
+            return Messages::AVATAR_UPLOAD;
         }
-        if(!isset($filePath))
-        {
-            return 'danger.Avatar musí být nahrán';
+        if (!isset($filePath)) {
+            return Messages::AVATAR_UPLOAD;
         }
-        if(filesize($fileSize) === 0)
-        {
-            return 'danger.Avatar musí být nahrán';
+        if (filesize($fileSize) === 0) {
+            return Messages::AVATAR_UPLOAD;
         }
-        if(filesize($fileSize) > 5145728)
-        {
-            return 'danger.Avatar nesmí mít více jak 5MB';
+        if (filesize($fileSize) > 5145728) {
+            return Messages::AVATAR_SIZE;
         }
-        if(!in_array(
+        if (!in_array(
             finfo_file(finfo_open(FILEINFO_MIME_TYPE), mime_content_type($fileType)),
-            array_keys(['image/png' => 'png','image/jpg' => 'jpg', 'image/jpeg' => 'jpeg'])))
-        {
-            return 'danger.File musí být png nebo jpg';
+            array_keys(['image/png' => 'png', 'image/jpg' => 'jpg', 'image/jpeg' => 'jpeg'])
+        )) {
+            return Messages::AVATAR_MIME_TYPE;
         }
         return null;
     }
@@ -165,7 +139,7 @@ class Validator{
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(
             [
-                'secret' => $_ENV['RECAPTCHA'], 
+                'secret' => $_ENV['RECAPTCHA'],
                 'response' => $response
             ]
         ));
@@ -185,8 +159,7 @@ class Validator{
 
     private function validToken(string $token): bool
     {
-        if (strcmp($this->enc->decrypt($token), $_ENV['CSRFKEY']) === 0) 
-        {
+        if (strcmp($this->enc->decrypt($token), $_ENV['CSRFKEY']) === 0) {
             return true;
         }
         return false;

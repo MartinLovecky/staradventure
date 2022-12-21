@@ -17,8 +17,7 @@ class MemberController
         private Encryption $enc,
         private Member $member,
         private MemberRepository $memRepo
-    ) 
-    {
+    ) {
     }
 
     /**
@@ -56,12 +55,11 @@ class MemberController
     {
         $memberID = $this->enc->decrypt($this->selector->secondQueryValue);
         $token = $this->selector->thirdQueryValue;
-        
+
         $memberDB = $this->memRepo->getMemberInfo('member_id', $memberID, 'member_id');
         $tokenDB = $this->memRepo->getMemberInfo('member_id', $memberID, 'active');
-     
-        if(strcmp($memberID, $memberDB) == 0 && strcmp($token, $tokenDB) == 0)
-        {
+
+        if (strcmp($memberID, $memberDB) == 0 && strcmp($token, $tokenDB) == 0) {
             $this->memRepo->activateMember($memberID);
 
             return new Response('/login?message=', 'success.Aktivace úspšná můžete se přihlásit', '#login');
@@ -74,8 +72,7 @@ class MemberController
     {
         $memberData = $this->memRepo->getMemberInfo('username', $username);
 
-        foreach($memberData as $key => $value)
-        {
+        foreach ($memberData as $key => $value) {
             @$_SESSION[$key] = $value;
         }
     }
@@ -85,8 +82,8 @@ class MemberController
         @$_SESSION = array();
         session_destroy();
         unset($_COOKIE['remember']);
-        setcookie('remember', '', time() - 3600, '/'); 
-        
+        setcookie('remember', '', time() - 3600, '/');
+
         return new Response('/#');
     }
 

@@ -3,149 +3,132 @@
 namespace Mlkali\Sa\Database\Repository;
 
 use Mlkali\Sa\Database\DB;
+use Mlkali\Sa\Database\Entity\Article;
 use Mlkali\Sa\Support\Selector;
 
-class ArticleRepository{
+class ArticleRepository
+{
 
-    public array $articleData = [];
-    public array $allowedArticles = ['allwin', 'samuel', 'isama', 'isamanh', 'isamanw', 'angel', 'mry', 'white', 'terror', 'hyperion', 'demoni'];
-    private array $buffer = [];
-
-    /**
-     * getCurrentArticle
-     *
-     * @param Mlkali\Sa\Database\DB $db
-     * @return mixed
-     */
-    public function getCurrentArticle()
-    {
-        $selector = new Selector();
-        $db = new DB();   
-       
-        if(in_array(mb_strtolower($selector->article), $this->allowedArticles)){
-
-            $articleId = $selector->article.'|'.$selector->page;
-
-            $stmt = $db->query
-                    ->from('articles')
-                    ->where('article_id', $articleId);
-            
-            $data = $stmt->fetch();
-
-            if($data){
-                $this->articleData = $data;
-            }
-        }
-
-        return $this;
+    public function __construct(
+        private Selector $selector,
+        private DB $db,
+        public array $articleData = [],
+        private ?string $articleID
+    ) {
+        $this->articleID = ($this->selector->article && $this->selector->page) ? $this->selector->article . '|' . $this->selector->page : null;
     }
-        
+
     /**
-     * get id|chapter|body
-     *
-     * @param string $item
-     * @return $articleData
+     * Can get specific column for articleID or all columns 
+     * @param string|null $articleID is handled by selector 
+     * @param string|null $column array if null, otherwise $column value
+     * @return string|null
      */
-    public function get(string $item) 
+    public function getCurrentArticle(?string $column = null): string|null
     {
-        if(!empty($this->articleData)){
-            switch($item){
-                case 'id':
-                    return $this->articleData['article_id'];
-                break;
-                case 'chapter':
-                    return $this->articleData['article_chapter'];  
-                break;
-                case 'body':
-                    return $this->articleData['article_body'];
-                break;             
+        if ($this->allowedArticle() && $this->exist($this->articleID)) {
+
+            $stmt = $this->db->query
+                ->from('articles')
+                ->select($column)
+                ->where('article_id', $this->articleID);
+
+            $data = $stmt->fetch($column);
+
+            if ($data) {
+                return $data;
             }
+            return null;
         }
         return null;
     }
 
-    public function exist(string $articleId): bool
+    public function allowedArticle(): bool
     {
         $stmt = $this->db->query
-                ->from('articles')
-                ->select('article_id')
-                ->where('article_id', $articleId);
-        
-        $result = $stmt->fetch('article_id');
-        
-        if(!$result){
+            ->from('allowed_articles')
+            ->select('name')
+            ->where('name', $this->selector->article);
+
+        $result = $stmt->fetch('name');
+
+        if (!$result) {
             return false;
         }
-            return true;
+        return true;
     }
-    
-    public function update(): bool
+
+    public function exist(string $articleID): bool
     {
-        if(!empty($this->buffer['id'])){
+        if ($this->allowedArticle()) {
+            $stmt = $this->db->query
+                ->from('articles')
+                ->select('article_id')
+                ->where('article_id', $articleID);
+
+            $result = $stmt->fetch('article_id');
+
+            if (!$result) {
+                return false;
+            }
+            return true;
+        }
+    }
+
+    public function update(Article $article): bool
+    {
+        if (isset($article->articleID)) {
 
             $set = [
-                'article_body' => $this->buffer['body'], 
-                'article_chapter' => $this->buffer['chapter']
+                'article_body' => $article->articleBody,
+                'article_chapter' => $article->articleChapter
             ];
 
             $stmt = $this->db->query
-                    ->update('articles')
-                    ->set($set)
-                    ->where('article_id', $this->buffer['id'])
-                    ->execute();
-            
-            if($stmt){
+                ->update('articles')
+                ->set($set)
+                ->where('article_id', $article->articleID)
+                ->execute();
+
+            if ($stmt) {
                 return true;
             }
-                return false;        
-        }
-        return false;
-    }
-    
-    public function add(): bool
-    {
-        if(in_array(strtolower($this->selector->article), $this->allowedArticles)){
-
-            $values = [
-                'article_chapter' => $this->buffer['chapter'],
-                'article_body' => $this->buffer['body'],
-                'article_id' =>  $this->buffer['id']
-            ];
-
-            $stmt = $this->db->query
-                    ->insertInto('articles')
-                    ->values($values)
-                    ->execute();
-            
-            if($stmt){
-                return true;
-            }
-            return false;        
-        }
-        return false;
-    }
-    
-    public function remove(string $articleId): bool
-    {
-        if(in_array(strtolower($this->selector->article), $this->allowedArticles)){
-
-            $stmt = $this->db->query
-                    ->deleteFrom('articles')
-                    ->where('article_id', $articleId)
-                    ->execute();
-            
-            if($stmt){
-                return true;
-            }
-            return false;        
+            return false;
         }
         return false;
     }
 
-    public function readyToSet(string $key, $params): self
+    public function add(Article $article): bool
     {
-        $this->buffer[$key] .= $params;
+        $values = [
+            'article_chapter' => $article->articleChapter,
+            'article_body' => $article->articleBody,
+            'article_id' =>  $article->articleID
+        ];
 
-        return $this;
+        $stmt = $this->db->query
+            ->insertInto('articles')
+            ->values($values)
+            ->execute();
+
+        if ($stmt) {
+            return true;
+        }
+
+        return false;
     }
+
+    public function remove(string $articleID): bool
+    {
+        $stmt = $this->db->query
+            ->deleteFrom('articles')
+            ->where('article_id', $articleID)
+            ->execute();
+
+        if ($stmt) {
+            return true;
+        }
+        return false;
+    }
+
 }

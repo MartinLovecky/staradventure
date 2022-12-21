@@ -4,54 +4,55 @@ namespace Mlkali\Sa\Database\Entity;
 
 use Mlkali\Sa\Database\Repository\ArticleRepository;
 
-class Article extends ArticleRepository{
+class Article
+{
 
-    public function __construct( 
-        private ?string $articleChapter = null,
-        private ?string $articleId = null,
-        private ?string $articleBody = ''
-    )
-    {
+    public function __construct(
+        private ArticleRepository $artRepo,
+        public ?string $articleChapter = null,
+        public ?string $articleID = null,
+        public ?string $articleBody = null
+    ) {
     }
 
-    public function getArticleId(): ?string
+    public function getArticleID(): ?string
     {
-        $this->articleId = $this->getCurrentArticle()->get('id');
+        $this->articleID = $this->artRepo->getCurrentArticle('article_id');
 
-        return $this->articleId;
+        return $this->articleID;
     }
 
-    public function setArticleId(string $articleId): self
+    public function setArticleID(string $articleID): self
     {
-        $this->readyToSet('id', $articleId);
+        $this->articleID = $articleID;
 
         return $this;
     }
 
     public function getArticleChapter(): ?string
     {
-        $this->articleChapter = $this->getCurrentArticle()->get('chapter');
-        
+        $this->articleChapter = $this->artRepo->getCurrentArticle('article_chapter');
+
         return $this->articleChapter;
     }
 
     public function setArticleChapter(?string $chapter = null): self
     {
-        $this->readyToSet('chapter', $chapter);
+        $this->articleChapter = $chapter;
 
         return $this;
     }
 
     public function getArticleBody(): ?string
     {
-        $this->articleBody = $this->getCurrentArticle()->get('body');
+        $this->articleBody = $this->artRepo->getCurrentArticle('article_body');
 
         return $this->articleBody;
     }
 
     public function setArticleBody(string $body): self
     {
-        $this->readyToSet('body', $body);
+        $this->articleBody = $body;
 
         return $this;
     }

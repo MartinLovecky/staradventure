@@ -6,7 +6,8 @@ use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
-class Mailer extends PHPMailer{
+class Mailer extends PHPMailer
+{
 
     public function subject($subject)
     {
@@ -18,7 +19,7 @@ class Mailer extends PHPMailer{
         $this->Body = $body;
     }
 
-    public function sender($body,$email)
+    public function sender($body, $email)
     {
         $this->IsSMTP();
         $this->body($body);
@@ -32,9 +33,9 @@ class Mailer extends PHPMailer{
         $this->Port = $_ENV['EMAIL_PORT'];
         $this->subject($email['subject']);
         $this->isHTML(true);
-        $this->setFrom($_ENV['EMAIL_NAME'],'sadventure.com');
+        $this->setFrom($_ENV['EMAIL_NAME'], 'sadventure.com');
         $this->addAddress($email['to']);
         //$this->addAttachment
-            return parent::send();
+        return parent::send();
     }
 }
