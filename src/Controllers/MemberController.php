@@ -51,7 +51,7 @@ class MemberController
         );
     }
 
-    public function activate(Member $member): Response
+    public function activate(): Response
     {
         $memberID = $this->enc->decrypt($this->selector->secondQueryValue);
         $token = $this->selector->thirdQueryValue;
@@ -89,13 +89,14 @@ class MemberController
 
     public function update(Request $request, string $avatar): void
     {
-        $this->member->username = (property_exists($request, 'username')) ? $request->username : $this->member->username;
-        $this->member->email = (property_exists($request, 'email')) ? $request->email : $this->member->email;
-        $this->member->name = (property_exists($request, 'name')) ? $request->name : $this->member->name;
-        $this->member->surname = (property_exists($request, 'surname')) ? $request->surname : $this->member->surname;
-        $this->member->age = (property_exists($request, 'age')) ? $request->age : $this->member->age;
-        $this->member->location = (property_exists($request, 'location')) ? $request->location : $this->member->location;
-        $this->member->visible = (property_exists($request, 'visible')) ? true : $this->member->visible;
+        $this->member->username = $request->username ?? $this->member->username;
+        $this->member->email = $request->email ?? $this->member->email;
+        $this->member->name = $request->name ?? $this->member->name;
+        $this->member->surname = $request->surname ?? $this->member->surname;
+        $this->member->age = $request->age ?? $this->member->age;
+        $this->member->location = $request->location ?? $this->member->location;
+        $this->member->visible = $request->visible ?? $this->member->visible;
+
         $this->member->avatar = $avatar;
 
         $this->memRepo->updateMember($this->member);

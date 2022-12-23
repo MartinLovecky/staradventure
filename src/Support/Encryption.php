@@ -14,7 +14,7 @@ class Encryption
 
         return bin2hex($nonce . $ciphertext);
     }
-    //NOTE - insted of using exception use Response class to display message
+    
     public function decrypt(string $ciphertext, $aad = ''): string
     {
         if (empty($ciphertext)) {

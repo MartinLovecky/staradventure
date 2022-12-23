@@ -7,6 +7,7 @@ use Mlkali\Sa\Http\Response;
 use Mlkali\Sa\Support\Validator;
 use Mlkali\Sa\Controllers\MemberController;
 use Mlkali\Sa\Database\Entity\Member;
+use Mlkali\Sa\Support\Messages;
 
 class RequestController
 {
@@ -34,7 +35,7 @@ class RequestController
 
         $this->memberController->register($request);
 
-        return new Response('/login?message=', 'success.Byl vám odeslán aktivační email (zkontrolujte prosím i spam)', '#login');
+        return new Response('/login?message=', sprintf(Messages::REQUETS_REGISTER, $request->email), '#login');
     }
 
     public function submitLogin(Request $request): Response
@@ -50,12 +51,12 @@ class RequestController
 
             setcookie('remember', $request->username, time() + (86400 * 7), '/');
 
-            return new Response('member/' . $request->username . '?message=', 'success.Vítejte zpět ' . $request->username);
-        } else {
-            $this->memberController->login($request->username);
-
-            return new Response('member/' . $request->username . '?message=', 'success.Vítejte zpět ' . $request->username);
+            return new Response('member/' . $request->username . '?message=', sprintf(Messages::REQUETS_REGISTER, $request->username));
         }
+
+        $this->memberController->login($request->username);
+
+        return new Response('member/' . $request->username . '?message=', sprintf(Messages::REQUETS_REGISTER, $request->username));
     }
 
     public function submitResetSend(Request $request): Response
@@ -70,7 +71,7 @@ class RequestController
 
         $this->member->sendResetToken($request);
 
-        return new Response('/?message=', 'success.Odkaz na změnu hesla byl odeslán na email', '#');
+        return new Response('/?message=', sprintf(Messages::REQUETS_RESET_SEND, $request->email), '#');
     }
 
     public function setNewPassword(Request $request): Response
@@ -83,7 +84,7 @@ class RequestController
 
         $this->member->setNewPassword($request);
 
-        return new Response('/?message=', 'success.Heslo bylo úspěšně změněno', '#login');
+        return new Response('/?message=', Messages::REQUETS_RESET_PASSWORD, '#login');
     }
 
     public function submitForgottenUser(Request $request): Response
@@ -91,12 +92,12 @@ class RequestController
         $validate = $this->validator->validateResetSend($request);
 
         if (isset($validate)) {
-            return new Response('/reset?message=', 'danger.Neplatný email (' . $request->email . ')', '#reset');
+            return new Response('/reset?message=', sprintf(Messages::VALIDATION_FORGOTEN_USER, $request->email), '#reset');
         }
 
         $this->member->sendForgottenUser($request->email);
 
-        return new Response('/login?message=', 'succes.Uživatelské jméno bylo zaslíno na váš email', '#login');
+        return new Response('/login?message=', sprintf(Messages::REQUETS_FORGOTEN_USER, $request->email), '#login');
     }
 
     public function updateMember(Request $request): Response

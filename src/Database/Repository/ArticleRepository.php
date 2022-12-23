@@ -26,21 +26,20 @@ class ArticleRepository
      */
     public function getCurrentArticle(?string $column = null): string|null
     {
-        if ($this->allowedArticle() && $this->exist($this->articleID)) {
-
-            $stmt = $this->db->query
-                ->from('articles')
-                ->select($column)
-                ->where('article_id', $this->articleID);
-
-            $data = $stmt->fetch($column);
-
-            if ($data) {
-                return $data;
-            }
+        if (!$this->allowedArticle() && !$this->exist($this->articleID)) {
             return null;
         }
-        return null;
+        $stmt = $this->db->query
+            ->from('articles')
+            ->select($column)
+            ->where('article_id', $this->articleID);
+
+        $data = $stmt->fetch($column);
+
+        if (!$data) {
+            return null;
+        }
+        return $data;
     }
 
     public function allowedArticle(): bool
@@ -52,50 +51,42 @@ class ArticleRepository
 
         $result = $stmt->fetch('name');
 
-        if (!$result) {
-            return false;
-        }
-        return true;
+        return (bool)$result;
     }
 
     public function exist(string $articleID): bool
     {
-        if ($this->allowedArticle()) {
-            $stmt = $this->db->query
-                ->from('articles')
-                ->select('article_id')
-                ->where('article_id', $articleID);
-
-            $result = $stmt->fetch('article_id');
-
-            if (!$result) {
-                return false;
-            }
-            return true;
+        if (!$this->allowedArticle()) {
+            return false;
         }
+        $stmt = $this->db->query
+            ->from('articles')
+            ->select('article_id')
+            ->where('article_id', $articleID);
+
+        $result = $stmt->fetch('article_id');
+        //if on-empty $result is string = true. If null = false.
+        return (bool)$result;
     }
 
     public function update(Article $article): bool
     {
-        if (isset($article->articleID)) {
-
-            $set = [
-                'article_body' => $article->articleBody,
-                'article_chapter' => $article->articleChapter
-            ];
-
-            $stmt = $this->db->query
-                ->update('articles')
-                ->set($set)
-                ->where('article_id', $article->articleID)
-                ->execute();
-
-            if ($stmt) {
-                return true;
-            }
+        if (!isset($article->articleID)) {
             return false;
         }
-        return false;
+
+        $set = [
+            'article_body' => $article->articleBody,
+            'article_chapter' => $article->articleChapter
+        ];
+
+        $stmt = $this->db->query
+            ->update('articles')
+            ->set($set)
+            ->where('article_id', $article->articleID)
+            ->execute();
+        //The update() function will return true if the UPDATE query was successful, false otherwise
+        return $stmt;
     }
 
     public function add(Article $article): bool
@@ -111,11 +102,7 @@ class ArticleRepository
             ->values($values)
             ->execute();
 
-        if ($stmt) {
-            return true;
-        }
-
-        return false;
+        return $stmt;
     }
 
     public function remove(string $articleID): bool
@@ -125,10 +112,6 @@ class ArticleRepository
             ->where('article_id', $articleID)
             ->execute();
 
-        if ($stmt) {
-            return true;
-        }
-        return false;
+        return $stmt;
     }
-
 }

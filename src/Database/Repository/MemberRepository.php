@@ -48,9 +48,7 @@ class MemberRepository
     {
         $stmt = $this->db->query->from('members');
 
-        $result = $stmt->fetchAll();
-
-        return $result;
+        return $stmt->fetchAll();
     }
 
     public function insertIntoInfo(string $memberID): void
