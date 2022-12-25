@@ -4,7 +4,6 @@ namespace Mlkali\Sa\Controllers;
 
 use Mlkali\Sa\Http\Request;
 use Mlkali\Sa\Http\Response;
-use Mlkali\Sa\Support\Messages;
 use Mlkali\Sa\Support\Selector;
 use Mlkali\Sa\Support\Encryption;
 use Mlkali\Sa\Database\Entity\Member;
@@ -18,7 +17,7 @@ class MemberController
         private Encryption $enc,
         private Member $member,
         private MemberRepository $memRepo,
-        private string $token
+        private string $token = ''
     ) {
         $this->token = md5(uniqid(rand(), true));
     }

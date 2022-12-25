@@ -15,7 +15,7 @@ $dotenv->load();
 $dotenv->required(['DB_NAME', 'DB_USER', 'DB_HOST', 'DB_PASS']);
 // Class container with autowire
 $container = new League\Container\Container();
-$container->delegate(new League\Container\ReflectionContainer());
+$container->delegate(new League\Container\ReflectionContainer(true));
 // Blade Template engine
 $blade = new BladeOne(__DIR__ . '/views', __DIR__ . '/compiles', BladeOne::MODE_AUTO);
 $blade->setBaseUrl('/public');

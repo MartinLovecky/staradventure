@@ -3,7 +3,6 @@
 namespace Mlkali\Sa\Database\Repository;
 
 use Mlkali\Sa\Database\DB;
-use Mlkali\Sa\Database\Entity\Article;
 use Mlkali\Sa\Support\Selector;
 
 class ArticleRepository
@@ -12,10 +11,9 @@ class ArticleRepository
     public function __construct(
         private Selector $selector,
         private DB $db,
-        public array $articleData = [],
-        private ?string $articleID
+        private ?string $repoID = null
     ) {
-        $this->articleID = ($this->selector->article && $this->selector->page) ? $this->selector->article . '|' . $this->selector->page : null;
+        $this->repoID = ($this->selector->article && $this->selector->page) ? $this->selector->article . '|' . $this->selector->page : null;
     }
 
     /**
@@ -26,13 +24,13 @@ class ArticleRepository
      */
     public function getCurrentArticle(?string $column = null): string|null
     {
-        if (!$this->allowedArticle() && !$this->exist($this->articleID)) {
+        if (!$this->allowedArticle() && !$this->exist($this->repoID)) {
             return null;
         }
         $stmt = $this->db->query
             ->from('articles')
             ->select($column)
-            ->where('article_id', $this->articleID);
+            ->where('article_id', $this->repoID);
 
         $data = $stmt->fetch($column);
 
@@ -54,7 +52,7 @@ class ArticleRepository
         return (bool)$result;
     }
 
-    public function exist(string $articleID): bool
+    public function exist(?string $articleID = null): bool
     {
         if (!$this->allowedArticle()) {
             return false;

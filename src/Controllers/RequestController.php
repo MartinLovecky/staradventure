@@ -49,12 +49,12 @@ class RequestController
 
             setcookie('remember', $request->username, time() + (86400 * 7), '/');
 
-            return new Response('member/' . $request->username . '?message=', sprintf(Messages::REQUETS_REGISTER, $request->username));
+            return new Response('member/' . $request->username . '?message=', sprintf(Messages::REQUETS_LOGIN, $request->username));
         }
 
         $this->memberController->login($request->username);
 
-        return new Response('member/' . $request->username . '?message=', sprintf(Messages::REQUETS_REGISTER, $request->username));
+        return new Response('member/' . $request->username . '?message=', sprintf(Messages::REQUETS_LOGIN, $request->username));
     }
 
     public function submitResetSend(Request $request): Response
