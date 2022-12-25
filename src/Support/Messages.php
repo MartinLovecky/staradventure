@@ -58,6 +58,41 @@ class Messages extends Enum
         }
     }
 
+    public static function createEmailMessage(string $templateType, array $placeholderValues): string
+    {
+        switch ($templateType) {
+          case 'register':
+            $template = self::EMAIL_TEMPLATE_REGISTER;
+            break;
+          case 'reset':
+            $template = self::EMAIL_TEMPLATE_RESET;
+            break;
+         case 'user':
+            $template = self::EMAIL_TEMPLATE_USER;
+            break;
+         case 'main':
+            $template = self::MAIN_EMAIL_TEMPLATE;
+            break;
+        }
+        return vsprintf($template, $placeholderValues);
+    }
+
+    public static function getEmailInfo(string $templateType, string $recipient): array
+    {
+        switch ($templateType) {
+            case 'register':
+              $info = ['subject' => 'Potvrzení registrace', 'to' => $recipient];
+              break;
+            case 'reset':
+              $info = ['subject ' => 'Reset hesla', 'to' => $recipient];
+              break;
+           case 'user':
+              $info = ['subject' => 'Zapomenutné username', 'to' => $recipient];
+              break;
+        }
+        return $info;     
+    }
+
     /**
      * Gets frist message
      *

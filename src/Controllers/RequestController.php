@@ -6,7 +6,6 @@ use Mlkali\Sa\Http\Request;
 use Mlkali\Sa\Http\Response;
 use Mlkali\Sa\Support\Validator;
 use Mlkali\Sa\Controllers\MemberController;
-use Mlkali\Sa\Database\Entity\Member;
 use Mlkali\Sa\Support\Messages;
 
 class RequestController
@@ -14,7 +13,6 @@ class RequestController
 
     public function __construct(
         private Validator $validator,
-        private Member $member,
         private MemberController $memberController,
     ) {
     }
@@ -69,7 +67,7 @@ class RequestController
             return new Response('/?message=', $validate, '#reset');
         }
 
-        $this->member->sendResetToken($request);
+        $this->memberController->sendResetToken($request);
 
         return new Response('/?message=', sprintf(Messages::REQUETS_RESET_SEND, $request->email), '#');
     }
@@ -82,7 +80,7 @@ class RequestController
             return new Response('/?message=', $validate, '#newpassword');
         }
 
-        $this->member->setNewPassword($request);
+        $this->memberController->setNewPassword($request);
 
         return new Response('/?message=', Messages::REQUETS_RESET_PASSWORD, '#login');
     }
@@ -95,7 +93,7 @@ class RequestController
             return new Response('/reset?message=', sprintf(Messages::VALIDATION_FORGOTEN_USER, $request->email), '#reset');
         }
 
-        $this->member->sendForgottenUser($request->email);
+        $this->memberController->sendForgottenUser($request);
 
         return new Response('/login?message=', sprintf(Messages::REQUETS_FORGOTEN_USER, $request->email), '#login');
     }

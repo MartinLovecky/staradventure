@@ -4,6 +4,7 @@ namespace Mlkali\Sa\Controllers;
 
 use Mlkali\Sa\Http\Request;
 use Mlkali\Sa\Http\Response;
+use Mlkali\Sa\Support\Messages;
 use Mlkali\Sa\Support\Selector;
 use Mlkali\Sa\Support\Encryption;
 use Mlkali\Sa\Database\Entity\Member;
@@ -16,41 +17,109 @@ class MemberController
         private Selector $selector,
         private Encryption $enc,
         private Member $member,
-        private MemberRepository $memRepo
+        private MemberRepository $memRepo,
+        private string $token
     ) {
+        $this->token = md5(uniqid(rand(), true));
     }
-
     /**
-     * Sets $member and inserts values into DB
+     * Registers a new member and sends an activation email
      *
-     * @param Request $request
+     * @param Request $request The request object containing the registration data
      * @return void
      */
     public function register(Request $request): void
     {
-        // Create a new Member object and initialize its fields
-        $member = new Member();
-        $member->username = $request->username;
-        $member->email = $request->email;
-        $member->password = password_hash($request->password, PASSWORD_BCRYPT);
-        $member->activeMember = md5(uniqid(rand(), true));
-        $member->permission = 'user';
-        $member->avatar = 'empty_profile.png';
-        $member->memberID = $request->username . '|' . $request->email;
+        $memberID = $request->username . '|' . $request->email;
+
         // Insert the member into the database
-        $this->memRepo->insertIntoInfo($member->memberID);
-        $this->memRepo->insertIntoMember($member);
+        $this->memRepo->insert('members', [
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => password_hash($request->password, PASSWORD_BCRYPT),
+            'active' => $this->token,
+            'permission' => 'user',
+            'member_id' => $memberID
+        ]);
+        $this->memRepo->insert('info', ['member' => $memberID]);
         // Send an activation email to the user
-        $this->memRepo->sendActivationEmail(
+        $this->memRepo->sendEmail(
             [
-                'username' => $member->username,
-                'encryptedID' => $this->enc->encrypt($member->memberID),
-                'active' => $member->active,
-                'recipient' => $member->email
-            ]
+                'username' => $request->username,
+                'encryptedID' => $this->enc->encrypt($memberID),
+                'active' => $this->token,
+                'recipient' => $request->email
+            ],
+            'register'
         );
     }
+    /**
+     * Sends a reset token to the member with the specified email
+     *
+     * @param Request $request The request object containing the email
+     * @return void
+     */
+    public function sendResetToken(Request $request): void
+    {
+        $memberID = $this->memRepo->getMemberInfo('email', $request->email, 'member_id');
 
+        $this->memRepo->resetToken($memberID, $this->token);
+
+        $this->memRepo->sendEmail(
+            [
+                'username' => $request->email,
+                'active' => $this->token,
+                'encryptedID' => $this->enc->encrypt($memberID),
+                'recipient' => $request->email
+            ],
+            'reset'
+        );
+    }
+    /**
+     * Sends the forgotten username to the member with the specified email
+     *
+     * @param Request $request The request object containing the email
+     * @return void
+     */
+    public function sendForgottenUser(Request $request): void
+    {
+        $username = $this->memRepo->getMemberInfo('email', $request->email, 'username');
+        $memberID = $this->memRepo->getMemberInfo('email', $request->email, 'member_id');
+
+        $this->memRepo->sendEmail(
+            [
+                'username' => $username,
+                'active' => $this->token,
+                'encryptedID' => $this->enc->encrypt($memberID),
+                'recipient' => $request->email
+            ],
+            'user'
+        );
+    }
+    /**
+     * Sets a new password for the member with the specified email
+     *
+     * @param Request $request The request object containing the password and email
+     * @return void
+     */
+    public function setNewPassword(Request $request): void
+    {
+        $this->memRepo->newPassword($request);
+    }
+    /**
+     * Gets all members from the database
+     *
+     * @return array An array of all members
+     */
+    public function allMembers(): array
+    {
+        return $this->memRepo->getMemberInfo();
+    }
+    /**
+     * Activates the member with the specified ID and token
+     *
+     * @return Response A response object with the activation status
+     */
     public function activate(): Response
     {
         $memberID = $this->enc->decrypt($this->selector->secondQueryValue);
@@ -67,7 +136,12 @@ class MemberController
 
         return new Response('/register?message=', 'danger.Aktivace účtu se nezdařila kontaktujte podporu', '#register');
     }
-
+    /**
+     * Logs in the member with the specified username
+     *
+     * @param string $username The username of the member to log in
+     * @return void
+     */
     public function login(string $username): void
     {
         $memberData = $this->memRepo->getMemberInfo('username', $username);
@@ -76,7 +150,11 @@ class MemberController
             @$_SESSION[$key] = $value;
         }
     }
-
+    /**
+     * Logs out the current user and destroys the session
+     *
+     * @return Response A response object with the logout status
+     */
     public function logout(): Response
     {
         @$_SESSION = array();

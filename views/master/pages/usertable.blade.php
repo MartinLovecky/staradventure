@@ -23,7 +23,7 @@
     </thead>
     
     <tbody>
-      @foreach ($member->getAllMembers() as $key => $data)
+      @foreach ($memberController->allMembers() as $key => $data)
       <tr>
         <th scope="row">{{$data['id']}}</th>
         <td>{{$data['username']}}</td>
