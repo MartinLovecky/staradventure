@@ -1,6 +1,10 @@
 @include('master.includes.head')
-@if ($selector->action != 'show')    
-    @include('master.includes.menu')
-@endif
-@include("master.pages.$selector->viewPage") 
+@include('master.includes.menu')
+    @if($selector->action == 'show' && !$selector->page)
+        @component('master.list_of_articles')@endcomponent
+    @elseif($selector->action == 'show' && isset($selector->page))
+        @component('master.show_article')@endcomponent
+    @else
+        @component("master.$selector->viewPage")@endcomponent
+    @endif
 @include('master.includes.footer')

@@ -49,6 +49,7 @@
                 @endif
                 @isset($selector->article)
                 <div id="toolbar-container" style="margin-top:2vh;"></div>
+                <div id="editor">
                 @foreach (json_decode($article->getArticleBody()) as $body)
                     <label class="text-white">Nadpis:</label><input type="text" name="chapter"  placeholder="Může zůstat prázdný">
                     <textarea name="editor1">
@@ -59,15 +60,14 @@
                 <script>
                     CKEDITOR.replace('editor1');
                 </script>
+                </div>
                 <hr/>
                 @isset($selector->article)
-                    <nav class="d-flex justify-content-center align-items-center" id="wp_pagnation" style="background-color:#343a40">
-                    <ul class="pagination">
+                    <div class="pagination">
                         {!!  $pagnition->previous_page()   !!}
                         {!!  $pagnition->main_pagnation()  !!}
                         {!!  $pagnition->next_page()  !!}
-                    </ul>
-                    </nav>
+                    </div>            
                     <input type="hidden" name="type" value="{{$selector->action}}">
                     <input type="hidden" name="articleName"  value="{{$selector->article}}">
                     <input type="hidden" name="articlePage" value="{{$selector->page}}">

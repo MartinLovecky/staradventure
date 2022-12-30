@@ -20,8 +20,6 @@ class Member
         private string $avatar = 'empty_profile.png',
         private ?string $resetToken = null,
         private bool $resetComplete = false,
-        private int $bookmarkCount = 0,
-        private string $bookmarks = '{}',
         private ?string $memberID = 'visitor|visitor@gmail.com'
     ) {
         if (isset($_SESSION['member_id'])) {

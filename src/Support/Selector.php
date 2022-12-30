@@ -43,14 +43,6 @@ class Selector
         if (in_array(strtolower($this->action), $allowed)) {
             switch ($this->action) {
                 case '':
-                    $this->viewName = 'index';
-                    $this->title = 'SA | index';
-                    break;
-                case 'show':
-                    $this->viewName = 'app';
-                    $this->viewPage = 'articles';
-                    $this->title = 'SA | ' . $this->action . ' | ' . $this->article ?? $this->article;
-                    break;
                 case 'intro':
                 case 'login':
                 case 'newpassword':
@@ -59,10 +51,13 @@ class Selector
                 case 'storylist':
                 case 'terms':
                 case 'vop':
-                case 'updatemember':
-                case 'savebookmark':
                     $this->viewName = 'index';
                     $this->title = 'SA | ' . $this->action;
+                    break;
+                case 'show':
+                    $this->viewName = 'app';
+                    $this->viewPage = 'articles';
+                    $this->title = 'SA | ' . $this->action . ' | ' . $this->article ?? $this->article;
                     break;
                 case 'update':
                 case 'delete':

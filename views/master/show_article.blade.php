@@ -5,7 +5,7 @@
     @endphp
 @endif
 <div class="book">
-	<div class="container">
+	<div class="container-story">
 		<div class="text"> 
 			@if ($article->getArticleChapter() !== null && !empty($article->getArticleChapter())) 
 			<h1>{{ $article->getArticleChapter() }}</h1> 
@@ -17,9 +17,9 @@
 			@endif 
 		</div>
 	</div>
-</div>
-<div class="pagination">
-	{!!  $pagnition->previous_page()   !!}
-	{!!  $pagnition->main_pagnation()  !!}
-	{!!  $pagnition->next_page()  !!}
+	<div class="pagination">
+		{!!  $pagnition->previous_page()   !!}
+		{!!  $pagnition->main_pagnation()  !!}
+		{!!  $pagnition->next_page()  !!}
+	</div>
 </div>

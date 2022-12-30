@@ -24,16 +24,13 @@
             </ul>
         </div>
         @if ($member->logged)
-        <div class="container d-flex justify-content-center justify-content-xl-end" id="menu"><img class="rounded-circle" style="width: 70px;height: 70px;margin-right: 1vh;" src="@asset('img/avatars/'.$member->avatar)">
+        <div class="container d-flex justify-content-center justify-content-xl-end" id="menu">
+            <img class="img-fluid rounded-circle" style="width: 70px;height: 70px;margin-right: 1vh;margin-top: -4vh;" src="@asset('img/avatars/'.$member->avatar)">
             <div>
                 <div class="dropdown ms-auto" style="margin-top: 2vh;"><a class="dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" data-bs-auto-close="outside" href="#" style="margin: auto;">{{$member->username}}</a>
                     <div class="dropdown-menu text-center bg-secondary" style="margin-left: -5vh;">
                         <a class="dropdown-item" href="/member/{{$member->username}}">Profil</a>
                         <a class="dropdown-item" href="/updatemember#updatemember">Upravit profil</a>
-                        <a class="dropdown-item" href="/member/{{$member->username}}#bookmarks">Uložené záložky</a>
-                        @if ($selector->action == 'show' && isset($selector->article) && isset($selector->page))
-                            <a class="dropdown-item" href="/savebookmark?article={{$selector->article}}&page={{$selector->page}}">Uložit záložku</a>
-                        @endif
                         @if ($member->permission == 'admin' || $member->permission == 'rewriter')
                             <a class="dropdown-item" href="/update">Editor</a>
                             <a class="dropdown-item" href="/usertable">Permissions</a>

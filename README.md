@@ -11,7 +11,7 @@ Before you can use this application you need to create .env file in root directo
 - EKEY = $enc->generateKey();
 - RECAPTCHA = ""
 
-inside public directory is sql dir for all necessary tables
+inside public directory is sql dir for all necessary DB tables
 
 # Important
 you need also creare these files / folders [compiles/ public/img/ .htaccess .gitignore]

@@ -4,6 +4,7 @@ namespace Mlkali\Sa\Database\Repository;
 
 use Mlkali\Sa\Database\DB;
 use Mlkali\Sa\Support\Selector;
+use Mlkali\Sa\Database\Entity\Article;
 
 class ArticleRepository
 {

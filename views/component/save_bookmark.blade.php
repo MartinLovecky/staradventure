@@ -1,1 +1,0 @@
-@php $member->saveBookmark($selector->fristQueryValue,$selector->secondQueryValue); @endphp

@@ -61,12 +61,7 @@
                 'query' => $selector->fristQueryValue
             ])
         @endcomponent
-    {{-- Save bookmark --}}    
-    @elseif ($selector->action === 'savebookmark')
-        @component('component.save_bookmark')@endcomponent
     @endif
     </div>
-    {{-- Footer --}}
-    @component('component.footer')@endcomponent
 </div>
 @include('master.includes.end_page')
