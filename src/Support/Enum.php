@@ -29,6 +29,11 @@ class Enum
     const REQUETS_RESET_SEND = 'success.Odkaz na změnu hesla byl odeslán na %s';
     const REQUETS_RESET_PASSWORD = 'success.Heslo bylo úspěšně změněno';
     const REQUETS_FORGOTEN_USER = 'succes.Uživatelské jméno bylo zasláno na váš %s';
+    const REQUEST_LOGOUT = 'success.Úspěšně odhlášen';
+    const REQUEST_ACTIVATE = 'success.Aktivace úspěšná můžete se přihlásit';
+    const REQUEST_ACTIVATE_FAIL = 'danger.Aktivace účtu se nezdařila kontaktujte podporu';
+    const REQUEST_PERMISSION = 'success.Práva účtu změněna';
+    const REQUEST_DELETE = 'success.Účet úspěšně smazán';
 
     const MAIN_EMAIL_TEMPLATE = '<div style="background:#f7f7f7;font-family:Arial,sans-serif;font-size:14px;padding:20px 0;color:#000"><table style="background:#fff;margin:0 auto;max-width:800px;padding:20px 40px;width:100%">
     <tbody><tr><td valign="top"><table cellspacing="0" cellpadding="0" style="width:100%"><tbody><tr><td class="m_-3655226564915594624header__logo" style="padding:10px 0;text-align:left">

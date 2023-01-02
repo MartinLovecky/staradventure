@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 03, 2022 at 06:28 PM
+-- Generation Time: Dec 30, 2022 at 09:44 PM
 -- Server version: 10.6.11-MariaDB-0ubuntu0.22.04.1
 -- PHP Version: 8.1.13
 
@@ -29,11 +29,18 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `info` (
   `id` int(11) NOT NULL,
-  `bookmark_count` int(11) NOT NULL DEFAULT 0,
-  `bookmarks` longtext NOT NULL DEFAULT '{}',
+  `member_name` varchar(255) DEFAULT NULL,
+  `member_surname` varchar(255) DEFAULT NULL,
   `visible` tinyint(1) NOT NULL DEFAULT 0,
+  `location` varchar(255) DEFAULT NULL,
+  `age` date DEFAULT NULL,
   `member` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_czech_ci;
+
+--
+-- Dumping data for table `info`
+--
+
 
 --
 -- Indexes for dumped tables
@@ -53,7 +60,7 @@ ALTER TABLE `info`
 -- AUTO_INCREMENT for table `info`
 --
 ALTER TABLE `info`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

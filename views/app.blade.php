@@ -1,3 +1,4 @@
+{{-- Story, member / editor page --}}
 @include('master.includes.head')
 @include('master.includes.menu')
     @if($selector->action == 'show' && !$selector->page)

@@ -22,7 +22,7 @@ class ArticleController
         $articleID = $request->articleName .'|'. $request->articlePage;
 
         if (!$this->artRepo->exist($articleID) && !$this->artRepo->allowedArticle()) {
-            return new Response('/update?message=', sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $articleID, $request->articleName, $request->articlePage));
+            return new Response("/update/$request->articleName/$request->articlePage?message=", sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $articleID, $request->articleName, $request->articlePage));
         }
 
         $chapter = !empty($request->chapter) ? $request->chapter : null;
@@ -35,7 +35,7 @@ class ArticleController
 
         $this->artRepo->update($this->article);
 
-        return new Response('/update' . '/' . $request->articleName . '/' . $request->articlePage . '?message=', sprintf(Messages::ARTICLE_UPDATED, $articleID));
+        return new Response("/update/$request->articleName/$request->articlePage?message=", sprintf(Messages::ARTICLE_UPDATED, $articleID));
     }
 
     public function create(Request $request): Response
@@ -43,7 +43,7 @@ class ArticleController
         $articleID = $request->articleName .'|'. $request->articlePage;
         
         if (!$this->artRepo->exist($articleID) && !$this->artRepo->allowedArticle()) {
-            return new Response('/update?message=', sprintf(Messages::ARTICLE_DOES_ALLREADY_EXIST, $articleID, $request->articleName, $request->articlePage));
+            return new Response("/update/$request->articleName/$request->articlePage?message=", sprintf(Messages::ARTICLE_DOES_ALLREADY_EXIST, $articleID, $request->articleName, $request->articlePage));
         }
 
         $chapter = !empty($request->chapter) ? $request->chapter : null;
@@ -56,7 +56,7 @@ class ArticleController
             
         $this->artRepo->add($this->article);
 
-        return new Response('/update?message=', sprintf(Messages::ARTICLE_CREATED, $articleID));
+        return new Response("/update/$request->articleName/$request->articlePage?message=", sprintf(Messages::ARTICLE_CREATED, $articleID));
     }
 
     public function delete(Request $request): Response
@@ -64,11 +64,11 @@ class ArticleController
         $articleID = $request->articleName .'|'. $request->articlePage;
 
         if (!$this->artRepo->exist($articleID) && !$this->artRepo->allowedArticle()) {
-            return new Response('/update?message=', sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $articleID, $request->articleName, $request->articlePage));
+            return new Response("/update/$request->articleName/$request->articlePage?message=", sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $articleID, $request->articleName, $request->articlePage));
         }
 
         $this->artRepo->remove($articleID);
 
-        return new Response('/update?message=', sprintf(Messages::ARTICLE_DELETED, $articleID));
+        return new Response("/update/$request->articleName/$request->articlePage?message=", sprintf(Messages::ARTICLE_DELETED, $articleID));
     }
 }

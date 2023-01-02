@@ -48,6 +48,7 @@ class RequestController
         if (isset($request->remember)) {
 
             setcookie('remember', $request->username, time() + (86400 * 7), '/');
+            $this->memberController->login($request->username);
 
             return new Response('member/' . $request->username . '?message=', sprintf(Messages::REQUETS_LOGIN, $request->username));
         }

@@ -15,5 +15,6 @@ return [
     'request' => $container->get(Mlkali\Sa\Http\Request::class),
     'selector' => $selector,
     'message' => $message,
-    'csrf' => $_ENV['CSRFKEY']
+    'csrf' => $_ENV['CSRFKEY'],
+    'cockie' => $_COOKIE
 ];

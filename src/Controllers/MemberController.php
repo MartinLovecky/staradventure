@@ -4,6 +4,7 @@ namespace Mlkali\Sa\Controllers;
 
 use Mlkali\Sa\Http\Request;
 use Mlkali\Sa\Http\Response;
+use Mlkali\Sa\Support\Messages;
 use Mlkali\Sa\Support\Selector;
 use Mlkali\Sa\Support\Encryption;
 use Mlkali\Sa\Database\Entity\Member;
@@ -30,8 +31,8 @@ class MemberController
     public function register(Request $request): void
     {
         $memberID = $request->username . '|' . $request->email;
-
         // Insert the member into the database
+        $this->memRepo->insert('info', ['member' => $memberID]);
         $this->memRepo->insert('members', [
             'username' => $request->username,
             'email' => $request->email,
@@ -40,7 +41,6 @@ class MemberController
             'permission' => 'user',
             'member_id' => $memberID
         ]);
-        $this->memRepo->insert('info', ['member' => $memberID]);
         // Send an activation email to the user
         $this->memRepo->sendEmail(
             [
@@ -130,10 +130,10 @@ class MemberController
         if (strcmp($memberID, $memberDB) == 0 && strcmp($token, $tokenDB) == 0) {
             $this->memRepo->activateMember($memberID);
 
-            return new Response('/login?message=', 'success.Aktivace úspšná můžete se přihlásit', '#login');
+            return new Response('/login?message=', Messages::REQUEST_ACTIVATE, '#login');
         }
 
-        return new Response('/register?message=', 'danger.Aktivace účtu se nezdařila kontaktujte podporu', '#register');
+        return new Response('/register?message=', Messages::REQUEST_ACTIVATE_FAIL, '#register');
     }
     /**
      * Logs in the member with the specified username
@@ -161,7 +161,7 @@ class MemberController
         unset($_COOKIE['remember']);
         setcookie('remember', '', time() - 3600, '/');
 
-        return new Response('/#');
+        return new Response('/?message=',Messages::REQUEST_LOGOUT,'#');
     }
 
     public function update(Request $request, string $avatar): void
@@ -184,27 +184,23 @@ class MemberController
     {
         $this->memRepo->setPermission($permission, $memberID);
 
-        return new Response('/usertable');
+        return new Response('/usertable?message=', Messages::REQUEST_PERMISSION);
     }
 
     public function delete(string $memberID): Response
     {
         $this->memRepo->deleteMember($memberID);
 
-        return new Response('/usertable');
+        return new Response('/usertable?message=', Messages::REQUEST_DELETE);
     }
 
-    /*  
-    public function recallUser(): void
+    
+    public function recallUser(string $username): Response
     {
-        if($this->remember){
-            
-            $username = $_COOKIE['remember'];
+        $this->login($username);
 
-            $memberID = $this->getMemberID($username);
+        return new Response('member/' . $username . '?message=', sprintf(Messages::REQUETS_LOGIN, $username));
 
-            $this->setMemberData($memberID);
-        }
     }
-*/
+
 }
