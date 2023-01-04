@@ -121,8 +121,8 @@ class MemberController
      */
     public function activate(): Response
     {
-        $memberID = $this->enc->decrypt($this->selector->secondQueryValue);
-        $token = $this->selector->thirdQueryValue;
+        $memberID = $this->enc->decrypt($this->selector->queryID);
+        $token = $this->selector->queryToken;
 
         $memberDB = $this->memRepo->getMemberInfo('member_id', $memberID, 'member_id');
         $tokenDB = $this->memRepo->getMemberInfo('member_id', $memberID, 'active');

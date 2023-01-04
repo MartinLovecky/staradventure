@@ -1,1 +1,0 @@
-@php  $member->removeBookmark($selector->fristQueryValue,$enc->decrypt($selector->secondQueryValue));  @endphp

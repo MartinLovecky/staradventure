@@ -52,27 +52,26 @@ class Messages extends Enum
      */
     public function getQueryMessage(): void
     {
-        if (isset($this->selector->fristQueryValue) && $this->selector->queryAction === 'message') {
-
-            $this->setMessageBag($this->enc->decrypt($this->selector->fristQueryValue));
+        if (isset($this->selector->queryMsg) && $this->enc->decrypt($this->selector->queryMsg) !== '') {
+            $this->setMessageBag($this->enc->decrypt($this->selector->queryMsg));
         }
     }
 
     public static function createEmailMessage(string $templateType, array $placeholderValues): string
     {
         switch ($templateType) {
-          case 'register':
-            $template = self::EMAIL_TEMPLATE_REGISTER;
-            break;
-          case 'reset':
-            $template = self::EMAIL_TEMPLATE_RESET;
-            break;
-         case 'user':
-            $template = self::EMAIL_TEMPLATE_USER;
-            break;
-         case 'main':
-            $template = self::MAIN_EMAIL_TEMPLATE;
-            break;
+            case 'register':
+                $template = self::EMAIL_TEMPLATE_REGISTER;
+                break;
+            case 'reset':
+                $template = self::EMAIL_TEMPLATE_RESET;
+                break;
+            case 'user':
+                $template = self::EMAIL_TEMPLATE_USER;
+                break;
+            case 'main':
+                $template = self::MAIN_EMAIL_TEMPLATE;
+                break;
         }
         return vsprintf($template, $placeholderValues);
     }
@@ -81,16 +80,16 @@ class Messages extends Enum
     {
         switch ($templateType) {
             case 'register':
-              $info = ['subject' => 'Potvrzení registrace', 'to' => $recipient];
-              break;
+                $info = ['subject' => 'Potvrzení registrace', 'to' => $recipient];
+                break;
             case 'reset':
-              $info = ['subject ' => 'Reset hesla', 'to' => $recipient];
-              break;
-           case 'user':
-              $info = ['subject' => 'Zapomenutné username', 'to' => $recipient];
-              break;
+                $info = ['subject ' => 'Reset hesla', 'to' => $recipient];
+                break;
+            case 'user':
+                $info = ['subject' => 'Zapomenutné username', 'to' => $recipient];
+                break;
         }
-        return $info;     
+        return $info;
     }
 
     /**
@@ -104,7 +103,6 @@ class Messages extends Enum
 
             foreach ($this->getMessageBag() as $key => $value) {
                 $exploded = explode('.', $value);
-
                 $this->style = $exploded[0];
                 $this->message = $exploded[1];
             }

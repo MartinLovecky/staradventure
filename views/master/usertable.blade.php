@@ -52,22 +52,22 @@
     </tbody>
   </table>
 @php
-  if(isset($selector->secondQueryValue)){
-    switch ($enc->decrypt($selector->secondQueryValue)) {
+  if(isset($selector->queryAction)){
+    switch ($enc->decrypt($selector->queryAction)) {
       case 'visitor':
-        $memberController->permission('visitor', $enc->decrypt($selector->fristQueryValue));
+        $memberController->permission('visitor', $enc->decrypt($selector->queryID));
       break;
       case 'user':
-        $memberController->permission('user', $enc->decrypt($selector->fristQueryValue));
+        $memberController->permission('user', $enc->decrypt($selector->queryID));
       break;
       case 'rewriter':
-        $memberController->permission('rewriter', $enc->decrypt($selector->fristQueryValue));
+        $memberController->permission('rewriter', $enc->decrypt($selector->queryID));
       break;
       case 'admin':
-        $memberController->permission('admin', $enc->decrypt($selector->fristQueryValue));
+        $memberController->permission('admin', $enc->decrypt($selector->queryID));
       break;
       case 'delete':
-        $memberController->delete($enc->decrypt($selector->fristQueryValue));
+        $memberController->delete($enc->decrypt($selector->queryID));
       break;
     }
   }

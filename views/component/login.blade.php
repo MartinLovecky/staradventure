@@ -26,7 +26,7 @@
         </ul>
         <p class="text-muted text-center">Nemáte účet?<a href="/register#register">&nbsp;přidejte se</a>.<br>
             <a href="/reset#reset">Zapomenutné heslo?</a><br>
-            <a href="/reset?action={{base64_encode('forgotenUser')}}#reset">Zapomenutný Username?</a>
+            <a href="/reset?id={{base64_encode('forgotenUser')}}#reset">Zapomenutný Username?</a>
         </p>
         <input type='hidden' name="token" value="{{$enc->encrypt($csrf)}}">
         <input type="hidden" id="g-recaptcha-response" name="grecaptcharesponse">

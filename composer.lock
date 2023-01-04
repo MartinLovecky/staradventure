@@ -609,12 +609,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPMailer/PHPMailer.git",
-                "reference": "0064f26786dc99c2fffad0e4615e54c5fa2e99fa"
+                "reference": "7c38295b17a477837e4954f204988e06eb3354f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/0064f26786dc99c2fffad0e4615e54c5fa2e99fa",
-                "reference": "0064f26786dc99c2fffad0e4615e54c5fa2e99fa",
+                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/7c38295b17a477837e4954f204988e06eb3354f3",
+                "reference": "7c38295b17a477837e4954f204988e06eb3354f3",
                 "shasum": ""
             },
             "require": {
@@ -624,17 +624,18 @@
                 "php": ">=5.5.0"
             },
             "require-dev": {
-                "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
-                "doctrine/annotations": "^1.2",
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.7.2",
+                "doctrine/annotations": "^1.2.6 || ^1.13.3",
                 "php-parallel-lint/php-console-highlighter": "^1.0.0",
                 "php-parallel-lint/php-parallel-lint": "^1.3.2",
                 "phpcompatibility/php-compatibility": "^9.3.5",
                 "roave/security-advisories": "dev-latest",
                 "squizlabs/php_codesniffer": "^3.7.1",
-                "yoast/phpunit-polyfills": "^1.0.0"
+                "yoast/phpunit-polyfills": "^1.0.4"
             },
             "suggest": {
                 "ext-mbstring": "Needed to send email in multibyte encoding charset or decode encoded addresses",
+                "ext-openssl": "Needed for secure SMTP sending and DKIM signing",
                 "greew/oauth2-azure-provider": "Needed for Microsoft Azure XOAUTH2 authentication",
                 "hayageek/oauth2-yahoo": "Needed for Yahoo XOAUTH2 authentication",
                 "league/oauth2-google": "Needed for Google XOAUTH2 authentication",
@@ -681,7 +682,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-11-22T09:54:08+00:00"
+            "time": "2022-12-26T15:32:03+00:00"
         },
         {
             "name": "phpoption/phpoption",
@@ -1070,12 +1071,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "6228b11059d7b279be699682f164a107ba9a268d"
+                "reference": "92a342cd476603a3e8404bc802626df14da46e93"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/6228b11059d7b279be699682f164a107ba9a268d",
-                "reference": "6228b11059d7b279be699682f164a107ba9a268d",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/92a342cd476603a3e8404bc802626df14da46e93",
+                "reference": "92a342cd476603a3e8404bc802626df14da46e93",
                 "shasum": ""
             },
             "require": {
@@ -1135,7 +1136,7 @@
                 "dump"
             ],
             "support": {
-                "source": "https://github.com/symfony/var-dumper/tree/v6.2.0"
+                "source": "https://github.com/symfony/var-dumper/tree/6.2"
             },
             "funding": [
                 {
@@ -1151,7 +1152,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-11-28T13:41:56+00:00"
+            "time": "2023-01-01T08:38:09+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -1254,5 +1255,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.3.0"
 }

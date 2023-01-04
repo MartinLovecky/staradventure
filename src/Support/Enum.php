@@ -42,18 +42,18 @@ class Enum
     const EMAIL_TEMPLATE_REGISTER = '<p style="font-size:15px;line-height:22px;margin:15px 0;padding:0;font-weight:bold;color:#000">Dobrý den,</p>
     <p style="font-size:15px;line-height:22px;margin:15px 0;padding:0;color:#000">Přihlášení na StarAdventure provedete pomocí uživatelského jména <strong>%s</strong>. Z bezpečnostních důvodů neposíláme Vaše heslo.</p>
     <span style="text-align:center;display:block">
-    <a href="%s/activate?x=%s&amp;y=%s&amp;z=%s" style="background:#28a745;border-radius:4px;color:#fff;display:inline-block;font-weight:700;margin:16px auto 32px;padding:15px 25px;text-decoration:none" target="_blank">Aktivovat účet &nbsp;»</a></span>
+    <a href="%s/activate?x=%s&amp;id=%s&amp;token=%s" style="background:#28a745;border-radius:4px;color:#fff;display:inline-block;font-weight:700;margin:16px auto 32px;padding:15px 25px;text-decoration:none" target="_blank">Aktivovat účet &nbsp;»</a></span>
     <p style="font-size:15px;line-height:22px;margin:15px 0;padding:0">Hezký den Vám přeje Admin StarAdventure &#169; Sensei</p>';
 
     const EMAIL_TEMPLATE_RESET = '<p style="font-size:15px;line-height:22px;margin:15px 0;padding:0;font-weight:bold;color:#000">Resetovat heslo?</p>
     <p style="font-size:15px;line-height:22px;margin:15px 0;padding:0;color:#000">Pokud jste nám poslali požadavek na obnovení hesla účtu <strong>%s</strong>. dokončete proces kliknutím na "Reset Hesla". Pokud jste to nebyli vy, kdo požadavek poslal, můžete tento e-mail ignorovat.</p>
     <span style="text-align:center;display:block">
-    <a href="%s/newpassword?x=%s&amp;y=%s&amp;z=%s#newpassword" style="background:#28a745;border-radius:4px;color:#fff;display:inline-block;font-weight:700;margin:16px auto 32px;padding:15px 25px;text-decoration:none" target="_blank">Reset Hesla &nbsp;»</a></span>
+    <a href="%s/newpassword?x=%s&amp;id=%s&amp;token=%s#newpassword" style="background:#28a745;border-radius:4px;color:#fff;display:inline-block;font-weight:700;margin:16px auto 32px;padding:15px 25px;text-decoration:none" target="_blank">Reset Hesla &nbsp;»</a></span>
     <p style="font-size:15px;line-height:22px;margin:15px 0;padding:0">Hezký den Vám přeje Admin StarAdventure &#169; Sensei</p>';
 
     const EMAIL_TEMPLATE_USER = '<p style="font-size:15px;line-height:22px;margin:15px 0;padding:0;font-weight:bold;color:#000">Uživatelské jméno</p>
     <p style="font-size:15px;line-height:22px;margin:15px 0;padding:0;color:#000">Pokud jste nám poslali požadavek na jméno <strong>%s</strong>. dokončete proces kliknutím na "Získat jméno". Pokud jste to nebyli vy, kdo požadavek poslal, můžete tento e-mail ignorovat.</p>
     <span style="text-align:center;display:block">
-    <a href="%s/newpassword?x=%s&amp;y=%s&amp;z=%s#newpassword" style="background:#28a745;border-radius:4px;color:#fff;display:inline-block;font-weight:700;margin:16px auto 32px;padding:15px 25px;text-decoration:none" target="_blank">Získat jméno &nbsp;»</a></span>
+    <a href="%s/newpassword?x=%s&amp;id=%s&amp;token=%s#newpassword" style="background:#28a745;border-radius:4px;color:#fff;display:inline-block;font-weight:700;margin:16px auto 32px;padding:15px 25px;text-decoration:none" target="_blank">Získat jméno &nbsp;»</a></span>
     <p style="font-size:15px;line-height:22px;margin:15px 0;padding:0">Hezký den Vám přeje Admin StarAdventure &#169; Sensei</p>';
 }

@@ -108,6 +108,8 @@ class RequestController
 
         $validate = $this->validator->validateAvatar($filePath, $fileType, $fileSize, $request);
 
+        dd($fileType,$fileSize);
+
         if (isset($validate)) {
             return new Response('/reset?message=', $validate, '#updatemember');
         }

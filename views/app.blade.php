@@ -6,6 +6,6 @@
     @elseif($selector->action == 'show' && isset($selector->page))
         @component('master.show_article')@endcomponent
     @else
-        @component("master.$selector->viewPage")@endcomponent
+        @component("master.$selector->component")@endcomponent
     @endif
 @include('master.includes.footer')
