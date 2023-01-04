@@ -1,6 +1,6 @@
 {
     "name": "mlkali/sa",
-    "description": "one page website",
+    "description": "personal website for my story",
     "type": "project",
     "require": {
         "symfony/var-dumper": "6.2.x-dev",
@@ -8,7 +8,6 @@
         "phpmailer/phpmailer": "dev-master",
         "vlucas/phpdotenv": "5.5.x-dev",
         "envms/fluentpdo": "dev-master",
-        "paragonie/halite": "^5",
         "league/container": "4.x-dev"
     },
     "license": "none",
