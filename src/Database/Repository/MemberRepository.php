@@ -18,18 +18,6 @@ class MemberRepository
     ) {
     }
 
-    /**
-     * This function gets data from specific member or all members data
-     *
-     * @param string|null $column name form DB example: 'member_id' etc..
-     * @param string|null $value of column we search
-     * @param string|null $item column value to be recived
-     * @return mixed 
-     * - if $column && $value is null where() is ignored
-     * - return fetchAll()
-     * - if $item is string fetch() retrun string
-     * - if $item is null fetch() return array
-     */
     public function getMemberInfo(?string $column = null, ?string $value = null, ?string $item = null)
     {
         $stmt = $this->db->query

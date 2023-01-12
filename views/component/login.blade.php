@@ -8,7 +8,7 @@
     <h2 class="major">Přihlášení</h2>
     {!! 
         $form->options(['target'=>'requestHandler'])
-        ->vars(['requestController'=>$requestController, 'request' => $request])
+        ->vars(['memberController'=>$memberController, 'request' => $request])
         ->run() 
     !!}
     <div class="fields">

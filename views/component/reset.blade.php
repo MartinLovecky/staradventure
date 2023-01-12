@@ -8,7 +8,7 @@
     <h2 class="major">@if(isset($query)) {{ "Zapomenutné Username" }} @else {{ "Reset hesla" }} @endif</h2>
     {!! 
         $form->options(['target'=>'requestHandler'])
-        ->vars(['requestController'=>$requestController, 'request' => $request])
+        ->vars(['memberController'=>$memberController, 'request' => $request])
         ->run() 
     !!}
     <div class="fields">

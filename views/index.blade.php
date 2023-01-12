@@ -1,11 +1,8 @@
 @include('master.includes.main_head', ['selector' => $selector])
     {{--Messages --}}
-    @if ($message->hasAny())
-        @component('component.message', ['message' => $message]) @endcomponent  
-    @endif
-    {{-- remeber --}}
+    @if ($message->hasAny())  
     @if(isset($cockie['remember']) && $selector->viewName !== 'index')
-        @php  $memberController->recallUser($cockie['remember']);  @endphp
+        @php  $memberController->setMember($cockie['remember']);  @endphp
     @endif
     {{-- Header Links --}}
     @component('component.header')@endcomponent

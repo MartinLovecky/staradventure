@@ -2,6 +2,8 @@
 
 namespace Mlkali\Sa\Http;
 
+use AllowDynamicProperties;
+
 #[AllowDynamicProperties]
 class Request
 {
@@ -13,7 +15,14 @@ class Request
      */
     public function getRequest()
     {
+        foreach($_FILES as $fkey => $fvalue)
+        {
+            $this->{$fkey} = $fvalue;
+        }
+
         foreach ($_POST as $key => $value)
+        {
             $this->{$key} = $value;
+        }
     }
 }

@@ -8,17 +8,31 @@
     <h2 class="major">Upravit profil</h2>
     {!! 
 	    $form->options(['target'=>'requestHandler', 'enctype' => 'multipart/form-data'])
-		->vars(['requestController'=>$requestController, 'request' => $request])
+		->vars(['memberController'=>$memberController, 'request' => $request])
 		->run() 
 	!!}
         <div class="fields">
-            <div class="field half"><input class="form-control text-white" type="text" name="username" placeholder="{{$member->username}}*"></div>
-            <div class="field half"><input class="form-control text-white" type="email" name="email" placeholder="{{$member->email}}*"></div>
-            <div class="field half"><input class="form-control text-white" type="text" name="name" placeholder="@isset($member->memberName){{$member->memberName}}*@endisset{{'Jméno*'}}"></div>
-            <div class="field half"><input class="form-control text-white" type="text" name="surname" placeholder="@isset($member->memberSurname){{$member->memberSurname}}*@endisset{{'Příjmení*'}}"></div>
-            <div class="field half"><label for="age">Datum narození:*</label><input class="form-controll text-dark" type="date" name="age"></div>
-            <div class="field half"><label for="avatar">Avatar: jpg/png/jpeg</label><input type="file" name="avatar" required></div>
-            <div class="field"><input class="form-control text-white" type="text" name="location" placeholder="@isset($member->location){{$member->location}}*@endisset{{'Město*'}}"></div>
+            <div class="field half">
+                <input class="form-control text-white" type="text" name="username" placeholder="{{$member->username}}*">
+            </div>
+            <div class="field half">
+                <input class="form-control text-white" type="email" name="email" placeholder="{{$member->email}}*">
+            </div>
+            <div class="field half">
+                <input class="form-control text-white" type="text" name="name" placeholder="@isset($member->memberName){{$member->memberName}}*@endisset{{'Jméno*'}}">
+            </div>
+            <div class="field half">
+                <input class="form-control text-white" type="text" name="surname" placeholder="@isset($member->memberSurname){{$member->memberSurname}}*@endisset{{'Příjmení*'}}">
+            </div>
+            <div class="field half"><label for="age">Datum narození:*</label>
+                <input class="form-controll text-dark" type="date" name="age">
+            </div>
+            <div class="field half"><label for="avatar">Avatar: jpg/png/jpeg</label>
+                <input type="file" name="avatar" required>
+            </div>
+            <div class="field">
+                <input class="form-control text-white" type="text" name="location" placeholder="@isset($member->location){{$member->location}}*@endisset{{'Město*'}}">
+            </div>
             <div class="field">
                 <div class="form-check"><input class="form-check-input" type="radio" id="formCheck-2" name="visible"><label class="form-check-label" for="formCheck-2"><a title="vaše informace budou veřejné" href="/terms#terms">Viditelné <b style="color:#e72d2d">**</b></a></label></div>
              </div>     
