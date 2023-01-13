@@ -1,5 +1,10 @@
 <?php
 
+//REVIEW - FOR DEBUG ONLY
+ini_set('display_startup_errors', 1);
+ini_set('display_errors', 1);
+error_reporting(-1);
+
 use eftec\bladeone\BladeOne;
 
 session_start();

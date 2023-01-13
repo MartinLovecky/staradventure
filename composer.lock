@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/EFTEC/BladeOne.git",
-                "reference": "b912e9f060aaa999c0ac2fcf4b40f7a8e6cd66c0"
+                "reference": "26b79fc337a7c584c7d222dc1dbc6d34771d0394"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EFTEC/BladeOne/zipball/b912e9f060aaa999c0ac2fcf4b40f7a8e6cd66c0",
-                "reference": "b912e9f060aaa999c0ac2fcf4b40f7a8e6cd66c0",
+                "url": "https://api.github.com/repos/EFTEC/BladeOne/zipball/26b79fc337a7c584c7d222dc1dbc6d34771d0394",
+                "reference": "26b79fc337a7c584c7d222dc1dbc6d34771d0394",
                 "shasum": ""
             },
             "require": {
@@ -62,9 +62,9 @@
             ],
             "support": {
                 "issues": "https://github.com/EFTEC/BladeOne/issues",
-                "source": "https://github.com/EFTEC/BladeOne/tree/4.7.1"
+                "source": "https://github.com/EFTEC/BladeOne/tree/4.8"
             },
-            "time": "2022-11-05T16:07:59+00:00"
+            "time": "2023-01-12T01:22:51+00:00"
         },
         {
             "name": "envms/fluentpdo",
