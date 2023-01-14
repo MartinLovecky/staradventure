@@ -4,6 +4,12 @@ namespace Mlkali\Sa\Database\Entity;
 
 use Mlkali\Sa\Database\Repository\ArticleRepository;
 
+/**
+ * @param ArticleRepository $artRepo
+ * @param null|string $articleChapter
+ * @param null|string $articleID
+ * @param null|string $articleBody
+ */
 class Article
 {
 

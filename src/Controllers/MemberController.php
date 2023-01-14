@@ -11,6 +11,14 @@ use Mlkali\Sa\Database\Entity\Member;
 use Mlkali\Sa\Database\Repository\MemberRepository;
 use Mlkali\Sa\Support\Validator;
 
+/**
+ * @param Selector $selector
+ * @param Encryption $enc
+ * @param Member $member
+ * @param MemberRepository $memRepo
+ * @param Validator $validator
+ * @param string $token
+ */
 class MemberController
 {
 
@@ -128,12 +136,6 @@ class MemberController
         return new Response('/?message=', Messages::REQUETS_RESET_PASSWORD, '#login');
 
     }
-
-    //TODO - remove and use $memRepo in view
-    public function allMembers(): array
-    {
-        return $this->memRepo->getMemberInfo();
-    }
  
     public function activate(): Response
     {
@@ -154,7 +156,9 @@ class MemberController
    
     public function login(Request $request): Response
     {
-        $validate = $this->validator->validateLogin($request);
+        $active = $this->memRepo->getMemberInfo('username', $request->username, 'active');
+        $activeMember = is_string($active) ? $active : '';
+        $validate = $this->validator->validateLogin($request, $activeMember);
 
         if (isset($validate)) {
             @$_SESSION = ['old_username' => $request->username];
@@ -238,11 +242,16 @@ class MemberController
         return new Response('/usertable?message=', Messages::REQUEST_DELETE);
     }
 
-    public function setMember(string $username)
+    public function setMember(string $username): void
     {
-        $memberData = $this->memRepo->getemberInfo('username', $username);
+        $memberData = $this->memRepo->getMemberInfo('username', $username);
 
         foreach ($memberData as $key => $value)
             @$_SESSION[$key] = $value;
+    }
+
+    public function allMembers(): array
+    {
+        return $this->memRepo->getMemberInfo();
     }
 }

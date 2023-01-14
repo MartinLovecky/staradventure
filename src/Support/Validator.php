@@ -51,10 +51,13 @@ class Validator
         return null;
     }
 
-    public function validateLogin(Request $request): ?string
+    public function validateLogin(Request $request, string $activeMember): ?string
     {
         if (!is_null($this->validateCaptcha($request->grecaptcharesponse))) {
             return $this->validateCaptcha($request->grecaptcharesponse);
+        }
+        if(strcmp($activeMember, 'yes') !== 0) {
+            return Messages::VALIDATION_ACTIVE_MEMBER;
         }
         if (!$this->validToken($request->token)) {
             return Messages::VALIDATION_CRSF_ERROR;

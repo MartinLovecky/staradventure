@@ -6,6 +6,7 @@ ini_set('display_errors', 1);
 error_reporting(-1);
 
 use eftec\bladeone\BladeOne;
+use Mlkali\Sa\Support\Messages;
 
 session_start();
 
@@ -27,4 +28,5 @@ $selector->getViewName(require_once(__DIR__ . '/app/allowedViews.php'));
 $message = $container->get(Mlkali\Sa\Support\Messages::class);
 $message->getQueryMessage();
 
+//FIXME - IF message contains symbol . rest of message will no be displayed exp = danger.some.thing only red some will show will be fixed
 echo $blade->run($selector->viewName, require_once(__DIR__ . '/app/viewVariables.php'));

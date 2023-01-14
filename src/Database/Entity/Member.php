@@ -2,6 +2,20 @@
 
 namespace Mlkali\Sa\Database\Entity;
 
+/**
+ * @param bool $logged
+ * @param bool $visible
+ * @param string $username
+ * @param null|string $email
+ * @param string $permission
+ * @param null|string $memberName
+ * @param null|string $memberSurname
+ * @param null|string $location
+ * @param string $avatar
+ * @param null|string $resetToken
+ * @param bool $resetComplete
+ * @param null|string $memberID
+ */
 class Member
 {
 
@@ -9,14 +23,12 @@ class Member
         private bool $logged = false,
         private bool $visible = false,
         private string $username = 'visitor',
-        protected ?string $password = null,
         private ?string $email = null,
-        private ?string $activeMember = null,
         private string $permission = 'visit',
         private ?string $memberName = null,
         private ?string $memberSurname = null,
         private ?string $location = null,
-        private $age = null, //not sure about type
+        //private $age = null, //not sure about type
         private string $avatar = 'empty_profile.png',
         private ?string $resetToken = null,
         private bool $resetComplete = false,

@@ -2,9 +2,11 @@
 
 namespace Mlkali\Sa\Support;
 
+use Minify_HTML;
 use Mlkali\Sa\Support\Enum;
 use Mlkali\Sa\Support\Selector;
 use Mlkali\Sa\Support\Encryption;
+
 
 class Messages extends Enum
 {
@@ -56,23 +58,49 @@ class Messages extends Enum
             $this->setMessageBag($this->enc->decrypt($this->selector->queryMsg));
         }
     }
-
+    //TODO - This is kinda janky but it works
     public static function createEmailMessage(string $templateType, array $placeholderValues): string
     {
         switch ($templateType) {
             case 'register':
-                $template = self::EMAIL_TEMPLATE_REGISTER;
+                $template = str_replace(
+                    "\n",
+                    " ",
+                    Minify_HTML::minify(
+                        file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/public/template/register.html'),
+                        'cssMinifier'
+                    )
+                );
                 break;
             case 'reset':
-                $template = self::EMAIL_TEMPLATE_RESET;
+                $template = str_replace(
+                    "\n",
+                    " ",
+                    Minify_HTML::minify(
+                        file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/public/template/reset.html'),
+                        'cssMinifier'
+                    )
+                );
                 break;
             case 'user':
-                $template = self::EMAIL_TEMPLATE_USER;
+                $template = str_replace(
+                    "\n",
+                    " ",
+                    Minify_HTML::minify(
+                        file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/public/template/user.html'),
+                        'cssMinifier'
+                    )
+                );
                 break;
             case 'main':
-                $template = self::MAIN_EMAIL_TEMPLATE;
+                $template = Minify_HTML::minify(
+                    file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/public/template/main.html'),
+                    'cssMinifier'
+                );
+                return str_replace(['URL', "\n"], [$placeholderValues[0], ' '], $template);
                 break;
         }
+
         return vsprintf($template, $placeholderValues);
     }
 

@@ -8,6 +8,13 @@ use Mlkali\Sa\Database\Entity\Article;
 use Mlkali\Sa\Database\Repository\ArticleRepository;
 use Mlkali\Sa\Support\Messages;
 
+/**
+ * @param Article $article
+ * @param ArticleRepository $artRepo
+ * @method Response update(Request $request)
+ * @method Response create(Request $request)
+ * @method Response delete(Request $request)
+ */
 class ArticleController
 {
 
@@ -19,7 +26,7 @@ class ArticleController
 
     public function update(Request $request): Response
     {
-        $articleID = $request->articleName .'|'. $request->articlePage;
+        $articleID = $request->articleName . '|' . $request->articlePage;
 
         if (!$this->artRepo->exist($articleID) && !$this->artRepo->allowedArticle()) {
             return new Response("/update/$request->articleName/$request->articlePage?message=", sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $articleID, $request->articleName, $request->articlePage));
@@ -40,8 +47,8 @@ class ArticleController
 
     public function create(Request $request): Response
     {
-        $articleID = $request->articleName .'|'. $request->articlePage;
-        
+        $articleID = $request->articleName . '|' . $request->articlePage;
+
         if (!$this->artRepo->exist($articleID) && !$this->artRepo->allowedArticle()) {
             return new Response("/update/$request->articleName/$request->articlePage?message=", sprintf(Messages::ARTICLE_DOES_ALLREADY_EXIST, $articleID, $request->articleName, $request->articlePage));
         }
@@ -53,7 +60,7 @@ class ArticleController
             ->setArticleID($articleID)
             ->setArticleChapter($chapter)
             ->setArticleBody($article_body);
-            
+
         $this->artRepo->add($this->article);
 
         return new Response("/update/$request->articleName/$request->articlePage?message=", sprintf(Messages::ARTICLE_CREATED, $articleID));
@@ -61,7 +68,7 @@ class ArticleController
 
     public function delete(Request $request): Response
     {
-        $articleID = $request->articleName .'|'. $request->articlePage;
+        $articleID = $request->articleName . '|' . $request->articlePage;
 
         if (!$this->artRepo->exist($articleID) && !$this->artRepo->allowedArticle()) {
             return new Response("/update/$request->articleName/$request->articlePage?message=", sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $articleID, $request->articleName, $request->articlePage));
