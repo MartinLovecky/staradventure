@@ -2,6 +2,7 @@
 
 namespace Mlkali\Sa\Support;
 
+use Exception;
 use voku\helper\HtmlMin;
 use Mlkali\Sa\Support\Enum;
 use Mlkali\Sa\Support\Selector;
@@ -62,29 +63,27 @@ class Messages extends Enum
         }
     }
 
-    public function createEmailMessage(string $templateType, array $placeholderValues): string
+    public function createEmailMessage(string $templateName, string|array $variables): string
     {
-        if ($templateType === 'main') {
-
-            $template = $this->htmlMin->minify(file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/public/template/main.html'));
-            
-            return str_replace(['URL', "\n"], [$placeholderValues[0], " "], $template);
+        if (!is_readable(__DIR__ . '/../../public/template/' . $templateName . '.html')) {
+            throw new Exception("$templateName.html nexistuje ve složce /public/templates", 1);
         }
 
-        $template = str_replace(
-            "\n",
-            " ",
-           $this->htmlMin->minify(
-                file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/public/template/' . $templateType . '.html')
-            )
-        );
+        if ($templateName === 'main' && is_string($variables)) {
 
-        return vsprintf($template, $placeholderValues);
+            $template = $this->htmlMin->minify(file_get_contents(__DIR__ . '/../../public/template/' . $templateName . '.html'));
+
+            return str_replace(['URL', "\n"], [$variables, " "], $template);
+        }
+       
+        $template = str_replace("\n", " ", $this->htmlMin->minify(file_get_contents(__DIR__ . '/../../public/template/' . $templateName . '.html')));
+        
+        return vsprintf($template, $variables);
     }
 
-    public static function getEmailInfo(string $templateType, string $recipient): array
+    public static function getEmailInfo(string $templateName, string $recipient): array
     {
-        switch ($templateType) {
+        switch ($templateName) {
             case 'register':
                 $info = ['subject' => 'Potvrzení registrace', 'to' => $recipient];
                 break;

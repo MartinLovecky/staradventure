@@ -46,12 +46,11 @@ class MemberRepository
             ->execute();
     }
 
-    public function sendEmail(array $data, string $templateType): void
+    public function sendEmail(array $data, string $templateName): void
     {
-        $main = $this->message->createEmailMessage('main', [$_SERVER['SERVER_NAME']]);
+        $main = $this->message->createEmailMessage('main', $_SERVER['SERVER_NAME']);
         
-        $dynamic = $this->message->createEmailMessage(
-            $templateType,
+        $dynamic = $this->message->createEmailMessage($templateName,
             [
                 $data['username'],
                 $_SERVER['SERVER_NAME'],
@@ -63,7 +62,7 @@ class MemberRepository
 
         $body = str_replace('TEMPLATE', $dynamic, $main);
 
-        $info = Messages::getEmailInfo($templateType, $data['recipient']);
+        $info = Messages::getEmailInfo($templateName, $data['recipient']);
 
         $this->mailer->sender($body, $info);
     }
