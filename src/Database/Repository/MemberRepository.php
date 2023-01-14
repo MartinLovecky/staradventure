@@ -14,7 +14,8 @@ class MemberRepository
     public function __construct(
         private DB $db,
         private Mailer $mailer,
-        private Encryption $enc
+        private Encryption $enc,
+        private Messages $message
     ) {
     }
 
@@ -47,9 +48,9 @@ class MemberRepository
 
     public function sendEmail(array $data, string $templateType): void
     {
-        $main = Messages::createEmailMessage('main', [$_SERVER['SERVER_NAME']]);
+        $main = $this->message->createEmailMessage('main', [$_SERVER['SERVER_NAME']]);
         
-        $dynamic = Messages::createEmailMessage(
+        $dynamic = $this->message->createEmailMessage(
             $templateType,
             [
                 $data['username'],

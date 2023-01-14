@@ -154,7 +154,7 @@ class Validator
 
         if (!$res['success']) {
             foreach ($res['error-codes'] as $msg) {
-                return 'danger.' . $msg;
+                return 'danger_' . $msg;
             }
         }
         return null;

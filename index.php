@@ -28,5 +28,4 @@ $selector->getViewName(require_once(__DIR__ . '/app/allowedViews.php'));
 $message = $container->get(Mlkali\Sa\Support\Messages::class);
 $message->getQueryMessage();
 
-//FIXME - IF message contains symbol . rest of message will no be displayed exp = danger.some.thing only red some will show will be fixed
 echo $blade->run($selector->viewName, require_once(__DIR__ . '/app/viewVariables.php'));

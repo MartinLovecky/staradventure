@@ -4,3 +4,4 @@ public/img/
 .*
 !.gitignore
 !.htaccess
+composer-unused.phar

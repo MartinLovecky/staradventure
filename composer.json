@@ -9,7 +9,8 @@
         "vlucas/phpdotenv": "5.5.x-dev",
         "envms/fluentpdo": "dev-master",
         "league/container": "4.x-dev",
-        "htmlmin/htmlmin": "^9.0"
+        "voku/html-min": "dev-master"
+        
     },
     "license": "none",
     "autoload": {
