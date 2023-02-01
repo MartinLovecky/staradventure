@@ -14,22 +14,11 @@ class MemberRepository
     public function __construct(
         private DB $db,
         private Mailer $mailer,
-        private Encryption $enc
+        private Encryption $enc,
+        private Messages $message
     ) {
     }
 
-    /**
-     * This function gets data from specific member or all members data
-     *
-     * @param string|null $column name form DB example: 'member_id' etc..
-     * @param string|null $value of column we search
-     * @param string|null $item column value to be recived
-     * @return mixed 
-     * - if $column && $value is null where() is ignored
-     * - return fetchAll()
-     * - if $item is string fetch() retrun string
-     * - if $item is null fetch() return array
-     */
     public function getMemberInfo(?string $column = null, ?string $value = null, ?string $item = null)
     {
         $stmt = $this->db->query
@@ -42,7 +31,11 @@ class MemberRepository
         }
         return $stmt->fetch($item);
     }
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> 79c63082bcf0d2c62485e62b96d9f6bbb854e1cc
     public function insert(string $table, array $values): void
     {
         $this->db->query->insertInto($table)->values($values)->execute();
@@ -56,6 +49,7 @@ class MemberRepository
             ->where('member_id', $memberID)
             ->execute();
     }
+<<<<<<< HEAD
 
     public function sendEmail(array $data): void
     {
@@ -63,6 +57,14 @@ class MemberRepository
 
         $dynamic = Messages::createEmailMessage(
             $data['templateType'],
+=======
+
+    public function sendEmail(array $data, string $templateName): void
+    {
+        $main = $this->message->createEmailMessage('main', $_SERVER['SERVER_NAME']);
+        
+        $dynamic = $this->message->createEmailMessage($templateName,
+>>>>>>> 79c63082bcf0d2c62485e62b96d9f6bbb854e1cc
             [
                 $data['username'],
                 $_SERVER['SERVER_NAME'],
@@ -74,11 +76,19 @@ class MemberRepository
 
         $body = str_replace('TEMPLATE', $dynamic, $main);
 
+<<<<<<< HEAD
         $info = Messages::getEmailInfo($data['templateType'], $data['recipient']);
 
         $this->mailer->sender($body, $info);
     }
 
+=======
+        $info = Messages::getEmailInfo($templateName, $data['recipient']);
+
+        $this->mailer->sender($body, $info);
+    }
+  
+>>>>>>> 79c63082bcf0d2c62485e62b96d9f6bbb854e1cc
     public function resetToken(string $memberID, string $token): void
     {
         $this->db->query
@@ -87,7 +97,11 @@ class MemberRepository
             ->where('member_id', $memberID)
             ->execute();
     }
+<<<<<<< HEAD
 
+=======
+ 
+>>>>>>> 79c63082bcf0d2c62485e62b96d9f6bbb854e1cc
     public function newPassword($request): void
     {
         $this->db->query

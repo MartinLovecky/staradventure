@@ -1,7 +1,19 @@
 <?php
 
 namespace Mlkali\Sa\Support;
-
+/**
+ * @param string $viewName
+ * @param string $component
+ * @param null|string $action
+ * @param null|string $article
+ * @param null|string $page
+ * @param null|string $title
+ * @param null|string $queryMsg
+ * @param null|string $queryAction
+ * @param null|string $queryID
+ * @param null|string $queryToken
+ * @method void getViewName(array $allowed)
+ */
 class Selector
 {
 
@@ -32,21 +44,16 @@ class Selector
         $this->queryMsg = $this->queryValues['message'] ?? $this->queryMsg;
         $this->queryID = $this->queryValues['id'] ?? $this->queryID;
         $this->queryAction = $this->queryValues['action'] ?? $this->queryAction;
-        $this->queryToken = $this->queryValues['token'] ?? $this->queryToken;  
+        $this->queryToken = $this->queryValues['token'] ?? $this->queryToken;
     }
 
-    /**
-     * sets View name for bladeone to load example [viewName.blade.php], also you can set up title for the view
-     *
-     * @param array $allowed
-     * @return void
-     */
     public function getViewName(array $allowed): void
     {
         if (in_array(strtolower($this->action), $allowed)) {
 
             match ($this->action) {
-                '', 'intro', 'login', 'newpassword', 'register', 'reset', 'storylist', 'terms', 'vop', 'updatemember' => $this->viewName = 'index', $this->title = 'SA | ' . $this->action,
+                '', 'intro', 'login', 'newpassword', 'register', 'reset', 'storylist', 'terms', 'vop', 'updatemember' => $this->viewName = 'index',
+                $this->title = 'SA | ' . $this->action,
                 'show' => [$this->viewName = 'app', $this->component = 'articles', $this->title = 'SA | ' . $this->action . ' | ' . $this->article ?? $this->article],
                 ['update', 'delete', 'create'] => [$this->viewName = 'app', $this->component = 'editor', $this->title = 'SA | ' . $this->action . ' | ' . $this->article ?? $this->article],
                 default => [$this->viewName = 'app', $this->component = $this->action, $this->title = 'SA | ' . $this->action . ' | ' . $this->article ?? $this->article]

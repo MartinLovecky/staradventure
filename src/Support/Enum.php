@@ -35,4 +35,9 @@ class Enum
     const REQUEST_ACTIVATE_FAIL = 'danger_Aktivace účtu se nezdařila kontaktujte podporu';
     const REQUEST_PERMISSION = 'success_Práva účtu změněna';
     const REQUEST_DELETE = 'success_Účet úspěšně smazán';
+<<<<<<< HEAD
 }
+=======
+
+}
+>>>>>>> 79c63082bcf0d2c62485e62b96d9f6bbb854e1cc

@@ -3,7 +3,11 @@
 namespace Mlkali\Sa\Support;
 
 use Exception;
-
+/**
+ * @method string encrypt(string $message, $aad = '')
+ * @method string decrypt(string $ciphertext, $aad = '')
+ * @method string generateKey()
+ */
 class Encryption
 {
 

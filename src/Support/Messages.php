@@ -8,6 +8,13 @@ use Mlkali\Sa\Support\Enum;
 use Mlkali\Sa\Support\Selector;
 use Mlkali\Sa\Support\Encryption;
 
+/**
+ * @param Selector $selector
+ * @param Encryption $enc
+ * @param HtmlMin $htmlMin
+ * @param null|string $style
+ * @param null|string $message
+ */
 class Messages extends Enum
 {
 
@@ -34,11 +41,6 @@ class Messages extends Enum
         return $this;
     }
 
-    /**
-     * check if messageBag has any messages
-     *
-     * @return bool true if message bag has any messages
-     */
     public function hasAny(): bool
     {
         if (!empty($this->messageBag)) {
@@ -48,7 +50,8 @@ class Messages extends Enum
     }
 
     /**
-     * After header we want display message /url?message=TEXTtoDISPLAY, ?message is important to message work also message should be
+     * After header we want display message /url?message=TEXTtoDISPLAY, 
+     * ?message is important to message work also message should be
      * encrypted, also dont use ?message if you dont provide encrypted message 
      *
      * @return void adds message to messageBag
@@ -72,15 +75,21 @@ class Messages extends Enum
 
             return str_replace(['URL', "\n"], [$variables, " "], $template);
         }
+<<<<<<< HEAD
 
         $template = str_replace("\n", " ", $this->htmlMin->minify(file_get_contents(__DIR__ . '/../../public/template/' . $templateName . '.html')));
 
+=======
+       
+        $template = str_replace("\n", " ", $this->htmlMin->minify(file_get_contents(__DIR__ . '/../../public/template/' . $templateName . '.html')));
+        
+>>>>>>> 79c63082bcf0d2c62485e62b96d9f6bbb854e1cc
         return vsprintf($template, $variables);
     }
 
-    public static function getEmailInfo(string $templateType, string $recipient): array
+    public static function getEmailInfo(string $templateName, string $recipient): array
     {
-        switch ($templateType) {
+        switch ($templateName) {
             case 'register':
                 $info = ['subject' => 'Potvrzení registrace', 'to' => $recipient];
                 break;
@@ -94,11 +103,6 @@ class Messages extends Enum
         return $info;
     }
 
-    /**
-     * Gets frist message
-     *
-     * @return void sets style and message
-     */
     private function getFristMessage(): void
     {
         if ($this->hasAny()) {
