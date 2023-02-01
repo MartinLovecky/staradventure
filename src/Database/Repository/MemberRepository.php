@@ -31,11 +31,7 @@ class MemberRepository
         }
         return $stmt->fetch($item);
     }
-<<<<<<< HEAD
     
-=======
-
->>>>>>> 79c63082bcf0d2c62485e62b96d9f6bbb854e1cc
     public function insert(string $table, array $values): void
     {
         $this->db->query->insertInto($table)->values($values)->execute();
@@ -49,7 +45,6 @@ class MemberRepository
             ->where('member_id', $memberID)
             ->execute();
     }
-<<<<<<< HEAD
 
     public function sendEmail(array $data): void
     {
@@ -57,14 +52,6 @@ class MemberRepository
 
         $dynamic = Messages::createEmailMessage(
             $data['templateType'],
-=======
-
-    public function sendEmail(array $data, string $templateName): void
-    {
-        $main = $this->message->createEmailMessage('main', $_SERVER['SERVER_NAME']);
-        
-        $dynamic = $this->message->createEmailMessage($templateName,
->>>>>>> 79c63082bcf0d2c62485e62b96d9f6bbb854e1cc
             [
                 $data['username'],
                 $_SERVER['SERVER_NAME'],
@@ -76,19 +63,11 @@ class MemberRepository
 
         $body = str_replace('TEMPLATE', $dynamic, $main);
 
-<<<<<<< HEAD
         $info = Messages::getEmailInfo($data['templateType'], $data['recipient']);
 
         $this->mailer->sender($body, $info);
     }
 
-=======
-        $info = Messages::getEmailInfo($templateName, $data['recipient']);
-
-        $this->mailer->sender($body, $info);
-    }
-  
->>>>>>> 79c63082bcf0d2c62485e62b96d9f6bbb854e1cc
     public function resetToken(string $memberID, string $token): void
     {
         $this->db->query
@@ -97,11 +76,6 @@ class MemberRepository
             ->where('member_id', $memberID)
             ->execute();
     }
-<<<<<<< HEAD
-
-=======
- 
->>>>>>> 79c63082bcf0d2c62485e62b96d9f6bbb854e1cc
     public function newPassword($request): void
     {
         $this->db->query

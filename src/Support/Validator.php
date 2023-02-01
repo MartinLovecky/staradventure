@@ -56,11 +56,7 @@ class Validator
         if (!is_null($this->validateCaptcha($request->grecaptcharesponse))) {
             return $this->validateCaptcha($request->grecaptcharesponse);
         }
-<<<<<<< HEAD
         if (strcmp($activeMember, 'yes') !== 0) {
-=======
-        if(strcmp($activeMember, 'yes') !== 0) {
->>>>>>> 79c63082bcf0d2c62485e62b96d9f6bbb854e1cc
             return Messages::VALIDATION_ACTIVE_MEMBER;
         }
         if (!$this->validToken($request->token)) {

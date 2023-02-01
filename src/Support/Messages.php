@@ -75,15 +75,9 @@ class Messages extends Enum
 
             return str_replace(['URL', "\n"], [$variables, " "], $template);
         }
-<<<<<<< HEAD
 
         $template = str_replace("\n", " ", $this->htmlMin->minify(file_get_contents(__DIR__ . '/../../public/template/' . $templateName . '.html')));
 
-=======
-       
-        $template = str_replace("\n", " ", $this->htmlMin->minify(file_get_contents(__DIR__ . '/../../public/template/' . $templateName . '.html')));
-        
->>>>>>> 79c63082bcf0d2c62485e62b96d9f6bbb854e1cc
         return vsprintf($template, $variables);
     }
 

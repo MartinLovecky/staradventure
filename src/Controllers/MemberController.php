@@ -32,11 +32,6 @@ class MemberController
     ) {
         $this->token = md5(uniqid(rand(), true));
     }
-<<<<<<< HEAD
-
-=======
-   
->>>>>>> 79c63082bcf0d2c62485e62b96d9f6bbb854e1cc
     public function register(Request $request): Response
     {
         $validate = $this->validator->validateRegister($request);
@@ -102,11 +97,6 @@ class MemberController
 
         return new Response('/?message=', sprintf(Messages::REQUETS_RESET_SEND, $request->email), '#');
     }
-<<<<<<< HEAD
-
-=======
-  
->>>>>>> 79c63082bcf0d2c62485e62b96d9f6bbb854e1cc
     public function sendForgottenUser(Request $request): Response
     {
         $validate = $this->validator->validateResetSend($request);
@@ -114,12 +104,6 @@ class MemberController
         if (isset($validate)) {
             return new Response('/reset?message=', sprintf(Messages::VALIDATION_FORGOTEN_USER, $request->email), '#reset');
         }
-<<<<<<< HEAD
-=======
-
-        $username = $this->memRepo->getMemberInfo('email', $request->email, 'username');
-        $memberID = $this->memRepo->getMemberInfo('email', $request->email, 'member_id');
->>>>>>> 79c63082bcf0d2c62485e62b96d9f6bbb854e1cc
 
         $this->memRepo->sendEmail(
             [
@@ -133,11 +117,6 @@ class MemberController
 
         return new Response('/login?message=', sprintf(Messages::REQUETS_FORGOTEN_USER, $request->email), '#login');
     }
-<<<<<<< HEAD
-
-=======
- 
->>>>>>> 79c63082bcf0d2c62485e62b96d9f6bbb854e1cc
     public function setNewPassword(Request $request): Response
     {
         $validate = $this->validator->validatePassword($request);
@@ -149,14 +128,8 @@ class MemberController
         $this->memRepo->newPassword($request);
 
         return new Response('/?message=', Messages::REQUETS_RESET_PASSWORD, '#login');
-<<<<<<< HEAD
     }
 
-=======
-
-    }
- 
->>>>>>> 79c63082bcf0d2c62485e62b96d9f6bbb854e1cc
     public function activate(): Response
     {
         $memberID = $this->enc->decrypt($this->selector->queryID);
@@ -172,7 +145,6 @@ class MemberController
 
         return new Response('/register?message=', Messages::REQUEST_ACTIVATE_FAIL, '#register');
     }
-<<<<<<< HEAD
 
     public function login(Request $request): Response
     {
@@ -180,15 +152,6 @@ class MemberController
         $activeMember = is_string($active) ? $active : '';
         $validate = $this->validator->validateLogin($request, $activeMember);
 
-=======
-   
-    public function login(Request $request): Response
-    {
-        $active = $this->memRepo->getMemberInfo('username', $request->username, 'active');
-        $activeMember = is_string($active) ? $active : '';
-        $validate = $this->validator->validateLogin($request, $activeMember);
-
->>>>>>> 79c63082bcf0d2c62485e62b96d9f6bbb854e1cc
         if (isset($validate)) {
             @$_SESSION = ['old_username' => $request->username];
 
@@ -204,14 +167,8 @@ class MemberController
         $this->setMember($request->username);
 
         return new Response('member/' . $request->username . '?message=', sprintf(Messages::REQUETS_LOGIN, $request->username));
-<<<<<<< HEAD
     }
 
-=======
-
-    }
-  
->>>>>>> 79c63082bcf0d2c62485e62b96d9f6bbb854e1cc
     public function logout(): Response
     {
         @$_SESSION = array();
