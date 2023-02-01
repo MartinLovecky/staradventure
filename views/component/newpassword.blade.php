@@ -4,7 +4,7 @@
     <h2 class="major">Nové heslo</h2>
     {!! 
         $form->options(['target'=>'requestHandler','class'=>'text-left'])
-        ->vars(['requestController'=>$requestController])
+        ->vars(['memberController'=>$memberController])
         ->run() 
     !!}
     <div class="fields">

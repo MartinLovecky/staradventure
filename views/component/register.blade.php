@@ -9,7 +9,7 @@
     {!! //form has more options but I mostly using default
 	    $form
         ->options(['target' => 'requestHandler'])
-		->vars(['requestController' => $requestController, 'request' => $request])
+		->vars(['memberController' => $memberController, 'request' => $request])
 		->run() 
 	!!}
         <div class="fields">

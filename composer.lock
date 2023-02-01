@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "37fd5d5db46f3385a8bf5411e26ffeff",
+    "content-hash": "4d6a8352547d92565400b74731fb148d",
     "packages": [
         {
             "name": "eftec/bladeone",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/EFTEC/BladeOne.git",
-                "reference": "b912e9f060aaa999c0ac2fcf4b40f7a8e6cd66c0"
+                "reference": "26b79fc337a7c584c7d222dc1dbc6d34771d0394"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EFTEC/BladeOne/zipball/b912e9f060aaa999c0ac2fcf4b40f7a8e6cd66c0",
-                "reference": "b912e9f060aaa999c0ac2fcf4b40f7a8e6cd66c0",
+                "url": "https://api.github.com/repos/EFTEC/BladeOne/zipball/26b79fc337a7c584c7d222dc1dbc6d34771d0394",
+                "reference": "26b79fc337a7c584c7d222dc1dbc6d34771d0394",
                 "shasum": ""
             },
             "require": {
@@ -62,9 +62,9 @@
             ],
             "support": {
                 "issues": "https://github.com/EFTEC/BladeOne/issues",
-                "source": "https://github.com/EFTEC/BladeOne/tree/4.7.1"
+                "source": "https://github.com/EFTEC/BladeOne/tree/4.8"
             },
-            "time": "2022-11-05T16:07:59+00:00"
+            "time": "2023-01-12T01:22:51+00:00"
         },
         {
             "name": "envms/fluentpdo",
@@ -277,12 +277,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPMailer/PHPMailer.git",
-                "reference": "7c38295b17a477837e4954f204988e06eb3354f3"
+                "reference": "978b96c69bbd8519b6cece87a8da4e2760f29d10"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/7c38295b17a477837e4954f204988e06eb3354f3",
-                "reference": "7c38295b17a477837e4954f204988e06eb3354f3",
+                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/978b96c69bbd8519b6cece87a8da4e2760f29d10",
+                "reference": "978b96c69bbd8519b6cece87a8da4e2760f29d10",
                 "shasum": ""
             },
             "require": {
@@ -350,7 +350,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-12-26T15:32:03+00:00"
+            "time": "2023-01-19T16:55:24+00:00"
         },
         {
             "name": "phpoption/phpoption",
@@ -483,17 +483,82 @@
             "time": "2022-07-19T17:36:59+00:00"
         },
         {
+            "name": "symfony/css-selector",
+            "version": "6.3.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/css-selector.git",
+                "reference": "9136206b55865b73ffa3d7afcdce2b523298b9f6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/css-selector/zipball/9136206b55865b73ffa3d7afcdce2b523298b9f6",
+                "reference": "9136206b55865b73ffa3d7afcdce2b523298b9f6",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\CssSelector\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Jean-François Simon",
+                    "email": "jeanfrancois.simon@sensiolabs.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Converts CSS selectors to XPath expressions",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/css-selector/tree/6.3"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2023-01-13T09:23:11+00:00"
+        },
+        {
             "name": "symfony/polyfill-ctype",
             "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-ctype.git",
-                "reference": "5bbc823adecdae860bb64756d639ecfec17b050a"
+                "reference": "ea208ce43cbb04af6867b4fdddb1bdbf84cc28cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/5bbc823adecdae860bb64756d639ecfec17b050a",
-                "reference": "5bbc823adecdae860bb64756d639ecfec17b050a",
+                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/ea208ce43cbb04af6867b4fdddb1bdbf84cc28cb",
+                "reference": "ea208ce43cbb04af6867b4fdddb1bdbf84cc28cb",
                 "shasum": ""
             },
             "require": {
@@ -509,7 +574,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "1.27-dev"
+                    "dev-main": "1.28-dev"
                 },
                 "thanks": {
                     "name": "symfony/polyfill",
@@ -547,7 +612,7 @@
                 "portable"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-ctype/tree/v1.27.0"
+                "source": "https://github.com/symfony/polyfill-ctype/tree/main"
             },
             "funding": [
                 {
@@ -563,7 +628,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-11-03T14:55:06+00:00"
+            "time": "2023-01-26T09:26:14+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -571,12 +636,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "8ad114f6b39e2c98a8b0e3bd907732c207c2b534"
+                "reference": "f9c7affe77a00ae32ca127ca6833d034e6d33f25"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/8ad114f6b39e2c98a8b0e3bd907732c207c2b534",
-                "reference": "8ad114f6b39e2c98a8b0e3bd907732c207c2b534",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/f9c7affe77a00ae32ca127ca6833d034e6d33f25",
+                "reference": "f9c7affe77a00ae32ca127ca6833d034e6d33f25",
                 "shasum": ""
             },
             "require": {
@@ -592,7 +657,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "1.27-dev"
+                    "dev-main": "1.28-dev"
                 },
                 "thanks": {
                     "name": "symfony/polyfill",
@@ -631,7 +696,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.27.0"
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/main"
             },
             "funding": [
                 {
@@ -647,7 +712,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-11-03T14:55:06+00:00"
+            "time": "2023-01-30T17:25:47+00:00"
         },
         {
             "name": "symfony/polyfill-php80",
@@ -655,12 +720,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php80.git",
-                "reference": "7a6ff3f1959bb01aefccb463a0f2cd3d3d2fd936"
+                "reference": "6caa57379c4aec19c0a12a38b59b26487dcfe4b5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/7a6ff3f1959bb01aefccb463a0f2cd3d3d2fd936",
-                "reference": "7a6ff3f1959bb01aefccb463a0f2cd3d3d2fd936",
+                "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/6caa57379c4aec19c0a12a38b59b26487dcfe4b5",
+                "reference": "6caa57379c4aec19c0a12a38b59b26487dcfe4b5",
                 "shasum": ""
             },
             "require": {
@@ -670,7 +735,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "1.27-dev"
+                    "dev-main": "1.28-dev"
                 },
                 "thanks": {
                     "name": "symfony/polyfill",
@@ -715,7 +780,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-php80/tree/v1.27.0"
+                "source": "https://github.com/symfony/polyfill-php80/tree/main"
             },
             "funding": [
                 {
@@ -731,7 +796,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-11-03T14:55:06+00:00"
+            "time": "2023-01-26T09:26:14+00:00"
         },
         {
             "name": "symfony/var-dumper",
@@ -739,12 +804,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "92a342cd476603a3e8404bc802626df14da46e93"
+                "reference": "44b7b81749fd20c1bdf4946c041050e22bc8da27"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/92a342cd476603a3e8404bc802626df14da46e93",
-                "reference": "92a342cd476603a3e8404bc802626df14da46e93",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/44b7b81749fd20c1bdf4946c041050e22bc8da27",
+                "reference": "44b7b81749fd20c1bdf4946c041050e22bc8da27",
                 "shasum": ""
             },
             "require": {
@@ -804,7 +869,7 @@
                 "dump"
             ],
             "support": {
-                "source": "https://github.com/symfony/var-dumper/tree/6.2"
+                "source": "https://github.com/symfony/var-dumper/tree/v6.2.5"
             },
             "funding": [
                 {
@@ -820,7 +885,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-01-01T08:38:09+00:00"
+            "time": "2023-01-20T17:45:48+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -906,6 +971,155 @@
                 }
             ],
             "time": "2022-10-16T01:01:54+00:00"
+        },
+        {
+            "name": "voku/html-min",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/voku/HtmlMin.git",
+                "reference": "ebbbcf91393a057eccf1a1a152c18352696e4c1c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/voku/HtmlMin/zipball/ebbbcf91393a057eccf1a1a152c18352696e4c1c",
+                "reference": "ebbbcf91393a057eccf1a1a152c18352696e4c1c",
+                "shasum": ""
+            },
+            "require": {
+                "ext-dom": "*",
+                "php": ">=7.0.0",
+                "voku/simple_html_dom": "~4.8.5"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~6.0 || ~7.0 || ~9.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "voku\\": "src/voku/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Lars Moelleken",
+                    "homepage": "https://www.moelleken.org/"
+                }
+            ],
+            "description": "HTML Compressor and Minifier",
+            "homepage": "https://github.com/voku/HtmlMin",
+            "keywords": [
+                "compress",
+                "compression",
+                "compressor",
+                "html",
+                "minifier"
+            ],
+            "support": {
+                "issues": "https://github.com/voku/HtmlMin/issues",
+                "source": "https://github.com/voku/HtmlMin/tree/master"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.me/moelleken",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/voku",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.patreon.com/voku",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2022-07-13T11:35:38+00:00"
+        },
+        {
+            "name": "voku/simple_html_dom",
+            "version": "4.8.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/voku/simple_html_dom.git",
+                "reference": "d9807c2b6124457eee2c30b3d1c067e0657713d4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/voku/simple_html_dom/zipball/d9807c2b6124457eee2c30b3d1c067e0657713d4",
+                "reference": "d9807c2b6124457eee2c30b3d1c067e0657713d4",
+                "shasum": ""
+            },
+            "require": {
+                "ext-dom": "*",
+                "ext-libxml": "*",
+                "ext-simplexml": "*",
+                "php": ">=7.0.0",
+                "symfony/css-selector": "~3.0 || ~4.0 || ~5.0 || ~6.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~6.0 || ~7.0 || ~9.0"
+            },
+            "suggest": {
+                "voku/portable-utf8": "If you need e.g. UTF-8 fixed output."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "voku\\helper\\": "src/voku/helper/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "dimabdc",
+                    "email": "support@titor.ru",
+                    "homepage": "https://github.com/dimabdc",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Lars Moelleken",
+                    "homepage": "https://www.moelleken.org/",
+                    "role": "Fork-Maintainer"
+                }
+            ],
+            "description": "Simple HTML DOM package.",
+            "homepage": "https://github.com/voku/simple_html_dom",
+            "keywords": [
+                "HTML Parser",
+                "dom",
+                "php dom"
+            ],
+            "support": {
+                "issues": "https://github.com/voku/simple_html_dom/issues",
+                "source": "https://github.com/voku/simple_html_dom/tree/4.8.7"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.me/moelleken",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/voku",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.patreon.com/voku",
+                    "type": "patreon"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/voku/simple_html_dom",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-12-22T13:55:49+00:00"
         }
     ],
     "packages-dev": [],

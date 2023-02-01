@@ -2,6 +2,8 @@
 
 namespace Mlkali\Sa\Support;
 
+use Exception;
+use voku\helper\HtmlMin;
 use Mlkali\Sa\Support\Enum;
 use Mlkali\Sa\Support\Selector;
 use Mlkali\Sa\Support\Encryption;
@@ -12,6 +14,7 @@ class Messages extends Enum
     public function __construct(
         private Selector $selector,
         private Encryption $enc,
+        private HtmlMin $htmlMin,
         public ?string $style = null,
         public ?string $message = null,
         private array $messageBag = []
@@ -57,23 +60,22 @@ class Messages extends Enum
         }
     }
 
-    public static function createEmailMessage(string $templateType, array $placeholderValues): string
+    public function createEmailMessage(string $templateName, string|array $variables): string
     {
-        switch ($templateType) {
-            case 'register':
-                $template = self::EMAIL_TEMPLATE_REGISTER;
-                break;
-            case 'reset':
-                $template = self::EMAIL_TEMPLATE_RESET;
-                break;
-            case 'user':
-                $template = self::EMAIL_TEMPLATE_USER;
-                break;
-            case 'main':
-                $template = self::MAIN_EMAIL_TEMPLATE;
-                break;
+        if (!is_readable(__DIR__ . '/../../public/template/' . $templateName . '.html')) {
+            throw new Exception("$templateName.html nexistuje ve složce /public/templates", 1);
         }
-        return vsprintf($template, $placeholderValues);
+
+        if ($templateName === 'main' && is_string($variables)) {
+
+            $template = $this->htmlMin->minify(file_get_contents(__DIR__ . '/../../public/template/' . $templateName . '.html'));
+
+            return str_replace(['URL', "\n"], [$variables, " "], $template);
+        }
+
+        $template = str_replace("\n", " ", $this->htmlMin->minify(file_get_contents(__DIR__ . '/../../public/template/' . $templateName . '.html')));
+
+        return vsprintf($template, $variables);
     }
 
     public static function getEmailInfo(string $templateType, string $recipient): array
@@ -102,7 +104,7 @@ class Messages extends Enum
         if ($this->hasAny()) {
 
             foreach ($this->getMessageBag() as $key => $value) {
-                $exploded = explode('.', $value);
+                $exploded = explode('_', $value);
                 $this->style = $exploded[0];
                 $this->message = $exploded[1];
             }

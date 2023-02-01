@@ -8,7 +8,8 @@
         "phpmailer/phpmailer": "dev-master",
         "vlucas/phpdotenv": "5.5.x-dev",
         "envms/fluentpdo": "dev-master",
-        "league/container": "4.x-dev"
+        "league/container": "4.x-dev",
+        "voku/html-min": "dev-master"
     },
     "license": "none",
     "autoload": {

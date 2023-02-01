@@ -11,7 +11,6 @@ return [
     'validator' => $container->get(Mlkali\Sa\Support\Validator::class),
     'member' => $container->get(Mlkali\Sa\Database\Entity\Member::class),
     'memberController' => $container->get(Mlkali\Sa\Controllers\MemberController::class),
-    'requestController' => $container->get(Mlkali\Sa\Controllers\RequestController::class),
     'request' => $container->get(Mlkali\Sa\Http\Request::class),
     'selector' => $selector,
     'message' => $message,

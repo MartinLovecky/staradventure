@@ -16,6 +16,7 @@ class Selector
         public ?string $queryAction = null,
         public ?string $queryID = null,
         public ?string $queryToken = null,
+        public ?string $articleID = null,
         private array $queryValues = [],
         private ?array $url = null,
     ) {
@@ -25,6 +26,7 @@ class Selector
         $this->action = $this->url[0] ?? $this->action;
         $this->article = $this->url[1] ?? $this->article;
         $this->page = $this->url[2] ?? $this->page;
+        $this->articleID = isset($this->article) && isset($this->page) ? $this->article . '|'. $this->page : $this->articleID;
         // url Query values
         parse_str($_SERVER['QUERY_STRING'], $this->queryValues);
         $this->queryMsg = $this->queryValues['message'] ?? $this->queryMsg;

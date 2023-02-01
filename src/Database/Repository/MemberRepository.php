@@ -42,23 +42,12 @@ class MemberRepository
         }
         return $stmt->fetch($item);
     }
-    /**
-     * Inserts values into the specified table
-     *
-     * @param string $table The table to insert values into
-     * @param array $values The values to insert
-     * @return void
-     */
+    
     public function insert(string $table, array $values): void
     {
         $this->db->query->insertInto($table)->values($values)->execute();
     }
-    /**
-     * Activates the member with the specified ID
-     *
-     * @param string $memberID The ID of the member to activate
-     * @return void
-     */
+
     public function activateMember(string $memberID): void
     {
         $this->db->query
@@ -67,19 +56,13 @@ class MemberRepository
             ->where('member_id', $memberID)
             ->execute();
     }
-    /**
-     * Sends an email with the specified data and template type
-     *
-     * @param array $data The data to use in the email template
-     * @param string $templateType The type of email template to use
-     * @return void
-     */
-    public function sendEmail(array $data, string $templateType)
+
+    public function sendEmail(array $data): void
     {
         $main = Messages::createEmailMessage('main', [$_SERVER['SERVER_NAME']]);
 
         $dynamic = Messages::createEmailMessage(
-            $templateType,
+            $data['templateType'],
             [
                 $data['username'],
                 $_SERVER['SERVER_NAME'],
@@ -91,17 +74,11 @@ class MemberRepository
 
         $body = str_replace('TEMPLATE', $dynamic, $main);
 
-        $info = Messages::getEmailInfo($templateType, $data['recipient']);
+        $info = Messages::getEmailInfo($data['templateType'], $data['recipient']);
 
         $this->mailer->sender($body, $info);
     }
-    /**
-     * Sets the reset token for the member with the specified ID
-     *
-     * @param string $memberID The ID of the member to set the reset token for
-     * @param string $token The reset token to set
-     * @return void
-     */
+
     public function resetToken(string $memberID, string $token): void
     {
         $this->db->query
@@ -110,12 +87,7 @@ class MemberRepository
             ->where('member_id', $memberID)
             ->execute();
     }
-    /**
-     * Updates the password for the member with the specified email
-     *
-     * @param object $request The request object containing the password and email
-     * @return void
-     */
+
     public function newPassword($request): void
     {
         $this->db->query
@@ -124,13 +96,7 @@ class MemberRepository
             ->where('email', $request->email)
             ->execute();
     }
-    /**
-     * Sets the permission level for the member with the specified ID
-     *
-     * @param string $permission The permission level to set
-     * @param string $memberID The ID of the member to set the permission level for
-     * @return void
-     */
+
     public function setPermission(string $permission, string $memberID): void
     {
         $this->db->query
@@ -139,12 +105,7 @@ class MemberRepository
             ->where('member_id', $memberID)
             ->execute();
     }
-    /**
-     * Deletes the member with the specified ID
-     *
-     * @param string $memberID The ID of the member to delete
-     * @return void
-     */
+
     public function deleteMember(string $memberID): void
     {
         $this->db->query
@@ -152,12 +113,7 @@ class MemberRepository
             ->where('member_id', $memberID)
             ->execute();
     }
-    /**
-     * Updates the member with the specified ID
-     *
-     * @param Member $member The member object containing the updated information
-     * @return void
-     */
+
     public function updateMember(Member $member): void
     {
         $set = [
@@ -172,12 +128,7 @@ class MemberRepository
             ->where('member_id', $member->memberID)
             ->execute();
     }
-    /**
-     * Updates the member information for the member with the specified ID
-     *
-     * @param Member $member The member object containing the updated information
-     * @return void
-     */
+
     public function updateInfoMember(Member $member): void
     {
         $set = [

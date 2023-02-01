@@ -20,7 +20,5 @@ return [
     'vop',
     'usertable',
     'updatemember',
-    'notfound',
-    'savebookmark',
-    'removebookmark'
+    'notfound'
 ];
