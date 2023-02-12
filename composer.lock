@@ -277,12 +277,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPMailer/PHPMailer.git",
-                "reference": "978b96c69bbd8519b6cece87a8da4e2760f29d10"
+                "reference": "abeba566ef17999c240a02048e25c6db21cd39e8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/978b96c69bbd8519b6cece87a8da4e2760f29d10",
-                "reference": "978b96c69bbd8519b6cece87a8da4e2760f29d10",
+                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/abeba566ef17999c240a02048e25c6db21cd39e8",
+                "reference": "abeba566ef17999c240a02048e25c6db21cd39e8",
                 "shasum": ""
             },
             "require": {
@@ -350,7 +350,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-01-19T16:55:24+00:00"
+            "time": "2023-02-05T11:55:20+00:00"
         },
         {
             "name": "phpoption/phpoption",
@@ -488,12 +488,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/css-selector.git",
-                "reference": "9136206b55865b73ffa3d7afcdce2b523298b9f6"
+                "reference": "cda0fa7b592d8d55eaf79d8d61c9abc92be14c73"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/css-selector/zipball/9136206b55865b73ffa3d7afcdce2b523298b9f6",
-                "reference": "9136206b55865b73ffa3d7afcdce2b523298b9f6",
+                "url": "https://api.github.com/repos/symfony/css-selector/zipball/cda0fa7b592d8d55eaf79d8d61c9abc92be14c73",
+                "reference": "cda0fa7b592d8d55eaf79d8d61c9abc92be14c73",
                 "shasum": ""
             },
             "require": {
@@ -545,7 +545,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-01-13T09:23:11+00:00"
+            "time": "2023-02-07T09:49:56+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -804,12 +804,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "44b7b81749fd20c1bdf4946c041050e22bc8da27"
+                "reference": "d1347f047357ff91b8e93c9d3b57d92c554daed0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/44b7b81749fd20c1bdf4946c041050e22bc8da27",
-                "reference": "44b7b81749fd20c1bdf4946c041050e22bc8da27",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/d1347f047357ff91b8e93c9d3b57d92c554daed0",
+                "reference": "d1347f047357ff91b8e93c9d3b57d92c554daed0",
                 "shasum": ""
             },
             "require": {
@@ -869,7 +869,7 @@
                 "dump"
             ],
             "support": {
-                "source": "https://github.com/symfony/var-dumper/tree/v6.2.5"
+                "source": "https://github.com/symfony/var-dumper/tree/6.2"
             },
             "funding": [
                 {
@@ -885,7 +885,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-01-20T17:45:48+00:00"
+            "time": "2023-02-07T15:36:52+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
