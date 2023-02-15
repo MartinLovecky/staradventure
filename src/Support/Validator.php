@@ -7,7 +7,14 @@ use Mlkali\Sa\Support\Messages;
 use Mlkali\Sa\Support\Encryption;
 use Mlkali\Sa\Database\Repository\MemberRepository;
 
-
+/**
+ * @param Encryption $enc
+ * @param MemeberRepository $memRepo
+ * @method null|string validateRegister(Request $request)
+ * @method null|string validateLogin(Request $request, string $activeMember)
+ * @method null|string validateResetSend(Request $request)
+ * 
+ */
 class Validator
 {
 
@@ -28,7 +35,7 @@ class Validator
         if (!$this->validToken($request->token)) {
             return Messages::VALIDATION_CRSF_ERROR;
         }
-        if (!$this->memRepo->getMemberInfo('member_id', $request->username . '|' . $request->email)) {
+        if ($this->memRepo->getMemberInfo('member_id', $request->username . '|' . $request->email)) {
             return sprintf(Messages::VALIDATION_USER_ALREADY_EXISTS, $request->username);
         }
         if (mb_strlen($request->password) < 6) {
@@ -108,6 +115,7 @@ class Validator
     //TODO - need to test 
     public function validateAvatar(Request $request): ?string
     {
+        return dd(NULL);    
         if (!is_null($this->validateCaptcha($request->grecaptcharesponse))) {
             return $this->validateCaptcha($request->grecaptcharesponse);
         }

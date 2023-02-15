@@ -129,7 +129,6 @@ class MemberController
 
         return new Response('/?message=', Messages::REQUETS_RESET_PASSWORD, '#login');
     }
-
     public function activate(): Response
     {
         $memberID = $this->enc->decrypt($this->selector->queryID);
@@ -145,7 +144,6 @@ class MemberController
 
         return new Response('/register?message=', Messages::REQUEST_ACTIVATE_FAIL, '#register');
     }
-
     public function login(Request $request): Response
     {
         $active = $this->memRepo->getMemberInfo('username', $request->username, 'active');
@@ -168,7 +166,6 @@ class MemberController
 
         return new Response('member/' . $request->username . '?message=', sprintf(Messages::REQUETS_LOGIN, $request->username));
     }
-
     public function logout(): Response
     {
         @$_SESSION = array();
@@ -182,6 +179,7 @@ class MemberController
     //TODO - test
     public function updateMember(Request $request): Response
     {
+        return dd("x");
         $validate = $this->validator->validateAvatar($request);
 
         if (isset($validate)) {

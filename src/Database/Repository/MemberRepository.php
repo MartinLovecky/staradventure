@@ -48,9 +48,9 @@ class MemberRepository
 
     public function sendEmail(array $data): void
     {
-        $main = Messages::createEmailMessage('main', [$_SERVER['SERVER_NAME']]);
+        $main = $this->message->createEmailMessage('main', [$_SERVER['SERVER_NAME']]);
 
-        $dynamic = Messages::createEmailMessage(
+        $dynamic = $this->message->createEmailMessage(
             $data['templateType'],
             [
                 $data['username'],

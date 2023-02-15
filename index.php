@@ -13,7 +13,7 @@ require 'vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 $dotenv->required(['DB_NAME', 'DB_USER', 'DB_HOST', 'DB_PASS']);
-// Class container with autowire
+// Class container with auto-wire
 $container = new League\Container\Container();
 $container->delegate(new League\Container\ReflectionContainer(true));
 // Blade Template engine

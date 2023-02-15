@@ -4,7 +4,7 @@ namespace Mlkali\Sa\Support;
 
 use Exception;
 
-use voku\helper\HtmlMin;
+
 use Mlkali\Sa\Support\Enum;
 use Mlkali\Sa\Support\Selector;
 use Mlkali\Sa\Support\Encryption;
@@ -12,7 +12,6 @@ use Mlkali\Sa\Support\Encryption;
 /**
  * @param Selector $selector
  * @param Encryption $enc
- * @param HtmlMin $htmlMin
  * @param null|string $style
  * @param null|string $message
  */
@@ -22,7 +21,6 @@ class Messages extends Enum
     public function __construct(
         private Selector $selector,
         private Encryption $enc,
-        private HtmlMin $htmlMin,
         public ?string $style = null,
         public ?string $message = null,
         private array $messageBag = []
@@ -72,12 +70,12 @@ class Messages extends Enum
 
         if ($templateName === 'main' && is_string($variables)) {
 
-            $template = $this->htmlMin->minify(file_get_contents(__DIR__ . '/../../public/template/' . $templateName . '.html'));
+            $template = preg_replace( '/\s+/', ' ', file_get_contents(__DIR__ . '/../../public/template/' . $templateName . '.html'));
 
             return str_replace(['URL', "\n"], [$variables, " "], $template);
         }
 
-        $template = str_replace("\n", " ", $this->htmlMin->minify(file_get_contents(__DIR__ . '/../../public/template/' . $templateName . '.html')));
+        $template = str_replace("\n", " ", preg_replace('/\s+/', ' ', file_get_contents(__DIR__ . '/../../public/template/' . $templateName . '.html')));
 
         return vsprintf($template, $variables);
     }

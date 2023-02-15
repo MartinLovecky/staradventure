@@ -1131,7 +1131,8 @@
         "phpmailer/phpmailer": 20,
         "vlucas/phpdotenv": 20,
         "envms/fluentpdo": 20,
-        "league/container": 20
+        "league/container": 20,
+        "voku/html-min": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

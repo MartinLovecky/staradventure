@@ -52,8 +52,7 @@ class Selector
         if (in_array(strtolower($this->action), $allowed)) {
 
             match ($this->action) {
-                '', 'intro', 'login', 'newpassword', 'register', 'reset', 'storylist', 'terms', 'vop', 'updatemember' => $this->viewName = 'index',
-                $this->title = 'SA | ' . $this->action,
+                '', 'intro', 'login', 'newpassword', 'register', 'reset', 'storylist', 'terms', 'vop', 'updatemember' => $this->viewName = 'index', $this->title = 'SA | ' . $this->action,
                 'show' => [$this->viewName = 'app', $this->component = 'articles', $this->title = 'SA | ' . $this->action . ' | ' . $this->article ?? $this->article],
                 ['update', 'delete', 'create'] => [$this->viewName = 'app', $this->component = 'editor', $this->title = 'SA | ' . $this->action . ' | ' . $this->article ?? $this->article],
                 default => [$this->viewName = 'app', $this->component = $this->action, $this->title = 'SA | ' . $this->action . ' | ' . $this->article ?? $this->article]
