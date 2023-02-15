@@ -28,7 +28,7 @@ class ArticleController
         $chapter = $request->chapter ?? null;
         $articleBody = isset($request->editor1) ? json_encode(['article_body' => $request->editor1]) : '{"article_body":"error"}';
 
-        $this->artRepo->createOrUpdateArticle($chapter, $articleBody);
+        $this->createOrUpdateArticle($chapter, $articleBody);
 
         return new Response("/update/$request->articleName/$request->articlePage?message=", sprintf(Messages::ARTICLE_UPDATED, $this->selector->articleID));
     }
