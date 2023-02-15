@@ -9,12 +9,6 @@ use Mlkali\Sa\Support\Enum;
 use Mlkali\Sa\Support\Selector;
 use Mlkali\Sa\Support\Encryption;
 
-/**
- * @param Selector $selector
- * @param Encryption $enc
- * @param null|string $style
- * @param null|string $message
- */
 class Messages extends Enum
 {
 
@@ -99,7 +93,6 @@ class Messages extends Enum
     private function getFristMessage(): void
     {
         if ($this->hasAny()) {
-
             foreach ($this->getMessageBag() as $key => $value) {
                 $exploded = explode('_', $value);
                 $this->style = $exploded[0];

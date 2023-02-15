@@ -21,17 +21,18 @@ class Response
         $this->setTargetUrl();
     }
 
-    private function setTargetUrl()
+    private function setTargetUrl(): void
     {
         $location = $this->url . $this->getMessage() . $this->id;
         header('Location:' . $location);
     }
 
-    private function getMessage()
+    private function getMessage(): string|null
     {
         if (isset($this->msg)) {
             $enc = new Encryption();
             return $enc->encrypt($this->msg);
         }
+        return null;
     }
 }

@@ -9,14 +9,6 @@ use Mlkali\Sa\Database\Repository\ArticleRepository;
 use Mlkali\Sa\Support\Messages;
 use Mlkali\Sa\Support\Selector;
 
-/**
- * @param Article $article
- * @param ArticleRepository $artRepo
- * @param Selector $selector
- * @method Response update(Request $request)
- * @method Response create(Request $request)
- * @method Response delete(Request $request)
- */
 class ArticleController
 {
 
@@ -29,49 +21,60 @@ class ArticleController
 
     public function update(Request $request): Response
     {
-        if (!$this->artRepo->exist($this->selector->articleID) && !$this->artRepo->allowedArticle()) {
+        if (!$this->validateArticle()) {
             return new Response("/update/$request->articleName/$request->articlePage?message=", sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $this->selector->articleID, $request->articleName, $request->articlePage));
         }
-        $chapter = !empty($request->chapter) ? $request->chapter : null;
-        $article_body = isset($request->editor1) ? json_encode(['article_body' => $request->editor1]) : '{"article_body":"error"}';
 
-        $this->article
-            ->setArticleID($this->selector->articleID)
-            ->setArticleChapter($chapter)
-            ->setArticleBody($article_body);
+        $chapter = $request->chapter ?? null;
+        $articleBody = isset($request->editor1) ? json_encode(['article_body' => $request->editor1]) : '{"article_body":"error"}';
 
-        $this->artRepo->update($this->article);
+        $this->artRepo->createOrUpdateArticle($chapter, $articleBody);
 
         return new Response("/update/$request->articleName/$request->articlePage?message=", sprintf(Messages::ARTICLE_UPDATED, $this->selector->articleID));
     }
 
     public function create(Request $request): Response
     {
-        if (!$this->artRepo->exist($this->selector->articleID) && !$this->artRepo->allowedArticle()) {
+        if (!$this->validateArticle()) {
             return new Response("/update/$request->articleName/$request->articlePage?message=", sprintf(Messages::ARTICLE_DOES_ALLREADY_EXIST, $this->selector->articleID, $request->articleName, $request->articlePage));
         }
 
-        $chapter = !empty($request->chapter) ? $request->chapter : null;
-        $article_body = isset($request->editor1) ? json_encode(['article_body' => $request->editor1]) : '{"article_body":"empty"}';
+        $chapter = $request->chapter ?? null;
+        $articleBody = isset($request->editor1) ? json_encode(['article_body' => $request->editor1]) : '{"article_body":"empty"}';
 
-        $this->article
-            ->setArticleID($this->selector->articleID)
-            ->setArticleChapter($chapter)
-            ->setArticleBody($article_body);
-
-        $this->artRepo->add($this->article);
+        $this->createOrUpdateArticle($chapter, $articleBody);
 
         return new Response("/update/$request->articleName/$request->articlePage?message=", sprintf(Messages::ARTICLE_CREATED, $this->selector->articleID));
     }
 
     public function delete(Request $request): Response
     {
-        if (!$this->artRepo->exist($this->selector->articleID) && !$this->artRepo->allowedArticle()) {
+        if (!$this->validateArticle()) {
             return new Response("/update/$request->articleName/$request->articlePage?message=", sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $this->selector->articleID, $request->articleName, $request->articlePage));
         }
 
         $this->artRepo->remove($this->selector->articleID);
 
         return new Response("/update/$request->articleName/$request->articlePage?message=", sprintf(Messages::ARTICLE_DELETED, $this->selector->articleID));
+    }
+
+    private function  createOrUpdateArticle(?string $chapter, string $articleBody): void
+    {
+        $this->article
+            ->setArticleID($this->selector->articleID)
+            ->setArticleChapter($chapter)
+            ->setArticleBody($articleBody);
+
+        if($this->validateArticle())
+        {
+            $this->artRepo->update($this->article);
+            return;
+        }
+        $this->artRepo->add($this->article);
+    }
+
+    private function validateArticle(): bool
+    {
+        return $this->artRepo->exist($this->selector->articleID);
     }
 }

@@ -18,7 +18,7 @@ class Pagnition
         $this->page = ((int)$this->selector->page > 0) ? (int)$this->selector->page : $this->page;
     }
 
-    public function previous_page()
+    public function previous_page(): string
     {
         $previous_page =  $this->page - 1;
         // If page is frist or above limit(should not haappen)  there is not previous page
@@ -40,7 +40,7 @@ class Pagnition
         }
     }
 
-    public function next_page()
+    public function next_page(): string
     {
         $next = $this->page + 1;
         if ($this->page < 1 || $this->page >= 300) {

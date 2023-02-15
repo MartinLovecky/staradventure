@@ -2,20 +2,6 @@
 
 namespace Mlkali\Sa\Database\Entity;
 
-/**
- * @param bool $logged
- * @param bool $visible
- * @param string $username
- * @param null|string $email
- * @param string $permission
- * @param null|string $memberName
- * @param null|string $memberSurname
- * @param null|string $location
- * @param string $avatar
- * @param null|string $resetToken
- * @param bool $resetComplete
- * @param null|string $memberID
- */
 class Member
 {
 
@@ -43,17 +29,18 @@ class Member
         }
     }
 
-    public function __set(string $name, $value)
+    public function __set(string $name, $value): void
     {
         if (property_exists($this, $name)) {
             $this->$name = $value;
         }
     }
 
-    public function __get(string $name)
+    public function __get(string $name): mixed
     {
         if (property_exists($this, $name)) {
             return $this->$name;
         }
+        return null;
     }
 }

@@ -7,14 +7,6 @@ use Mlkali\Sa\Support\Messages;
 use Mlkali\Sa\Support\Encryption;
 use Mlkali\Sa\Database\Repository\MemberRepository;
 
-/**
- * @param Encryption $enc
- * @param MemeberRepository $memRepo
- * @method null|string validateRegister(Request $request)
- * @method null|string validateLogin(Request $request, string $activeMember)
- * @method null|string validateResetSend(Request $request)
- * 
- */
 class Validator
 {
 

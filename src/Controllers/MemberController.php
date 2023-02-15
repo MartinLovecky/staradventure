@@ -11,14 +11,6 @@ use Mlkali\Sa\Database\Entity\Member;
 use Mlkali\Sa\Database\Repository\MemberRepository;
 use Mlkali\Sa\Support\Validator;
 
-/**
- * @param Selector $selector
- * @param Encryption $enc
- * @param Member $member
- * @param MemberRepository $memRepo
- * @param Validator $validator
- * @param string $token
- */
 class MemberController
 {
 
@@ -49,14 +41,16 @@ class MemberController
         $memberID = $request->username . '|' . $request->email;
         // Insert the member into the database
         $this->memRepo->insert('info', ['member' => $memberID]);
-        $this->memRepo->insert('members', [
-            'username' => $request->username,
-            'email' => $request->email,
-            'password' => password_hash($request->password, PASSWORD_BCRYPT),
-            'active' => $this->token,
-            'permission' => 'user',
-            'member_id' => $memberID
-        ]);
+        $this->memRepo->insert('members',
+            [
+                'username' => $request->username,
+                'email' => $request->email,
+                'password' => password_hash($request->password, PASSWORD_BCRYPT),
+                'active' => $this->token,
+                'permission' => 'user',
+                'member_id' => $memberID
+            ]
+        );
         // Send an activation email to the user
         $this->memRepo->sendEmail(
             [
@@ -97,6 +91,7 @@ class MemberController
 
         return new Response('/?message=', sprintf(Messages::REQUETS_RESET_SEND, $request->email), '#');
     }
+
     public function sendForgottenUser(Request $request): Response
     {
         $validate = $this->validator->validateResetSend($request);
@@ -117,6 +112,7 @@ class MemberController
 
         return new Response('/login?message=', sprintf(Messages::REQUETS_FORGOTEN_USER, $request->email), '#login');
     }
+
     public function setNewPassword(Request $request): Response
     {
         $validate = $this->validator->validatePassword($request);
@@ -129,10 +125,10 @@ class MemberController
 
         return new Response('/?message=', Messages::REQUETS_RESET_PASSWORD, '#login');
     }
+
     public function activate(): Response
     {
         $memberID = $this->enc->decrypt($this->selector->queryID);
-
         $memberDB = $this->memRepo->getMemberInfo('member_id', $memberID, 'member_id');
         $tokenDB = $this->memRepo->getMemberInfo('member_id', $memberID, 'active');
 
@@ -144,6 +140,7 @@ class MemberController
 
         return new Response('/register?message=', Messages::REQUEST_ACTIVATE_FAIL, '#register');
     }
+
     public function login(Request $request): Response
     {
         $active = $this->memRepo->getMemberInfo('username', $request->username, 'active');
@@ -155,7 +152,7 @@ class MemberController
 
             return new Response('/login?message=', $validate, '#login');
         }
-        if (isset($request->remember)) {
+        elseif (isset($request->remember)) {
 
             setcookie('remember', $request->username, time() + (86400 * 7), '/');
 
@@ -166,6 +163,7 @@ class MemberController
 
         return new Response('member/' . $request->username . '?message=', sprintf(Messages::REQUETS_LOGIN, $request->username));
     }
+
     public function logout(): Response
     {
         @$_SESSION = array();

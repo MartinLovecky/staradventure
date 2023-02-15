@@ -25,7 +25,7 @@ class ArticleRepository
      */
     public function getCurrentArticle(?string $column = null): string|null
     {
-        if (!$this->allowedArticle() && !$this->exist($this->repoID)) {
+        if (!$this->exist($this->repoID)) {
             return null;
         }
         $stmt = $this->db->query
@@ -39,18 +39,6 @@ class ArticleRepository
             return null;
         }
         return $data;
-    }
-
-    public function allowedArticle(): bool
-    {
-        $stmt = $this->db->query
-            ->from('allowed_articles')
-            ->select('name')
-            ->where('name', $this->selector->article);
-
-        $result = $stmt->fetch('name');
-
-        return (bool)$result;
     }
 
     public function exist(?string $articleID = null): bool
@@ -84,7 +72,7 @@ class ArticleRepository
             ->set($set)
             ->where('article_id', $article->articleID)
             ->execute();
-        //The update() function will return true if the UPDATE query was successful, false otherwise
+
         return $stmt;
     }
 
@@ -112,5 +100,17 @@ class ArticleRepository
             ->execute();
 
         return $stmt;
+    }
+
+    private function allowedArticle(): bool
+    {
+        $stmt = $this->db->query
+            ->from('allowed_articles')
+            ->select('name')
+            ->where('name', $this->selector->article);
+
+        $result = $stmt->fetch('name');
+
+        return (bool)$result;
     }
 }

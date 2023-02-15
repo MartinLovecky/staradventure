@@ -19,27 +19,28 @@ class Form
     ) {
     }
 
-    public function options(array $options)
+    public function options(array $options): self
     {
-        $this->class = isset($options['class']) ? $options['class'] : $this->class;
-        $this->method = isset($options['method']) ? $options['method'] : $this->method;
-        $this->target = isset($options['target']) ? $options['target'] : $this->target;
-        $this->autocomplete = isset($options['autocomplete']) ? $options['autocomplete'] : $this->autocomplete;
-        $this->enctype = isset($options['enctype']) ? $options['enctype'] : $this->enctype;
-        $this->id = isset($options['id']) ? $options['id'] : $this->id;
+        $this->class = $options['class'] ?? $this->class;
+        $this->method = $options['method'] ?? $this->method;
+        $this->target = $options['target'] ?? $this->target;
+        $this->autocomplete = $options['autocomplete'] ?? $this->autocomplete;
+        $this->enctype = $options['enctype'] ?? $this->enctype;
+        $this->id = $options['id'] ?? $this->id;
         return $this;
     }
 
-    public function vars(array $values)
+    public function vars(array $values): self
     {
         $this->values = !empty($values) ? $values : $this->values;
         return $this;
     }
 
-    public function run()
+    public function run(): ?string
     {
         if (!empty($this->target)) {
             return "<form method='$this->method' target='" . $this->blade->run($this->target, $this->values) . "' class='$this->class' id='$this->id' autocomplete='$this->autocomplete' enctype='$this->enctype'>";
         }
+        return null;
     }
 }

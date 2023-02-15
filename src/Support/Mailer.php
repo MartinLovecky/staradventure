@@ -9,17 +9,17 @@ use PHPMailer\PHPMailer\PHPMailer;
 class Mailer extends PHPMailer
 {
 
-    public function subject($subject)
+    public function subject($subject): void
     {
         $this->Subject = $subject;
     }
 
-    public function body($body)
+    public function body($body): void
     {
         $this->Body = $body;
     }
 
-    public function sender($body, $email)
+    public function sender($body, $email): bool
     {
         $this->IsSMTP();
         $this->body($body);

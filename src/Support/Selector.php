@@ -1,19 +1,7 @@
 <?php
 
 namespace Mlkali\Sa\Support;
-/**
- * @param string $viewName
- * @param string $component
- * @param null|string $action
- * @param null|string $article
- * @param null|string $page
- * @param null|string $title
- * @param null|string $queryMsg
- * @param null|string $queryAction
- * @param null|string $queryID
- * @param null|string $queryToken
- * @method void getViewName(array $allowed)
- */
+
 class Selector
 {
 
