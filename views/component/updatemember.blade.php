@@ -1,7 +1,8 @@
 @use(Mlkali\Sa\Http\Response)
+@use(Mlkali\Sa\Support\Enum)
 @if (!$member->logged)
     @php
-        return new Response('/member'.'/'.$member->username.'/?message=','warning.Stránku upravit profil nelze otevřít když nejste přihlášen');
+        return new Response('/member'.'/'.$member->username.'/?message=', Enum::USER_NOT_LOGGED);
     @endphp
 @endif
 <article id="updatemember">

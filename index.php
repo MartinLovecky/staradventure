@@ -1,9 +1,5 @@
 <?php
 
-ini_set('display_startup_errors', 1);
-ini_set('display_errors', 1);
-error_reporting(-1);
-
 use eftec\bladeone\BladeOne;
 
 session_start();
@@ -22,8 +18,10 @@ $blade->setBaseUrl('/public');
 // Sets viewName and $queryValues
 $selector = $container->get(Mlkali\Sa\Support\Selector::class);
 $selector->getViewName(require_once(__DIR__ . '/app/allowedViews.php'));
+#$selector->debug();
 // Get &message=encrypted($msg)
 $message = $container->get(Mlkali\Sa\Support\Messages::class);
 $message->getQueryMessage();
+
 #example.local
 echo $blade->run($selector->viewName, require_once(__DIR__ . '/app/viewVariables.php'));

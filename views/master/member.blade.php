@@ -1,7 +1,8 @@
 @use(Mlkali\Sa\Http\Response)
-@if(!isset($selector->article))
+@use(Mlkali\Sa\Support\Enum)
+@if(!$member->logged)
     @php
-        return new Response('/?message=', 'danger.Nemáte přístup k zobrazení stránky', '#');
+        return new Response('/?message=', Enum::USER_NOT_LOGGED, '#');
     @endphp
 @endif
 @if ($message->hasAny())

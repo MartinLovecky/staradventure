@@ -1,12 +1,13 @@
 @use(Mlkali\Sa\Http\Response)
+@use(Mlkali\Sa\Support\Enum)
 @if (!$member->logged)
     @php
-        return new Response('/?message=','danger.Nemáte přístup k zobrazení stránky','#');
+        return new Response('/?message=', Enum::USER_NOT_LOGGED, '#');
     @endphp 
 @endif
 @if (!$member->permission == 'admin' || !$member->permission == 'rewriter')
     @php
-        return new Response('/member'.'/'.$member->username.'?message=','danger.Nemáte přístup k zobrazení stránky');
+        return new Response('/member'.'/'.$member->username.'?message=', Enum::USER_PERMISSION);
     @endphp 
 @endif
 @if($message->hasAny())

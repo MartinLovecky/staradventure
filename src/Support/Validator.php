@@ -105,29 +105,25 @@ class Validator
         return null;
     }
     //TODO - need to test 
-    public function validateAvatar(Request $request): ?string
-    {
-        return dd(NULL);    
-        if (!is_null($this->validateCaptcha($request->grecaptcharesponse))) {
-            return $this->validateCaptcha($request->grecaptcharesponse);
+    public function validateAvatar(string $recaptcha, array $avatar): ?string
+    { 
+        if (!is_null($this->validateCaptcha($recaptcha))) {
+            return $this->validateCaptcha($recaptcha);
         }
-        if (!$this->validToken($request->token)) {
-            return Messages::VALIDATION_CRSF_ERROR;
-        }
-        if (!is_uploaded_file($request->avatar['tmp_name'])) {
+        if (!is_uploaded_file($avatar['tmp_name'])) {
             return Messages::AVATAR_UPLOAD;
         }
-        if (!isset($request->avatar['name'])) {
+        if (!isset($avatar['name'])) {
             return Messages::AVATAR_UPLOAD;
         }
-        if (filesize($request->avatar['size']) === 0) {
+        if (filesize($avatar['size']) === 0) {
             return Messages::AVATAR_UPLOAD;
         }
-        if (filesize($request->avatar['size']) > 5145728) {
+        if (filesize($avatar['size']) > 5145728) {
             return Messages::AVATAR_SIZE;
         }
         if (!in_array(
-            finfo_file(finfo_open(FILEINFO_MIME_TYPE), mime_content_type($request->avatar['type'])),
+            finfo_file(finfo_open(FILEINFO_MIME_TYPE), mime_content_type($avatar['type'])),
             array_keys(['image/png' => 'png', 'image/jpg' => 'jpg', 'image/jpeg' => 'jpeg'])
         )) {
             return Messages::AVATAR_MIME_TYPE;

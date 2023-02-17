@@ -1,7 +1,8 @@
 @use(Mlkali\Sa\Http\Response)
+@use(Mlkali\Sa\Support\Enum)
 @if ($member->logged)
     @php
-        return new Response('/member'.'/'.$member->username.'/?message=','warning.Stránku reset nelze otevřít když jste přihlášen');
+        return new Response('/member'.'/'.$member->username.'/?message=', Enum::USER_LOGGED);
     @endphp
 @endif
 <article id="reset">

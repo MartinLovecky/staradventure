@@ -22,6 +22,9 @@ class Enum
     const VALIDATION_PASSWORD_AGAIN = 'danger_Hesla se musí schodovat';
     const VALIDATION_LEN_USER = 'danger_Username %s musí mít nejméně 4 znaky';
     const VALIDATION_ACTIVE_MEMBER = 'danger_Účet není aktivován';
+    const USER_NOT_LOGGED = 'danger_Pro zobrazení stránky se musíte přihlásit';
+    const USER_LOGGED = 'warning_Stránku reset nelze otevřít když jste přihlášen';
+    const USER_PERMISSION = 'danger_Nemáte přístup k zobrazení stránky';
     const AVATAR_UPLOAD = 'danger_Avatar musí být nahrán';
     const AVATAR_SIZE = 'danger_Avatar nesmí mít více jak 5MB';
     const AVATAR_MIME_TYPE = 'danger_File musí být png nebo jpg';

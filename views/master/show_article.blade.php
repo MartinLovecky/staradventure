@@ -1,7 +1,8 @@
 @use(Mlkali\Sa\Http\Response)
+@use(Mlkali\Sa\Support\Enum)
 @if($member->permission == "visit")
     @php
-        return new Response('/?message=','danger.K zobrazení stránky se musíte přihlásit','#');
+        return new Response('/?message=', Enum::USER_PERMISSION, '#');
     @endphp
 @endif
 <div class="book">

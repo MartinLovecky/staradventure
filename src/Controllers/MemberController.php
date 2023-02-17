@@ -177,8 +177,7 @@ class MemberController
     //TODO - test
     public function updateMember(Request $request): Response
     {
-        return dd("x");
-        $validate = $this->validator->validateAvatar($request);
+        $validate = $this->validator->validateAvatar($request->grecaptcharesponse, $request->avatar);
 
         if (isset($validate)) {
             return new Response('/reset?message=', $validate, '#updatemember');
@@ -191,11 +190,11 @@ class MemberController
         ];
 
         $extension = $allowedTypes[$request->avatar['type']];
-
         $uploadName = $request->avatar['name'] . '.' . $extension;
         $targetDir = $_SERVER['DOCUMENT_ROOT'] . '/public/img/avatars/';
-
         $newFilePath = $targetDir . $request->avatar['name'] . '.' . $extension;
+
+        dd($extension, $uploadName, $targetDir , $newFilePath);
 
         move_uploaded_file($request->avatar['tmp_name'], $newFilePath);
         unlink($request->avatar['tmp_name']);

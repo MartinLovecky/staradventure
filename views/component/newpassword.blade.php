@@ -1,4 +1,3 @@
-{{-- Redirect is not necesary without $query index.blade.php is shown --}}
 @isset($query)
 <article id="newpassword">
     <h2 class="major">Nové heslo</h2>
