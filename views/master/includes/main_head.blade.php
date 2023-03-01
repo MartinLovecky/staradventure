@@ -1,3 +1,4 @@
+@set($selector = $container->get(Mlkali\Sa\Support\Selector::class))
 <!DOCTYPE html>
 <html lang="en">
 

@@ -48,8 +48,6 @@ class MemberRepository
 
     public function sendEmail(array $data): void
     {
-        $main = $this->message->createEmailMessage('main', [$_SERVER['SERVER_NAME']]);
-
         $dynamic = $this->message->createEmailMessage(
             $data['templateType'],
             [
@@ -61,7 +59,7 @@ class MemberRepository
             ]
         );
 
-        $body = str_replace('TEMPLATE', $dynamic, $main);
+        $body = str_replace('TEMPLATE', $dynamic, $this->message->main());
 
         $info = Messages::getEmailInfo($data['templateType'], $data['recipient']);
 

@@ -8,20 +8,16 @@ use AllowDynamicProperties;
 class Request
 {
 
-    /**
-     * Convert $_POST array to public properties 
-     * where array key is property name
-     * @return object
-     */
-    public function getRequest()
+    public function __construct()
     {
-        foreach($_FILES as $fkey => $fvalue)
+        if(!empty($_FILES))
         {
-            $this->{$fkey} = $fvalue;
+            foreach ($_FILES as $fkey => $fvalue) {
+                $this->{$fkey} = $fvalue;
+            }
         }
-
-        foreach ($_POST as $key => $value)
-        {
+    
+        foreach ($_POST as $key => $value) {
             $this->{$key} = $value;
         }
     }

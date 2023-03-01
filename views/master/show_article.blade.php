@@ -1,5 +1,8 @@
 @use(Mlkali\Sa\Http\Response)
 @use(Mlkali\Sa\Support\Enum)
+@set($article = $container->get(Mlkali\Sa\Database\Entity\Article::class))
+@set($pagnation = $container->get(Mlkali\Sa\Html\Pagnition::class))
+@set($member = $container->get(Mlkali\Sa\Database\Entity\Member::class))
 @if($member->permission == "visit")
     @php
         return new Response('/?message=', Enum::USER_PERMISSION, '#');

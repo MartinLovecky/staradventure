@@ -1,4 +1,4 @@
-{{-- Story, member / editor page --}}
+@set($selector = $container->get(Mlkali\Sa\Support\Selector::class))
 @include('master.includes.head')
 @include('master.includes.menu')
     @if($selector->action == 'show' && !$selector->page)

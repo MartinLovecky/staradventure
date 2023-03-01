@@ -1,3 +1,4 @@
+@set($member = $container->get(Mlkali\Sa\Database\Entity\Member::class))
 <header id="header">
     <div class="logo"><i class="far fa-star"></i></div>
     <div class="content">

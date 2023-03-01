@@ -3,8 +3,6 @@
 namespace Mlkali\Sa\Support;
 
 use Exception;
-
-
 use Mlkali\Sa\Support\Enum;
 use Mlkali\Sa\Support\Selector;
 use Mlkali\Sa\Support\Encryption;
@@ -43,9 +41,9 @@ class Messages extends Enum
     }
 
     /**
-     * After header we want display message /url?message=TEXTtoDISPLAY, 
+     * After header we want display message /url?message=TEXTtoDISPLAY,
      * ?message is important to message work also message should be
-     * encrypted, also dont use ?message if you dont provide encrypted message 
+     * encrypted, also dont use ?message if you dont provide encrypted message
      *
      * @return void adds message to messageBag
      */
@@ -58,19 +56,13 @@ class Messages extends Enum
 
     public function createEmailMessage(string $templateName, string|array $variables): string
     {
+
         if (!is_readable(__DIR__ . '/../../public/template/' . $templateName . '.html')) {
             throw new Exception("$templateName.html nexistuje ve složce /public/templates", 1);
         }
 
-        if ($templateName === 'main' && is_string($variables)) {
-
-            $template = preg_replace( '/\s+/', ' ', file_get_contents(__DIR__ . '/../../public/template/' . $templateName . '.html'));
-
-            return str_replace(['URL', "\n"], [$variables, " "], $template);
-        }
-
         $template = str_replace("\n", " ", preg_replace('/\s+/', ' ', file_get_contents(__DIR__ . '/../../public/template/' . $templateName . '.html')));
-
+      
         return vsprintf($template, $variables);
     }
 
@@ -88,6 +80,13 @@ class Messages extends Enum
                 break;
         }
         return $info;
+    }
+
+    public function main(): string 
+    {
+        $template = preg_replace('/\s+/', ' ', file_get_contents(__DIR__ . '/../../public/template/main.html'));
+
+        return str_replace('URL', $_SERVER['SERVER_NAME'], $template);
     }
 
     private function getFristMessage(): void

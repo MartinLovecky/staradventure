@@ -1,5 +1,11 @@
 @use(Mlkali\Sa\Http\Response)
 @use(Mlkali\Sa\Support\Enum)
+@set($member = $container->get(Mlkali\Sa\Database\Entity\Member::class))
+@set($memberController = $container->get(Mlkali\Sa\Controllers\MemberController::class))
+@set($form = $container->get(Mlkali\Sa\Html\Form::class))
+@set($enc = $container->get(Mlkali\Sa\Support\Encryption::class))
+@set($request = $container->get(Mlkali\Sa\Http\Request::class))
+
 @if ($member->logged)
     @php
         return new Response('/member'.'/'.$member->username.'/?message=', Enum::USER_LOGGED);
@@ -7,7 +13,7 @@
 @endif
 <article id="register">
     <h2 class="major">Přidej se</h2>
-    {!! //form has more options but I mostly using default
+    {!! 
 	    $form
         ->options(['target' => 'requestHandler'])
 		->vars(['memberController' => $memberController, 'request' => $request])

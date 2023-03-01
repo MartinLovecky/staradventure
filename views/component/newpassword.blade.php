@@ -1,9 +1,17 @@
-@isset($query)
+@use(Mlkali\Sa\Http\Response)
+@use(Mlkali\Sa\Support\Enum)
+@set($member = $container->get(Mlkali\Sa\Database\Entity\Member::class))
+@set($memberController = $container->get(Mlkali\Sa\Controllers\MemberController::class))
+@set($form = $container->get(Mlkali\Sa\Html\Form::class))
+@set($enc = $container->get(Mlkali\Sa\Support\Encryption::class))
+@set($request = $container->get(Mlkali\Sa\Http\Request::class))
+@set($selector = $container->get(Mlkali\Sa\Support\Selector::class))
+@isset($selector->queryID)
 <article id="newpassword">
     <h2 class="major">Nové heslo</h2>
     {!! 
         $form->options(['target'=>'requestHandler','class'=>'text-left'])
-        ->vars(['memberController'=>$memberController])
+        ->vars(['memberController'=>$memberController, 'request' => $request])
         ->run() 
     !!}
     <div class="fields">
@@ -17,9 +25,14 @@
     <input type="hidden" id="g-recaptcha-response" name="grecaptcharesponse">
     <input type="hidden" name="action" value="validate_captcha">
     <input type="hidden" name="type" value="new_password">
-    <input type="hidden" name="etoken" value="{{ base64_decode($query) }}">
+    <input type="hidden" name="etoken" value="{{ base64_decode($selector->queryID) }}">
 </form>
 <script src="https://www.google.com/recaptcha/api.js?render=6LclhVIjAAAAAAUcH7r8tvwJl3GIUg8bLJmr2alF"></script>
 <script src="@asset("js/recaptcha.js")"></script>
 </article>
+@else
+@php
+    return new Response('newpassword?message=', Enum::IVALID_URL, '#newpassword');
+@endphp
+
 @endisset

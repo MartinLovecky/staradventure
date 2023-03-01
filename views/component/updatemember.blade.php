@@ -1,5 +1,10 @@
 @use(Mlkali\Sa\Http\Response)
 @use(Mlkali\Sa\Support\Enum)
+@set($member = $container->get(Mlkali\Sa\Database\Entity\Member::class))
+@set($memberController = $container->get(Mlkali\Sa\Controllers\MemberController::class))
+@set($form = $container->get(Mlkali\Sa\Html\Form::class))
+@set($enc = $container->get(Mlkali\Sa\Support\Encryption::class))
+@set($request = $container->get(Mlkali\Sa\Http\Request::class))
 @if (!$member->logged)
     @php
         return new Response('/member'.'/'.$member->username.'/?message=', Enum::USER_NOT_LOGGED);

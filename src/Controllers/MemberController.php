@@ -67,6 +67,7 @@ class MemberController
 
     public function sendResetToken(Request $request): Response
     {
+
         $validate = $this->validator->validateResetSend($request);
 
         if (isset($validate)) {

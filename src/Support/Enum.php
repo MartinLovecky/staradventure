@@ -22,6 +22,7 @@ class Enum
     const VALIDATION_PASSWORD_AGAIN = 'danger_Hesla se musí schodovat';
     const VALIDATION_LEN_USER = 'danger_Username %s musí mít nejméně 4 znaky';
     const VALIDATION_ACTIVE_MEMBER = 'danger_Účet není aktivován';
+    const INVALID_URL ='danger_Nesprávné url zkontrolujte si email';
     const USER_NOT_LOGGED = 'danger_Pro zobrazení stránky se musíte přihlásit';
     const USER_LOGGED = 'warning_Stránku reset nelze otevřít když jste přihlášen';
     const USER_PERMISSION = 'danger_Nemáte přístup k zobrazení stránky';

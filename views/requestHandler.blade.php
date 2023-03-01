@@ -1,7 +1,5 @@
 <?php
 
-$request->getRequest();
-
 if(isset($request->type))
 {
     match($request->type){

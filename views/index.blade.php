@@ -1,3 +1,8 @@
+@set($message = $container->get(Mlkali\Sa\Support\Messages::class))
+@set($selector = $container->get(Mlkali\Sa\Support\Selector::class))
+@set($member = $container->get(Mlkali\Sa\Database\Entity\Member::class))
+@set($memberController = $container->get(Mlkali\Sa\Controllers\MemberController::class))
+
 @include('master.includes.main_head', ['selector' => $selector])
     {{-- IDK where to place this for now here--}}
     @if(isset($cockie['remember']) && $selector->viewName !== 'index')
