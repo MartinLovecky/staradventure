@@ -131,20 +131,20 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/GrahamCampbell/Result-Type.git",
-                "reference": "821e73872c8eec935700049e46e009382a2efaaf"
+                "reference": "60c5f57bee20beb1a4a3cc5fe9170de4a64521d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/GrahamCampbell/Result-Type/zipball/821e73872c8eec935700049e46e009382a2efaaf",
-                "reference": "821e73872c8eec935700049e46e009382a2efaaf",
+                "url": "https://api.github.com/repos/GrahamCampbell/Result-Type/zipball/60c5f57bee20beb1a4a3cc5fe9170de4a64521d2",
+                "reference": "60c5f57bee20beb1a4a3cc5fe9170de4a64521d2",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.2.5 || ^8.0",
-                "phpoption/phpoption": "^1.9"
+                "phpoption/phpoption": "^1.9.1"
             },
             "require-dev": {
-                "phpunit/phpunit": "^8.5.30 || ^9.5.25"
+                "phpunit/phpunit": "^8.5.32 || ^9.6.3 || ^10.0.12"
             },
             "default-branch": true,
             "type": "library",
@@ -186,7 +186,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-10-15T20:51:53+00:00"
+            "time": "2023-02-25T23:46:23+00:00"
         },
         {
             "name": "league/container",
@@ -277,12 +277,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPMailer/PHPMailer.git",
-                "reference": "abeba566ef17999c240a02048e25c6db21cd39e8"
+                "reference": "2029eb194a507d73bfb672a153249db534462860"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/abeba566ef17999c240a02048e25c6db21cd39e8",
-                "reference": "abeba566ef17999c240a02048e25c6db21cd39e8",
+                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/2029eb194a507d73bfb672a153249db534462860",
+                "reference": "2029eb194a507d73bfb672a153249db534462860",
                 "shasum": ""
             },
             "require": {
@@ -292,13 +292,13 @@
                 "php": ">=5.5.0"
             },
             "require-dev": {
-                "dealerdirect/phpcodesniffer-composer-installer": "^0.7.2",
+                "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
                 "doctrine/annotations": "^1.2.6 || ^1.13.3",
                 "php-parallel-lint/php-console-highlighter": "^1.0.0",
                 "php-parallel-lint/php-parallel-lint": "^1.3.2",
                 "phpcompatibility/php-compatibility": "^9.3.5",
                 "roave/security-advisories": "dev-latest",
-                "squizlabs/php_codesniffer": "^3.7.1",
+                "squizlabs/php_codesniffer": "^3.7.2",
                 "yoast/phpunit-polyfills": "^1.0.4"
             },
             "suggest": {
@@ -350,7 +350,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-02-05T11:55:20+00:00"
+            "time": "2023-03-06T15:23:26+00:00"
         },
         {
             "name": "phpoption/phpoption",
@@ -358,20 +358,20 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/php-option.git",
-                "reference": "00430c0532ae544fb1c81e45705b3d356bfc25d0"
+                "reference": "dd3a383e599f49777d8b628dadbb90cae435b87e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/php-option/zipball/00430c0532ae544fb1c81e45705b3d356bfc25d0",
-                "reference": "00430c0532ae544fb1c81e45705b3d356bfc25d0",
+                "url": "https://api.github.com/repos/schmittjoh/php-option/zipball/dd3a383e599f49777d8b628dadbb90cae435b87e",
+                "reference": "dd3a383e599f49777d8b628dadbb90cae435b87e",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.2.5 || ^8.0"
             },
             "require-dev": {
-                "bamarni/composer-bin-plugin": "^1.8.1",
-                "phpunit/phpunit": "^8.5.30 || ^9.5.25"
+                "bamarni/composer-bin-plugin": "^1.8.2",
+                "phpunit/phpunit": "^8.5.32 || ^9.6.3 || ^10.0.12"
             },
             "default-branch": true,
             "type": "library",
@@ -414,7 +414,7 @@
             ],
             "support": {
                 "issues": "https://github.com/schmittjoh/php-option/issues",
-                "source": "https://github.com/schmittjoh/php-option/tree/master"
+                "source": "https://github.com/schmittjoh/php-option/tree/1.9.1"
             },
             "funding": [
                 {
@@ -426,7 +426,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-10-15T20:52:05+00:00"
+            "time": "2023-02-25T19:38:58+00:00"
         },
         {
             "name": "psr/container",
@@ -488,12 +488,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/css-selector.git",
-                "reference": "cda0fa7b592d8d55eaf79d8d61c9abc92be14c73"
+                "reference": "efc074765e98f4c25a52299d0148ac798cb9f98e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/css-selector/zipball/cda0fa7b592d8d55eaf79d8d61c9abc92be14c73",
-                "reference": "cda0fa7b592d8d55eaf79d8d61c9abc92be14c73",
+                "url": "https://api.github.com/repos/symfony/css-selector/zipball/efc074765e98f4c25a52299d0148ac798cb9f98e",
+                "reference": "efc074765e98f4c25a52299d0148ac798cb9f98e",
                 "shasum": ""
             },
             "require": {
@@ -545,7 +545,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-02-07T09:49:56+00:00"
+            "time": "2023-02-14T09:04:20+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -804,12 +804,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "d1347f047357ff91b8e93c9d3b57d92c554daed0"
+                "reference": "02dacf7e2661c7b64ef1dc2185c0b084c9fc847c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/d1347f047357ff91b8e93c9d3b57d92c554daed0",
-                "reference": "d1347f047357ff91b8e93c9d3b57d92c554daed0",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/02dacf7e2661c7b64ef1dc2185c0b084c9fc847c",
+                "reference": "02dacf7e2661c7b64ef1dc2185c0b084c9fc847c",
                 "shasum": ""
             },
             "require": {
@@ -885,7 +885,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-02-07T15:36:52+00:00"
+            "time": "2023-03-14T15:00:05+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -1042,16 +1042,16 @@
         },
         {
             "name": "voku/simple_html_dom",
-            "version": "4.8.7",
+            "version": "4.8.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/voku/simple_html_dom.git",
-                "reference": "d9807c2b6124457eee2c30b3d1c067e0657713d4"
+                "reference": "9ef90f0280fe16054c117e04ea86617ce0fcdd35"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/voku/simple_html_dom/zipball/d9807c2b6124457eee2c30b3d1c067e0657713d4",
-                "reference": "d9807c2b6124457eee2c30b3d1c067e0657713d4",
+                "url": "https://api.github.com/repos/voku/simple_html_dom/zipball/9ef90f0280fe16054c117e04ea86617ce0fcdd35",
+                "reference": "9ef90f0280fe16054c117e04ea86617ce0fcdd35",
                 "shasum": ""
             },
             "require": {
@@ -1099,7 +1099,7 @@
             ],
             "support": {
                 "issues": "https://github.com/voku/simple_html_dom/issues",
-                "source": "https://github.com/voku/simple_html_dom/tree/4.8.7"
+                "source": "https://github.com/voku/simple_html_dom/tree/4.8.8"
             },
             "funding": [
                 {
@@ -1119,7 +1119,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-12-22T13:55:49+00:00"
+            "time": "2023-02-12T16:15:15+00:00"
         }
     ],
     "packages-dev": [],

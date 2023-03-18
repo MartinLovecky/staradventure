@@ -104,9 +104,10 @@ class Validator
         }
         return null;
     }
-    //TODO - need to test 
+  
     public function validateAvatar(string $recaptcha, array $avatar): ?string
-    { 
+    {
+        
         if (!is_null($this->validateCaptcha($recaptcha))) {
             return $this->validateCaptcha($recaptcha);
         }
@@ -116,16 +117,13 @@ class Validator
         if (!isset($avatar['name'])) {
             return Messages::AVATAR_UPLOAD;
         }
-        if (filesize($avatar['size']) === 0) {
+        if ($avatar['size'] === 0) {
             return Messages::AVATAR_UPLOAD;
         }
-        if (filesize($avatar['size']) > 5145728) {
+        if ($avatar['size'] > 5145728) {
             return Messages::AVATAR_SIZE;
         }
-        if (!in_array(
-            finfo_file(finfo_open(FILEINFO_MIME_TYPE), mime_content_type($avatar['type'])),
-            array_keys(['image/png' => 'png', 'image/jpg' => 'jpg', 'image/jpeg' => 'jpeg'])
-        )) {
+        if (!in_array(pathinfo($avatar['name'], PATHINFO_EXTENSION), ['png', 'jpg', 'jpeg'])) {
             return Messages::AVATAR_MIME_TYPE;
         }
         return null;
