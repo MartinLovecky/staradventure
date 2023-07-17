@@ -22,7 +22,7 @@ class MemberController
         private Validator $validator,
         private string $token = ''
     ) {
-        $this->token = md5(uniqid(rand(), true));
+        $this->token = hash('sha256', random_bytes(32));
     }
     public function register(Request $request): Response
     {
