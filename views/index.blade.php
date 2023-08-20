@@ -1,24 +1,40 @@
-@set($message = $container->get(Mlkali\Sa\Support\Messages::class))
-@set($selector = $container->get(Mlkali\Sa\Support\Selector::class))
-@set($member = $container->get(Mlkali\Sa\Database\Entity\Member::class))
-@set($memberController = $container->get(Mlkali\Sa\Controllers\MemberController::class))
+@include('includes.head', ['selector' => $selector])
 
-@include('master.includes.main_head', ['selector' => $selector])
-    {{-- IDK where to place this for now here--}}
-    @if(isset($cockie['remember']) && $selector->viewName !== 'index')
-        @php  $memberController->setMember($cockie['remember']);  @endphp
+@if ($message->hasAny())
+@component('components.message', ['message' => $message])@endcomponent
+@endif
+
+@if($component == 'register' || $component == 'reset' || $component == 'login')
+@set($data = [
+    'request' => $request,
+    'member' => $member,
+    'form' => $form,
+    'memberController' => $memberController,
+    'enc' => $enc,
+    'csrf' => $csrf,
+    'selector' => $selector
+])
+@else
+@set($data = [])
+@endif
+{{-- Main landing page --}}
+@if ($selector->viewName == 'index')
+@component('components.header', ['member' => $member])@endcomponent
+<div id="main">
+    @if (!empty($selector->action))
+    @component('components.'.$component, $data)@endcomponent
     @endif
-    {{--Messages --}}
-    @if ($message->hasAny())
-        @component('component.message')@endcomponent  
-    @endif
-    {{-- Header Links --}}
-    @component('component.header')@endcomponent
-    {{-- home page component handling --}}
-    <div id="main">
-    @if ($selector->viewName === 'index' && !empty($selector->action))
-        @component('component.'.$selector->action)@endcomponent
-    @endif
-    </div>
 </div>
-@include('master.includes.end_page')
+</div>
+@include('includes.endOfMainPage')
+@else
+@include('includes.menu')
+@if($selector->action == 'show' && !$selector->page)
+@component('articles.'.$component)@endcomponent
+@elseif($selector->action == 'show' && isset($selector->page))
+@component('articles.'.$component)@endcomponent
+@else
+@component('articles.'.$component)@endcomponent
+@endif
+@include('includes.footer')
+@endif

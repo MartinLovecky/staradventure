@@ -554,7 +554,6 @@ select {
         background:#fff !important;
         border-color:#fff !important;
         color:#1b1f22;
-        content:'\f00c'
     }
 
     input[type=checkbox]+label:before {

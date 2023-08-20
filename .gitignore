@@ -5,3 +5,4 @@ public/img/
 !.gitignore
 !.htaccess
 composer-unused.phar
+views/test.blade.php

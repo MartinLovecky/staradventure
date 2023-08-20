@@ -11,7 +11,7 @@ class Selector
         public ?string $action = null,
         public ?string $article = null,
         public ?string $page = null,
-        public ?string $title = null,
+        public string $title = '',
         public ?string $queryMsg = null,
         public ?string $queryAction = null,
         public ?string $queryID = null,
@@ -26,30 +26,13 @@ class Selector
         $this->action = $this->url[0] ?? $this->action;
         $this->article = $this->url[1] ?? $this->article;
         $this->page = $this->url[2] ?? $this->page;
-        $this->articleID = isset($this->article) && isset($this->page) ? $this->article . '|'. $this->page : $this->articleID;
+        $this->articleID = isset($this->article) && isset($this->page) ? $this->article . '|' . $this->page : $this->articleID;
         // url Query values
-        parse_str($_SERVER['QUERY_STRING'], $this->queryValues);
+        isset($_SERVER['QUERY_STRING']) ? parse_str($_SERVER['QUERY_STRING'], $this->queryValues) : null;
         $this->queryMsg = $this->queryValues['message'] ?? $this->queryMsg;
         $this->queryID = $this->queryValues['id'] ?? $this->queryID;
         $this->queryAction = $this->queryValues['action'] ?? $this->queryAction;
         $this->queryToken = $this->queryValues['token'] ?? $this->queryToken;
-    }
-
-    public function getViewName(array $allowed): void
-    {
-        if (in_array(strtolower($this->action), $allowed)) {
-
-            match ($this->action) {
-                '', 'intro', 'login', 'newpassword', 'register', 'reset', 'storylist', 'terms', 'vop', 'updatemember' => $this->viewName = 'index', $this->title = 'SA | ' . $this->action,
-                'show' => [$this->viewName = 'app', $this->component = 'articles', $this->title = 'SA | ' . $this->action . ' | ' . $this->article ?? $this->article],
-                ['update', 'delete', 'create'] => [$this->viewName = 'app', $this->component = 'editor', $this->title = 'SA | ' . $this->action . ' | ' . $this->article ?? $this->article],
-                default => [$this->viewName = 'app', $this->component = $this->action, $this->title = 'SA | ' . $this->action . ' | ' . $this->article ?? $this->article]
-            };
-        } else {
-            $this->component = 'notfound';
-            $this->viewName = 'app';
-            $this->title = 'SA | 404';
-        }
     }
 
     public function debug(): void

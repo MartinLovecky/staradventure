@@ -12,16 +12,22 @@ $dotenv->required(['DB_NAME', 'DB_USER', 'DB_HOST', 'DB_PASS']);
 // Class container with auto-wire
 $container = new League\Container\Container();
 $container->delegate(new League\Container\ReflectionContainer(true));
-// Blade Template engine
-$blade = new BladeOne(__DIR__ . '/views', __DIR__ . '/compiles', BladeOne::MODE_AUTO);
-$blade->setBaseUrl('/public');
+
 // Sets viewName and $queryValues
-$selector = $container->get(Mlkali\Sa\Support\Selector::class);
-$selector->getViewName(require_once(__DIR__ . '/app/allowedViews.php'));
-#$selector->debug();
+
 // Get &message=encrypted($msg)
 $message = $container->get(Mlkali\Sa\Support\Messages::class);
 $message->getQueryMessage();
 
-#example.local
-echo $blade->run($selector->viewName, require_once(__DIR__ . '/app/viewVariables.php'));
+
+/*
+    return 
+[
+    'container' => $container,
+    'csrf' => $_ENV['CSRFKEY'],
+    'cockie' => $_COOKIE,
+];
+
+*/
+
+require_once(__DIR__ . '/app/container/setting.php');
