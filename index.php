@@ -1,7 +1,5 @@
 <?php
 
-use eftec\bladeone\BladeOne;
-
 session_start();
 
 require 'vendor/autoload.php';
@@ -13,21 +11,11 @@ $dotenv->required(['DB_NAME', 'DB_USER', 'DB_HOST', 'DB_PASS']);
 $container = new League\Container\Container();
 $container->delegate(new League\Container\ReflectionContainer(true));
 
-// Sets viewName and $queryValues
-
+// Sets viewName and $queryValues this will be propably moved
 // Get &message=encrypted($msg)
 $message = $container->get(Mlkali\Sa\Support\Messages::class);
 $message->getQueryMessage();
 
+$viewController = $container->get(Mlkali\Sa\Controllers\ViewController::class);
 
-/*
-    return 
-[
-    'container' => $container,
-    'csrf' => $_ENV['CSRFKEY'],
-    'cockie' => $_COOKIE,
-];
-
-*/
-
-require_once(__DIR__ . '/app/container/setting.php');
+echo $viewController->view();    

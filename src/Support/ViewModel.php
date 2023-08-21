@@ -1,6 +1,6 @@
 <?php
 
-namespace Mlkali\Sa\ViewModels;
+namespace Mlkali\Sa\Support;
 
 use eftec\bladeone\BladeOne;
 use Mlkali\Sa\Controllers\MemberController;
@@ -11,34 +11,32 @@ use Mlkali\Sa\Support\Encryption;
 use Mlkali\Sa\Support\Messages;
 use Mlkali\Sa\Support\Selector;
 
-class IndexModel
+class ViewModel
 {
 
     public function __construct(
         private BladeOne $blade,
         private Selector $selector,
-        private Messages $messages,
-        private MemberController $memberController,
-        private Member $member,
         private Form $form,
+        private MemberController $memberController,
         private Request $request,
+        private Member $member,
         private Encryption $enc,
-        private string $title = 'SA | ',
+        private Messages $messages
     ) {
-        $this->blade->setBaseUrl('public');
     }
 
-    public function render(?string $component = null): string
+    public function render(): string 
     {
-        $data = $this->setViewData($component);
+        $data = $this->setViewData();
 
         return $this->blade->run('index', $data);
     }
 
-    private function setViewData(?string $component = null): array
+    private function setViewData(): array
     {
-
-        $this->title .= $component;
+        $component = $this->commonentName();
+        $title = 'SA | ' . $component;
 
         $data = match ($component) {
             'intro', 'storylist', 'terms', 'vop' => [],
@@ -55,10 +53,22 @@ class IndexModel
             default => []
         };
 
-        $baseArray = ['selector' => $this->selector, 'message' => $this->messages, 'member' => $this->member, 'component' => $component, 'title' =>  $this->title];
+        $baseArray = ['selector' => $this->selector, 'message' => $this->messages, 'member' => $this->member, 'component' => $component, 'title' =>  $title];
 
         $merge = array_merge($baseArray, $data);
 
         return $merge;
+    }
+
+    private function commonentName(): string
+    {
+        $view = match($this->selector->action)
+        {
+            '' => 'index',
+            '404' => 'notFound',
+            default => $this->selector->action
+        };
+
+        return $view;
     }
 }

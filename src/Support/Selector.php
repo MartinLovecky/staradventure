@@ -6,8 +6,6 @@ class Selector
 {
 
     public function __construct(
-        public string $viewName = 'index',
-        public string $component = '',
         public ?string $action = null,
         public ?string $article = null,
         public ?string $page = null,
