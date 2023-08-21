@@ -11,11 +11,6 @@ $dotenv->required(['DB_NAME', 'DB_USER', 'DB_HOST', 'DB_PASS']);
 $container = new League\Container\Container();
 $container->delegate(new League\Container\ReflectionContainer(true));
 
-// Sets viewName and $queryValues this will be propably moved
-// Get &message=encrypted($msg)
-$message = $container->get(Mlkali\Sa\Support\Messages::class);
-$message->getQueryMessage();
-
 $viewController = $container->get(Mlkali\Sa\Controllers\ViewController::class);
 
 echo $viewController->view();    

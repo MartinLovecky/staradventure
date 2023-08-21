@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cookie">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
-    @if ($component != 'index')
+    @if ($endpoint != 'intro')
     <link rel="stylesheet" href="@asset('css/main.min.css')">
     @endif
     <link rel="stylesheet" href="@asset('css/styles.min.css')">
@@ -17,9 +17,9 @@
     <script src="https://cdn.ckeditor.com/4.18.0/full-all/ckeditor.js"></script>
 </head>
 
-<body>
-
-@if ($component == 'index')
+@if ($endpoint == 'intro')
     <body class="is-preload">
     <div id="wrapper">
-@endif    
+@else
+    <body>
+@endif 

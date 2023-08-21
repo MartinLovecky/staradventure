@@ -13,7 +13,6 @@ use Mlkali\Sa\Support\Selector;
 
 class ViewModel
 {
-
     public function __construct(
         private BladeOne $blade,
         private Selector $selector,
@@ -24,9 +23,11 @@ class ViewModel
         private Encryption $enc,
         private Messages $messages
     ) {
+        $this->blade->setBaseUrl('public');
+        $this->messages->getQueryMessage();
     }
 
-    public function render(): string 
+    public function render(): string
     {
         $data = $this->setViewData();
 
@@ -35,12 +36,13 @@ class ViewModel
 
     private function setViewData(): array
     {
-        $component = $this->commonentName();
-        $title = 'SA | ' . $component;
+        $componentName = $this->commonentName();
+        $endpoint = $this->endpoint();
+        $title = 'SA | ' . $componentName;
 
-        $data = match ($component) {
+        $data = match ($componentName) {
             'intro', 'storylist', 'terms', 'vop' => [],
-            'login', 'register', 'reset' => [
+            'login', 'register', 'reset', 'pwd' => [
                 'form' => $this->form,
                 'memberController' => $this->memberController,
                 'request' => $this->request,
@@ -53,7 +55,14 @@ class ViewModel
             default => []
         };
 
-        $baseArray = ['selector' => $this->selector, 'message' => $this->messages, 'member' => $this->member, 'component' => $component, 'title' =>  $title];
+        $baseArray = [
+            'selector' => $this->selector,
+            'message' => $this->messages, 
+            'member' => $this->member, 
+            'component' => $componentName, 
+            'title' =>  $title,
+            'endpoint' => $endpoint
+        ];
 
         $merge = array_merge($baseArray, $data);
 
@@ -62,13 +71,24 @@ class ViewModel
 
     private function commonentName(): string
     {
-        $view = match($this->selector->action)
-        {
-            '' => 'index',
+        $component = match ($this->selector->action) {
+            '', 'index' => 'header',
             '404' => 'notFound',
+            'update', 'delete', 'create' => 'editor',
+            'newpassword' => 'pwd',
             default => $this->selector->action
         };
 
-        return $view;
+        return $component;
+    }
+
+    private function endpoint(): string
+    {
+        $endpoint = match ($this->selector->action) {
+            '', 'index', 'intro', 'register', 'login' => 'intro',
+            'update', 'delete', 'create', 'member', 'show', => 'article'
+        };
+
+        return $endpoint;
     }
 }

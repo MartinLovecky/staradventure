@@ -14,7 +14,7 @@ Before you can use this application you need to create .env file in root directo
 inside public directory is sql dir for all necessary DB tables
 
 # Important
-you need also creare these files / folders [compiles/ public/img/ .htaccess .gitignore]
+you need also creare these files / folders [compiles, public, img, .htaccess, .gitignore]
 
 and run in terminal
 ```bash
