@@ -2,11 +2,6 @@
 @if ($message->hasAny())
     @component('components.message')@endcomponent
 @endif
-{{-- 
-    endpoint split application into 2 parts 
-        frist is 'intro' that can be sum as landing page and its "elemets" inside /views/components
-        second is 'article' where user iteractive with (/show,/update,/delete/, /member) inside /views/articles
---}}
 @if($endpoint == 'intro')
     @if($component == 'header')
        @component('components.'.$component)@endcomponent 

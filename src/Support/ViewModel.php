@@ -38,6 +38,13 @@ class ViewModel
     {
         $componentName = $this->commonentName();
         $endpoint = $this->endpoint();
+
+        // to not need do this check for 2 folders we focus to /view/artilces 
+        // everything /view/components must exit
+        if ($endpoint === 'article' && !file_exists($_SERVER['DOCUMENT_ROOT'] . '/views/articles/' . $componentName)) {
+            $componentName = 'notFound';
+        }
+
         $title = 'SA | ' . $componentName;
 
         $data = match ($componentName) {
@@ -57,9 +64,9 @@ class ViewModel
 
         $baseArray = [
             'selector' => $this->selector,
-            'message' => $this->messages, 
-            'member' => $this->member, 
-            'component' => $componentName, 
+            'message' => $this->messages,
+            'member' => $this->member,
+            'component' => $componentName,
             'title' =>  $title,
             'endpoint' => $endpoint
         ];
@@ -82,11 +89,18 @@ class ViewModel
         return $component;
     }
 
+    /**
+     *  endpoint split application into 2 parts 
+     *   - frist is 'intro' that can be sum as landing page and its "elemets" inside /views/components
+     *   - second is 'article' where user iteractive with (/show,/update,/delete/, /member) inside /views/articles
+     *
+     * @return string
+     */
     private function endpoint(): string
     {
         $endpoint = match ($this->selector->action) {
-            '', 'index', 'intro', 'register', 'login' => 'intro',
-            'update', 'delete', 'create', 'member', 'show', => 'article'
+            '', 'index', 'intro', 'register', 'login', 'storylist', 'vop', 'terms', 'reset', 'newpassword' => 'intro',
+            default => 'article'
         };
 
         return $endpoint;
