@@ -8,7 +8,6 @@ use Mlkali\Sa\Database\Entity\Article;
 
 class ArticleRepository
 {
-
     public function __construct(
         private Selector $selector,
         private DB $db,
@@ -18,8 +17,8 @@ class ArticleRepository
     }
 
     /**
-     * Can get specific column for articleID or all columns 
-     * @param string|null $articleID is handled by selector 
+     * Can get specific column for articleID or all columns
+     * @param string|null $articleID is handled by selector
      * @param string|null $column array if null, otherwise $column value
      * @return string|null
      */

@@ -6,7 +6,6 @@ use Mlkali\Sa\Support\Selector;
 
 class Pagnition
 {
-
     public function __construct(
         private Selector $selector,
         private string $article = 'allwin',

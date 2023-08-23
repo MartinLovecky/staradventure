@@ -6,7 +6,6 @@ use Mlkali\Sa\Support\ViewModel;
 
 class ViewController
 {
-
     public function __construct(private ViewModel $viewModel)
     {
     }

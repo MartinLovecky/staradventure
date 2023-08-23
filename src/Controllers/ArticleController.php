@@ -11,7 +11,6 @@ use Mlkali\Sa\Support\Selector;
 
 class ArticleController
 {
-
     public function __construct(
         private Article $article,
         private ArticleRepository $artRepo,
@@ -58,15 +57,14 @@ class ArticleController
         return new Response("/update/$request->articleName/$request->articlePage?message=", sprintf(Messages::ARTICLE_DELETED, $this->selector->articleID));
     }
 
-    private function  createOrUpdateArticle(?string $chapter, string $articleBody): void
+    private function createOrUpdateArticle(?string $chapter, string $articleBody): void
     {
         $this->article
             ->setArticleID($this->selector->articleID)
             ->setArticleChapter($chapter)
             ->setArticleBody($articleBody);
 
-        if($this->validateArticle())
-        {
+        if($this->validateArticle()) {
             $this->artRepo->update($this->article);
             return;
         }

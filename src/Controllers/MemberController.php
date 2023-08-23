@@ -13,7 +13,6 @@ use Mlkali\Sa\Support\Validator;
 
 class MemberController
 {
-
     public function __construct(
         private Selector $selector,
         private Encryption $enc,
@@ -41,7 +40,8 @@ class MemberController
         $memberID = $request->username . '|' . $request->email;
         // Insert the member into the database
         $this->memRepo->insert('info', ['member' => $memberID]);
-        $this->memRepo->insert('members',
+        $this->memRepo->insert(
+            'members',
             [
                 'username' => $request->username,
                 'email' => $request->email,
@@ -58,7 +58,7 @@ class MemberController
                 'encryptedID' => $this->enc->encrypt($memberID),
                 'active' => $this->token,
                 'recipient' => $request->email,
-                'templateType' => 'register' 
+                'templateType' => 'register'
             ]
         );
 
@@ -133,8 +133,7 @@ class MemberController
         $memberDB = $this->memRepo->getMemberInfo('member_id', $memberID, 'member_id');
         $tokenDB = $this->memRepo->getMemberInfo('member_id', $memberID, 'active');
 
-        if (strcmp($memberID, $memberDB) == 0 && strcmp($this->selector->queryToken, $tokenDB) == 0) 
-        {
+        if (strcmp($memberID, $memberDB) == 0 && strcmp($this->selector->queryToken, $tokenDB) == 0) {
             $this->memRepo->activateMember($memberID);
             return new Response('/login?message=', Messages::REQUEST_ACTIVATE, '#login');
         }
@@ -152,8 +151,7 @@ class MemberController
             @$_SESSION = ['old_username' => $request->username];
 
             return new Response('/login?message=', $validate, '#login');
-        }
-        elseif (isset($request->remember)) {
+        } elseif (isset($request->remember)) {
 
             setcookie('remember', $request->username, time() + (86400 * 7), '/');
 
@@ -231,8 +229,9 @@ class MemberController
     {
         $memberData = $this->memRepo->getMemberInfo('username', $username);
 
-        foreach ($memberData as $key => $value)
+        foreach ($memberData as $key => $value) {
             @$_SESSION[$key] = $value;
+        }
     }
 
     public function allMembers(): array

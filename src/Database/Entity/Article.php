@@ -6,7 +6,6 @@ use Mlkali\Sa\Database\Repository\ArticleRepository;
 
 class Article
 {
-
     public function __construct(
         private ArticleRepository $artRepo,
         public ?string $articleChapter = null,

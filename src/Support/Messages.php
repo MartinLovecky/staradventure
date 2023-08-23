@@ -9,7 +9,6 @@ use Mlkali\Sa\Support\Encryption;
 
 class Messages extends Enum
 {
-
     public function __construct(
         private Selector $selector,
         private Encryption $enc,
@@ -62,7 +61,7 @@ class Messages extends Enum
         }
 
         $template = str_replace("\n", " ", preg_replace('/\s+/', ' ', file_get_contents(__DIR__ . '/../../public/template/' . $templateName . '.html')));
-      
+
         return vsprintf($template, $variables);
     }
 
@@ -82,7 +81,7 @@ class Messages extends Enum
         return $info;
     }
 
-    public function main(): string 
+    public function main(): string
     {
         $template = preg_replace('/\s+/', ' ', file_get_contents(__DIR__ . '/../../public/template/main.html'));
 

@@ -1,10 +1,6 @@
-@use(Mlkali\Sa\Http\Response)
 @use(Mlkali\Sa\Support\Enum)
-
 @if ($member->logged)
-    @php
-        return new Response('/member'.'/'.$member->username.'/?message=', Enum::USER_LOGGED);
-    @endphp
+    {{ $response->redirect('/member'.'/'.$member->username.'/?message=', Enum::USER_LOGGED) }}
 @endif
 
 <article id="register">

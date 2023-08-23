@@ -4,7 +4,6 @@ namespace Mlkali\Sa\Database\Entity;
 
 class Member
 {
-
     public function __construct(
         private bool $logged = false,
         private bool $visible = false,

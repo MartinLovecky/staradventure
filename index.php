@@ -1,5 +1,5 @@
 <?php
-
+//only for dev tools/php-cs-fixer/vendor/bin/php-cs-fixer fix src
 session_start();
 
 require 'vendor/autoload.php';

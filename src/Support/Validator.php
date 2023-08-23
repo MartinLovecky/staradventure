@@ -9,7 +9,6 @@ use Mlkali\Sa\Database\Repository\MemberRepository;
 
 class Validator
 {
-
     public function __construct(
         private Encryption $enc,
         private MemberRepository $memRepo
@@ -104,10 +103,10 @@ class Validator
         }
         return null;
     }
-  
+
     public function validateAvatar(string $recaptcha, array $avatar): ?string
     {
-        
+
         if (!is_null($this->validateCaptcha($recaptcha))) {
             return $this->validateCaptcha($recaptcha);
         }

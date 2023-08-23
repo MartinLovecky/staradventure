@@ -6,3 +6,4 @@ public/img/
 !.htaccess
 composer-unused.phar
 views/test.blade.php
+tools/

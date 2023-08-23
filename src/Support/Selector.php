@@ -4,7 +4,6 @@ namespace Mlkali\Sa\Support;
 
 class Selector
 {
-
     public function __construct(
         public ?string $action = null,
         public ?string $article = null,

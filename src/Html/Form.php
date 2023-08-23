@@ -6,7 +6,6 @@ use eftec\bladeone\BladeOne;
 
 class Form
 {
-
     public function __construct(
         private BladeOne $blade,
         private string $class = 'text-center',

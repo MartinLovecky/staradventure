@@ -8,7 +8,6 @@ use PHPMailer\PHPMailer\PHPMailer;
 
 class Mailer extends PHPMailer
 {
-
     public function subject($subject): void
     {
         $this->Subject = $subject;

@@ -10,7 +10,6 @@ use Mlkali\Sa\Database\Entity\Member;
 
 class MemberRepository
 {
-
     public function __construct(
         private DB $db,
         private Mailer $mailer,
@@ -31,7 +30,7 @@ class MemberRepository
         }
         return $stmt->fetch($item);
     }
-    
+
     public function insert(string $table, array $values): void
     {
         $this->db->query->insertInto($table)->values($values)->execute();

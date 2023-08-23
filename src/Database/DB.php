@@ -7,7 +7,6 @@ use Envms\FluentPDO\Query;
 
 class DB
 {
-
     public $pdo;
     public $query;
 

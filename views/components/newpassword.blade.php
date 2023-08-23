@@ -1,4 +1,3 @@
-@use(Mlkali\Sa\Http\Response)
 @use(Mlkali\Sa\Support\Enum)
 @isset($selector->queryID)
 <article id="newpassword">
@@ -25,8 +24,5 @@
 <script src="@asset("js/recaptcha.js")"></script>
 </article>
 @else
-@php
-    return new Response('newpassword?message=', Enum::IVALID_URL, '#newpassword');
-@endphp
-
+    {{ $response->redirect('newpassword?message=', Enum::IVALID_URL, '#newpassword') }}
 @endisset

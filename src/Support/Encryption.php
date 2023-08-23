@@ -6,7 +6,6 @@ use Exception;
 
 class Encryption
 {
-
     public function encrypt(string $message, $aad = ''): string
     {
         $nonce = random_bytes(SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES);
@@ -14,7 +13,7 @@ class Encryption
 
         return bin2hex($nonce . $ciphertext);
     }
-    
+
     public function decrypt(string $ciphertext, $aad = ''): string
     {
         if (empty($ciphertext)) {
