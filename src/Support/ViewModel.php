@@ -28,10 +28,10 @@ class ViewModel
         private Encryption $enc,
         private Messages $messages,
         private Article $article,
-        private Pagnition $pagnation,
+        private Pagnition $pagnition,
         private Response $response
     ) {
-        $this->blade->setBaseUrl('public');
+        $this->blade->setBaseUrl('/public');
         $this->messages->getQueryMessage();
     }
 
@@ -61,17 +61,17 @@ class ViewModel
 
     private function componentName(string $endpoint): string
     {
-
         $component = match ($this->selector->action) {
             '', 'index' => 'header',
             '404' => 'notFound',
             'update', 'delete', 'create' => 'editor',
             'newpassword' => 'pwd',
+            'show' => 'story',
             default => $this->selector->action
         };
 
-        if ($endpoint === 'article' && !file_exists($_SERVER['DOCUMENT_ROOT'] . '/views/articles/' . $component)) {
-            return  'notFound';
+        if ($endpoint === 'article' && !file_exists($_SERVER['DOCUMENT_ROOT'] . '/views/articles/' . $component . '.blade.php')) {
+            return 'notFound';
         }
 
         return $component;
@@ -87,7 +87,7 @@ class ViewModel
     private function endpoint(): string
     {
         $endpoint = match ($this->selector->action) {
-            '', 'index', 'intro', 'register', 'login', 'storylist', 'vop', 'terms', 'reset', 'newpassword', 'updatemember', 'logout' => 'intro',
+            '', 'index', 'intro', 'register', 'login', 'storylist', 'vop', 'terms', 'reset', 'newpassword', 'updatemember', 'logout', 'activate' => 'intro',
             default => 'article'
         };
 
@@ -119,6 +119,7 @@ class ViewModel
                 'member' => $this->member,
                 'enc' => $this->enc
             ],
+            'logout', 'activate' => [$this->memberController],
             // 404 will propably display some data not sure yet
             'notFound' => [],
             default => []
@@ -131,10 +132,14 @@ class ViewModel
         $articleData = match($articleName) {
             'editor' => [
                 'article' => $this->article,
-                'pagmation' => $this->pagnation,
+                'pagnition' => $this->pagnition,
                 'request' => $this->request,
                 'articleController' => $this->articleController,
                 'form' => $this->form
+            ],
+            'story' => [
+                'article' => $this->article,
+                'pagnition' => $this->pagnition
             ],
             default => []
         };

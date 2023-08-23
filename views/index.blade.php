@@ -15,11 +15,6 @@
     @include('includes.endOfMainPage')
 @elseif($endpoint == 'article')
     @include('includes.menu')
-    @if($selector->action == 'show' && !$selector->page)
-        @component('master.list_of_articles')@endcomponent
-    @elseif($selector->action == 'show' && $selector->page)
-        @component('master.show_article')@endcomponent
-    @endif
     @component('articles.'.$component)@endcomponent
     @include('includes.footer')
 @endif

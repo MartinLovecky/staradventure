@@ -29,7 +29,7 @@ class Enum
     public const AVATAR_UPLOAD = 'danger_Avatar musí být nahrán';
     public const AVATAR_SIZE = 'danger_Avatar nesmí mít více jak 5MB';
     public const AVATAR_MIME_TYPE = 'danger_File musí být png nebo jpg';
-    public const REQUETS_REGISTER = 'success_Byl vám odeslán aktivační email na %s';
+    public const REQUETS_REGISTER = 'success_Byl vám odeslán aktivační na email %s';
     public const REQUETS_LOGIN = 'success_Vítejte zpět %s';
     public const REQUETS_RESET_SEND = 'success_Odkaz na změnu hesla byl odeslán na %s';
     public const REQUETS_RESET_PASSWORD = 'success_Heslo bylo úspěšně změněno';
