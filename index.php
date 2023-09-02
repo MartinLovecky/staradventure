@@ -13,4 +13,4 @@ $container->delegate(new League\Container\ReflectionContainer(true));
 
 $viewController = $container->get(Mlkali\Sa\Controllers\ViewController::class);
 
-echo $viewController->view();    
+echo $viewController->view();

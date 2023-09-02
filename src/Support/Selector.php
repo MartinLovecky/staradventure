@@ -18,7 +18,7 @@ class Selector
         private ?array $url = null,
     ) {
         // normal url values /action/article/page
-        $this->url = explode('/', trim(str_replace(['<', '>', '!', '@', '$'], '', urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)))));
+        $this->url = isset($_SERVER['REQUEST_URI']) ? explode('/', trim(str_replace(['<', '>', '!', '@', '$'], '', urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH))))) : null;
         array_shift($this->url);
         $this->action = $this->url[0] ?? $this->action;
         $this->article = $this->url[1] ?? $this->article;

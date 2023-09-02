@@ -21,7 +21,10 @@ class ArticleController
     public function update(Request $request): Response
     {
         if (!$this->validateArticle()) {
-            return new Response("/update/$request->articleName/$request->articlePage?message=", sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $this->selector->articleID, $request->articleName, $request->articlePage));
+            return new Response(
+                "/update/{$request->articleName}/{$request->articlePage}?message=",
+                sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $this->selector->articleID, $request->articleName, $request->articlePage)
+            );
         }
 
         $chapter = $request->chapter ?? null;
@@ -29,13 +32,19 @@ class ArticleController
 
         $this->createOrUpdateArticle($chapter, $articleBody);
 
-        return new Response("/update/$request->articleName/$request->articlePage?message=", sprintf(Messages::ARTICLE_UPDATED, $this->selector->articleID));
+        return new Response(
+            "/update/{$request->articleName}/{$request->articlePage}?message=",
+            sprintf(Messages::ARTICLE_UPDATED, $this->selector->articleID)
+        );
     }
 
     public function create(Request $request): Response
     {
         if (!$this->validateArticle()) {
-            return new Response("/update/$request->articleName/$request->articlePage?message=", sprintf(Messages::ARTICLE_DOES_ALLREADY_EXIST, $this->selector->articleID, $request->articleName, $request->articlePage));
+            return new Response(
+                "/update/{$request->articleName}/{$request->articlePage}?message=",
+                sprintf(Messages::ARTICLE_DOES_ALLREADY_EXIST, $this->selector->articleID, $request->articleName, $request->articlePage)
+            );
         }
 
         $chapter = $request->chapter ?? null;
@@ -43,18 +52,25 @@ class ArticleController
 
         $this->createOrUpdateArticle($chapter, $articleBody);
 
-        return new Response("/update/$request->articleName/$request->articlePage?message=", sprintf(Messages::ARTICLE_CREATED, $this->selector->articleID));
+        return new Response(
+            "/update/{$request->articleName}/{$request->articlePage}?message=",
+            sprintf(Messages::ARTICLE_CREATED, $this->selector->articleID)
+        );
     }
 
     public function delete(Request $request): Response
     {
         if (!$this->validateArticle()) {
-            return new Response("/update/$request->articleName/$request->articlePage?message=", sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $this->selector->articleID, $request->articleName, $request->articlePage));
+            return new Response(
+                "/update/{$request->articleName}/{$request->articlePage}?message=", 
+                sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $this->selector->articleID, $request->articleName, $request->articlePage));
         }
 
         $this->artRepo->remove($this->selector->articleID);
 
-        return new Response("/update/$request->articleName/$request->articlePage?message=", sprintf(Messages::ARTICLE_DELETED, $this->selector->articleID));
+        return new Response(
+            "/update/{$request->articleName}/{$request->articlePage}?message=", 
+            sprintf(Messages::ARTICLE_DELETED, $this->selector->articleID));
     }
 
     private function createOrUpdateArticle(?string $chapter, string $articleBody): void
@@ -64,7 +80,7 @@ class ArticleController
             ->setArticleChapter($chapter)
             ->setArticleBody($articleBody);
 
-        if($this->validateArticle()) {
+        if ($this->validateArticle()) {
             $this->artRepo->update($this->article);
             return;
         }

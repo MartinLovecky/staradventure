@@ -27,12 +27,12 @@ class ArticleRepository
         if (!$this->exist($this->repoID)) {
             return null;
         }
-        $stmt = $this->db->query
-            ->from('articles')
-            ->select($column)
-            ->where('article_id', $this->repoID);
+        $stmt = $this->db?->query
+            ?->from('articles')
+            ?->select($column)
+            ?->where('article_id', $this->repoID);
 
-        $data = $stmt->fetch($column);
+        $data = $stmt?->fetch($column);
 
         if (!$data) {
             return null;
@@ -45,12 +45,12 @@ class ArticleRepository
         if (!$this->allowedArticle()) {
             return false;
         }
-        $stmt = $this->db->query
-            ->from('articles')
-            ->select('article_id')
-            ->where('article_id', $articleID);
+        $stmt = $this->db?->query
+            ?->from('articles')
+            ?->select('article_id')
+            ?->where('article_id', $articleID);
 
-        $result = $stmt->fetch('article_id');
+        $result = $stmt?->fetch('article_id');
         //if on-empty $result is string = true. If null = false.
         return (bool)$result;
     }
@@ -62,15 +62,15 @@ class ArticleRepository
         }
 
         $set = [
-            'article_body' => $article->articleBody,
-            'article_chapter' => $article->articleChapter
+            'article_body' => $article?->articleBody,
+            'article_chapter' => $article?->articleChapter
         ];
 
-        $stmt = $this->db->query
-            ->update('articles')
-            ->set($set)
-            ->where('article_id', $article->articleID)
-            ->execute();
+        $stmt = $this->db?->query
+            ?->update('articles')
+            ?->set($set)
+            ?->where('article_id', $article?->articleID)
+            ?->execute();
 
         return $stmt;
     }
@@ -78,35 +78,35 @@ class ArticleRepository
     public function add(Article $article): bool
     {
         $values = [
-            'article_chapter' => $article->articleChapter,
-            'article_body' => $article->articleBody,
-            'article_id' =>  $article->articleID
+            'article_chapter' => $article?->articleChapter,
+            'article_body' => $article?->articleBody,
+            'article_id' =>  $article?->articleID
         ];
 
-        $stmt = $this->db->query
-            ->insertInto('articles')
-            ->values($values)
-            ->execute();
+        $stmt = $this->db?->query
+            ?->insertInto('articles')
+            ?->values($values)
+            ?->execute();
 
         return $stmt;
     }
 
     public function remove(string $articleID): bool
     {
-        $stmt = $this->db->query
-            ->deleteFrom('articles')
-            ->where('article_id', $articleID)
-            ->execute();
+        $stmt = $this->db?->query
+            ?->deleteFrom('articles')
+            ?->where('article_id', $articleID)
+            ?->execute();
 
         return $stmt;
     }
 
     private function allowedArticle(): bool
     {
-        $stmt = $this->db->query
-            ->from('allowed_articles')
-            ->select('name')
-            ->where('name', $this->selector->article);
+        $stmt = $this->db?->query
+            ?->from('allowed_articles')
+            ?->select('name')
+            ?->where('name', $this->selector->article);
 
         $result = $stmt->fetch('name');
 

@@ -30,22 +30,22 @@ class MemberController
         if (isset($validate)) {
 
             @$_SESSION = [
-                'old_username' => $request->username,
-                'old_email' => $request->email
+                'old_username' => $request?->username,
+                'old_email' => $request?->email
             ];
 
             return new Response('/register?message=', $validate, '#register');
         }
 
-        $memberID = $request->username . '|' . $request->email;
+        $memberID = $request?->username . '|' . $request?->email;
         // Insert the member into the database
         $this->memRepo->insert('info', ['member' => $memberID]);
         $this->memRepo->insert(
             'members',
             [
-                'username' => $request->username,
-                'email' => $request->email,
-                'password' => password_hash($request->password, PASSWORD_BCRYPT),
+                'username' => $request?->username,
+                'email' => $request?->email,
+                'password' => password_hash($request?->password, PASSWORD_BCRYPT),
                 'active' => $this->token,
                 'permission' => 'user',
                 'member_id' => $memberID
@@ -54,15 +54,19 @@ class MemberController
         // Send an activation email to the user
         $this->memRepo->sendEmail(
             [
-                'username' => $request->username,
+                'username' => $request?->username,
                 'encryptedID' => $this->enc->encrypt($memberID),
                 'active' => $this->token,
-                'recipient' => $request->email,
+                'recipient' => $request?->email,
                 'templateType' => 'register'
             ]
         );
 
-        return new Response('/login?message=', sprintf(Messages::REQUETS_REGISTER, $request->email), '#login');
+        return new Response(
+            '/login?message=',
+            sprintf(Messages::REQUETS_REGISTER, $request->email),
+            '#login'
+        );
     }
 
     public function sendResetToken(Request $request): Response
@@ -71,14 +75,14 @@ class MemberController
         $validate = $this->validator->validateResetSend($request);
 
         if (isset($validate)) {
-            @$_SESSION = ['old_email' => $request->email];
+            @$_SESSION = ['old_email' => $request?->email];
 
             return new Response('/?message=', $validate, '#reset');
         }
 
-        $memberID = $this->memRepo->getMemberInfo('email', $request->email, 'member_id');
+        $memberID = $this->memRepo->getMemberInfo('email', $request?->email, 'member_id');
 
-        $this->memRepo->resetToken($memberID, $this->token);
+        $this->memRepo->update(['reset_token' => $this->token], $memberID);
 
         $this->memRepo->sendEmail(
             [
@@ -90,7 +94,11 @@ class MemberController
             ]
         );
 
-        return new Response('/?message=', sprintf(Messages::REQUETS_RESET_SEND, $request->email), '#');
+        return new Response(
+            '/?message=',
+            sprintf(Messages::REQUETS_RESET_SEND, $request->email),
+            '#'
+        );
     }
 
     public function sendForgottenUser(Request $request): Response
@@ -98,7 +106,11 @@ class MemberController
         $validate = $this->validator->validateResetSend($request);
 
         if (isset($validate)) {
-            return new Response('/reset?message=', sprintf(Messages::VALIDATION_FORGOTEN_USER, $request->email), '#reset');
+            return new Response(
+                '/reset?message=',
+                sprintf(Messages::VALIDATION_FORGOTEN_USER, $request->email),
+                '#reset'
+            );
         }
 
         $this->memRepo->sendEmail(
@@ -111,7 +123,11 @@ class MemberController
             ]
         );
 
-        return new Response('/login?message=', sprintf(Messages::REQUETS_FORGOTEN_USER, $request->email), '#login');
+        return new Response(
+            '/login?message=',
+            sprintf(Messages::REQUETS_FORGOTEN_USER, $request->email),
+            '#login'
+        );
     }
 
     public function setNewPassword(Request $request): Response
@@ -122,7 +138,8 @@ class MemberController
             return new Response('/?message=', $validate, '#newpassword');
         }
 
-        $this->memRepo->newPassword($request);
+        $set = ['password' => password_hash($request->password, PASSWORD_BCRYPT)];
+        $this->memRepo->update($set, $request->user_id);
 
         return new Response('/?message=', Messages::REQUETS_RESET_PASSWORD, '#login');
     }
@@ -134,11 +151,19 @@ class MemberController
         $tokenDB = $this->memRepo->getMemberInfo('member_id', $memberID, 'active');
 
         if (strcmp($memberID, $memberDB) == 0 && strcmp($this->selector->queryToken, $tokenDB) == 0) {
-            $this->memRepo->activateMember($memberID);
-            return new Response('/login?message=', Messages::REQUEST_ACTIVATE, '#login');
+            $this->memRepo->update(['active' => 'yes'], $memberID);
+            return new Response(
+                '/login?message=',
+                Messages::REQUEST_ACTIVATE,
+                '#login'
+            );
         }
 
-        return new Response('/register?message=', Messages::REQUEST_ACTIVATE_FAIL, '#register');
+        return new Response(
+            '/register?message=',
+            Messages::REQUEST_ACTIVATE_FAIL,
+            '#register'
+        );
     }
 
     public function login(Request $request): Response
@@ -155,12 +180,16 @@ class MemberController
 
             setcookie('remember', $request->username, time() + (86400 * 7), '/');
 
-            return new Response('member/' . $request->username . '?message=', sprintf(Messages::REQUETS_LOGIN, $request->username));
+            return new Response(
+                "member/{$request->username}?message=", 
+                sprintf(Messages::REQUETS_LOGIN, $request->username));
         }
 
         $this->setMember($request->username);
 
-        return new Response('member/' . $request->username . '?message=', sprintf(Messages::REQUETS_LOGIN, $request->username));
+        return new Response(
+            "member/{$request->username}?message=", 
+            sprintf(Messages::REQUETS_LOGIN, $request->username));
     }
 
     public function logout(): Response
@@ -205,15 +234,14 @@ class MemberController
         $this->member->visible = $request->visible ?? $this->member->visible;
         $this->member->avatar = $uploadName;
 
-        $this->memRepo->updateMember($this->member);
-        $this->memRepo->updateInfoMember($this->member);
+        $this->update($this->member);
 
         return new Response('/member' . $request->username . '?message=', 'succes.Informace upraveny');
     }
 
     public function permission(string $permission, string $memberID): Response
     {
-        $this->memRepo->setPermission($permission, $memberID);
+        $this->memRepo->update(['permission' => $permission], $memberID);
 
         return new Response('/usertable?message=', Messages::REQUEST_PERMISSION);
     }
@@ -237,5 +265,19 @@ class MemberController
     public function allMembers(): array
     {
         return $this->memRepo->getMemberInfo();
+    }
+
+    private function update(Member $member): void
+    {
+        $this->memRepo->update(
+            [
+                'username' => $member->username,
+                'email' => $member->email,
+                'avatar' => $member->avatar
+            ],
+            $member->memberID
+        );
+
+        $this->memRepo->updateInfoMember($member);
     }
 }
