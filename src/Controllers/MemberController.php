@@ -23,6 +23,7 @@ class MemberController
     ) {
         $this->token = hash('sha256', random_bytes(32));
     }
+
     public function register(Request $request): Response
     {
         $validate = $this->validator->validateRegister($request);
@@ -181,15 +182,17 @@ class MemberController
             setcookie('remember', $request->username, time() + (86400 * 7), '/');
 
             return new Response(
-                "member/{$request->username}?message=", 
-                sprintf(Messages::REQUETS_LOGIN, $request->username));
+                "member/{$request->username}?message=",
+                sprintf(Messages::REQUETS_LOGIN, $request->username)
+            );
         }
 
         $this->setMember($request->username);
 
         return new Response(
-            "member/{$request->username}?message=", 
-            sprintf(Messages::REQUETS_LOGIN, $request->username));
+            "member/{$request->username}?message=",
+            sprintf(Messages::REQUETS_LOGIN, $request->username)
+        );
     }
 
     public function logout(): Response

@@ -11,16 +11,30 @@ use Mlkali\Sa\Support\Selector;
 
 class ArticleController
 {
+
+    /**
+     * ArticleController
+     * - sending @param Response
+     * - on /update|create|delete/articleID | 
+     * @return void
+     */
     public function __construct(
         private Article $article,
-        private ArticleRepository $artRepo,
+        private ArticleRepository $articleRepository,
         private Selector $selector
     ) {
     }
 
+    /**
+     * Method update
+     *
+     * @param Request $request [explicite description]
+     *
+     * @return Response
+     */
     public function update(Request $request): Response
     {
-        if (!$this->validateArticle()) {
+        if (!$this->validArticle()) {
             return new Response(
                 "/update/{$request->articleName}/{$request->articlePage}?message=",
                 sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $this->selector->articleID, $request->articleName, $request->articlePage)
@@ -38,9 +52,16 @@ class ArticleController
         );
     }
 
+    /**
+     * Method create
+     *
+     * @param Request $request [explicite description]
+     *
+     * @return Response
+     */
     public function create(Request $request): Response
     {
-        if (!$this->validateArticle()) {
+        if (!$this->validArticle()) {
             return new Response(
                 "/update/{$request->articleName}/{$request->articlePage}?message=",
                 sprintf(Messages::ARTICLE_DOES_ALLREADY_EXIST, $this->selector->articleID, $request->articleName, $request->articlePage)
@@ -58,21 +79,38 @@ class ArticleController
         );
     }
 
+    /**
+     * Method delete
+     *
+     * @param Request $request [explicite description]
+     *
+     * @return Response
+     */
     public function delete(Request $request): Response
     {
-        if (!$this->validateArticle()) {
+        if (!$this->validArticle()) {
             return new Response(
-                "/update/{$request->articleName}/{$request->articlePage}?message=", 
-                sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $this->selector->articleID, $request->articleName, $request->articlePage));
+                "/update/{$request->articleName}/{$request->articlePage}?message=",
+                sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $this->selector->articleID, $request->articleName, $request->articlePage)
+            );
         }
 
-        $this->artRepo->remove($this->selector->articleID);
+        $this->articleRepository->remove($this->selector->articleID);
 
         return new Response(
-            "/update/{$request->articleName}/{$request->articlePage}?message=", 
-            sprintf(Messages::ARTICLE_DELETED, $this->selector->articleID));
+            "/update/{$request->articleName}/{$request->articlePage}?message=",
+            sprintf(Messages::ARTICLE_DELETED, $this->selector->articleID)
+        );
     }
 
+    /**
+     * Method createOrUpdateArticle
+     *
+     * @param ?string $chapter [explicite description]
+     * @param string $articleBody [explicite description]
+     *
+     * @return void
+     */
     private function createOrUpdateArticle(?string $chapter, string $articleBody): void
     {
         $this->article
@@ -80,15 +118,20 @@ class ArticleController
             ->setArticleChapter($chapter)
             ->setArticleBody($articleBody);
 
-        if ($this->validateArticle()) {
-            $this->artRepo->update($this->article);
-            return;
+        if ($this->validArticle()) {
+            $this->articleRepository->update($this->article);
         }
-        $this->artRepo->add($this->article);
+        $this->articleRepository->add($this->article);
     }
 
-    private function validateArticle(): bool
+    /**
+     * validArticle
+     * - from @param ArticleRepository 
+     * - checks @param Selector->articleID
+     * @return bool
+     */
+    private function validArticle(): bool
     {
-        return $this->artRepo->exist($this->selector->articleID);
+        return $this->articleRepository->exist($this->selector->articleID);
     }
 }

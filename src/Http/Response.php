@@ -32,7 +32,7 @@ class Response
         header('Location:' . $location);
     }
 
-    private function getMessage(? string $msg = null): string|null
+    private function getMessage(?string $msg = null): string|null
     {
 
         $this->msg = $msg ?? $this->msg;

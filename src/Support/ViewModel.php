@@ -2,11 +2,11 @@
 
 namespace Mlkali\Sa\Support;
 
-use eftec\bladeone\BladeOne;
 use Mlkali\Sa\Controllers\ArticleController;
 use Mlkali\Sa\Controllers\MemberController;
 use Mlkali\Sa\Database\Entity\Article;
 use Mlkali\Sa\Database\Entity\Member;
+use Mlkali\Sa\Engine\Blade;
 use Mlkali\Sa\Html\Form;
 use Mlkali\Sa\Html\Pagnition;
 use Mlkali\Sa\Http\Request;
@@ -18,7 +18,7 @@ use Mlkali\Sa\Support\Selector;
 class ViewModel
 {
     public function __construct(
-        private BladeOne $blade,
+        private Blade $blade,
         private Selector $selector,
         private Form $form,
         private MemberController $memberController,
@@ -49,7 +49,7 @@ class ViewModel
         $baseArray = $this->baseData($componentName, $endpoint);
         $commonetData = $this->componentData($componentName);
 
-        if($endpoint == 'intro') {
+        if ($endpoint == 'intro') {
             $merge = array_merge($baseArray, $commonetData);
         } else {
             $articlesData = $this->articlesData($componentName);
@@ -129,7 +129,7 @@ class ViewModel
 
     private function articlesData(string $articleName): array
     {
-        $articleData = match($articleName) {
+        $articleData = match ($articleName) {
             'editor' => [
                 'article' => $this->article,
                 'pagnition' => $this->pagnition,

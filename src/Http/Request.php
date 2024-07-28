@@ -1,6 +1,7 @@
 <?php
 
 namespace Mlkali\Sa\Http;
+
 class Request
 {
     public function __construct(public array $data = [])
