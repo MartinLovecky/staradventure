@@ -6,7 +6,7 @@ use PDO;
 use PDOException;
 use Envms\FluentPDO\Query;
 
-class DB
+class Fluent
 {
     public $pdo;
     public $query;
@@ -24,6 +24,6 @@ class DB
             }
         }
 
-        $this->query = isset($this->pdo) ? new Query($this->pdo) : null;
+        $this->query = $this->pdo ? new Query($this->pdo) : null;
     }
 }

@@ -1,3 +1,5 @@
+# php 8 is required also in php.ini enable extension=sodium
+
 Before you can use this application you need to create .env file in root directory of your application and then add these variables:
 
 ### THESE will change !!! 

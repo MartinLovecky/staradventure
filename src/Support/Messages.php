@@ -41,15 +41,17 @@ class Messages extends Enum
 
     /**
      * After header we want display message /url?message=TEXTtoDISPLAY,
-     * ?message is important to message work also message should be
-     * encrypted, also dont use ?message if you dont provide encrypted message
+     * message should be encrypted ? maybe not -> we don't sent personal data
      *
      * @return void adds message to messageBag
      */
     public function getQueryMessage(): void
     {
-        if (isset($this->selector->queryMsg) && $this->enc->decrypt($this->selector->queryMsg) !== '') {
-            $this->setMessageBag($this->enc->decrypt($this->selector->queryMsg));
+        // $message can be null -> if url ?message=is_not_set
+        $message = $this->selector->getQueryMessage("message");
+
+        if ($message) {
+            $this->setMessageBag($this->enc->decrypt($message));
         }
     }
 

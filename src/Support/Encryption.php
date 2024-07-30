@@ -40,6 +40,12 @@ class Encryption
         return $decrypted;
     }
 
+    public function token(): string
+    {
+        // hash('sha256', random_bytes(32)); if needed
+        return bin2hex(random_bytes(32));
+    }
+
     public function generateKey(): string
     {
         return base64_encode(sodium_crypto_aead_xchacha20poly1305_ietf_keygen());

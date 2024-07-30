@@ -1,6 +1,6 @@
 <?php
 
-namespace Mlkali\Sa\Support;
+namespace Mlkali\Sa\Engine;
 
 use Mlkali\Sa\Controllers\ArticleController;
 use Mlkali\Sa\Controllers\MemberController;
@@ -18,20 +18,19 @@ use Mlkali\Sa\Support\Selector;
 class ViewModel
 {
     public function __construct(
-        private Blade $blade,
-        private Selector $selector,
-        private Form $form,
-        private MemberController $memberController,
-        private ArticleController $articleController,
-        private Request $request,
-        private Member $member,
-        private Encryption $enc,
-        private Messages $messages,
-        private Article $article,
-        private Pagnition $pagnition,
-        private Response $response
+        protected Blade $blade,
+        protected Selector $selector,
+        protected Form $form,
+        protected MemberController $memberController,
+        protected ArticleController $articleController,
+        protected Request $request,
+        protected Member $member,
+        protected Encryption $enc,
+        protected Messages $messages,
+        protected Article $article,
+        protected Pagnition $pagnition,
+        protected Response $response
     ) {
-        $this->blade->setBaseUrl('/public');
         $this->messages->getQueryMessage();
     }
 

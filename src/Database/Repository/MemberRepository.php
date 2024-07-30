@@ -2,7 +2,7 @@
 
 namespace Mlkali\Sa\Database\Repository;
 
-use Mlkali\Sa\Database\DB;
+use Mlkali\Sa\Database\Fluent;
 use Mlkali\Sa\Support\Mailer;
 use Mlkali\Sa\Support\Messages;
 use Mlkali\Sa\Support\Encryption;
@@ -11,7 +11,7 @@ use Mlkali\Sa\Database\Entity\Member;
 class MemberRepository
 {
     public function __construct(
-        private DB $db,
+        private Fluent $fluent,
         private Mailer $mailer,
         private Encryption $enc,
         private Messages $message
@@ -20,7 +20,7 @@ class MemberRepository
 
     public function getMemberInfo(?string $column = null, ?string $value = null, ?string $item = null): mixed
     {
-        $stmt = $this->db?->query
+        $stmt = $this->fluent?->query
             ?->from('members')
             ?->leftJoin('info ON members.member_id = info.member')
             ?->select('info.*')
@@ -33,7 +33,7 @@ class MemberRepository
 
     public function insert(string $table, array $values): void
     {
-        $this->db?->query?->insertInto($table)?->values($values)?->execute();
+        $this->fluent?->query?->insertInto($table)?->values($values)?->execute();
     }
 
     public function sendEmail(array $data): void
@@ -58,7 +58,7 @@ class MemberRepository
 
     public function deleteMember(string $memberID): void
     {
-        $this->db?->query
+        $this->fluent?->query
             ?->deleteFrom('members')
             ?->where('member_id', $memberID)
             ?->execute();
@@ -74,7 +74,7 @@ class MemberRepository
             'age' => $member?->age
         ];
 
-        $this->db?->query
+        $this->fluent?->query
             ?->update('info')
             ?->set($set)
             ?->where('member', $member?->memberID)
@@ -90,7 +90,7 @@ class MemberRepository
      */
     public function update(array $set, ?string $memberID)
     {
-        $this->db?->query
+        $this->fluent?->query
             ?->update('members')
             ?->set($set)
             ?->where('member_id', $memberID)

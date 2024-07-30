@@ -1,5 +1,9 @@
 @use(Mlkali\Sa\Support\Enum)
-@isset($selector->queryID)
+
+{{-- //NOTE - not ideal should be fixed soon --}}
+@set($memberID = $selector->getQueryMessage("id"))
+
+@isset($memberID)
 <article id="newpassword">
     <h2 class="major">Nové heslo</h2>
     {!! 
@@ -19,7 +23,7 @@
     <input type="hidden" name="action" value="validate_captcha">
     <input type="hidden" name="type" value="new_password">
     <input type="hidden" name="user_id" value ="{{  $member->memberID  }}">
-    <input type="hidden" name="etoken" value="{{ base64_decode($selector->queryID) }}">
+    <input type="hidden" name="etoken" value="{{ base64_decode($memberID) }}">
 </form>
 <script src="https://www.google.com/recaptcha/api.js?render=6LclhVIjAAAAAAUcH7r8tvwJl3GIUg8bLJmr2alF"></script>
 <script src="@asset("js/recaptcha.js")"></script>

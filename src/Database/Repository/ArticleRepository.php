@@ -2,7 +2,7 @@
 
 namespace Mlkali\Sa\Database\Repository;
 
-use Mlkali\Sa\Database\DB;
+use Mlkali\Sa\Database\Fluent;
 use Mlkali\Sa\Support\Selector;
 use Mlkali\Sa\Database\Entity\Article;
 
@@ -10,7 +10,7 @@ class ArticleRepository
 {
     public function __construct(
         private Selector $selector,
-        private DB $db,
+        private Fluent $fluent,
         private ?string $repoID = null
     ) {
         $this->repoID = ($this->selector->article && $this->selector->page) ? $this->selector->article . '|' . $this->selector->page : null;
@@ -27,7 +27,7 @@ class ArticleRepository
         if (!$this->exist($this->repoID)) {
             return null;
         }
-        $stmt = $this->db?->query
+        $stmt = $this->fluent?->query
             ?->from('articles')
             ?->select($column)
             ?->where('article_id', $this->repoID);
@@ -45,7 +45,7 @@ class ArticleRepository
         if (!$this->allowedArticle()) {
             return false;
         }
-        $stmt = $this->db?->query
+        $stmt = $this->fluent?->query
             ?->from('articles')
             ?->select('article_id')
             ?->where('article_id', $articleID);
@@ -66,7 +66,7 @@ class ArticleRepository
             'article_chapter' => $article?->articleChapter
         ];
 
-        $stmt = $this->db?->query
+        $stmt = $this->fluent?->query
             ?->update('articles')
             ?->set($set)
             ?->where('article_id', $article?->articleID)
@@ -83,7 +83,7 @@ class ArticleRepository
             'article_id' =>  $article?->articleID
         ];
 
-        $stmt = $this->db?->query
+        $stmt = $this->fluent?->query
             ?->insertInto('articles')
             ?->values($values)
             ?->execute();
@@ -93,7 +93,7 @@ class ArticleRepository
 
     public function remove(string $articleID): bool
     {
-        $stmt = $this->db?->query
+        $stmt = $this->fluent?->query
             ?->deleteFrom('articles')
             ?->where('article_id', $articleID)
             ?->execute();
@@ -103,7 +103,7 @@ class ArticleRepository
 
     private function allowedArticle(): bool
     {
-        $stmt = $this->db?->query
+        $stmt = $this->fluent?->query
             ?->from('allowed_articles')
             ?->select('name')
             ?->where('name', $this->selector->article);

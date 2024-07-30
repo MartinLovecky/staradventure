@@ -11,7 +11,7 @@ class Validator
 {
     public function __construct(
         private Encryption $enc,
-        private MemberRepository $memRepo
+        private MemberRepository $memberRepository
     ) {
     }
 
@@ -26,7 +26,7 @@ class Validator
         if (!$this->validToken($request->token)) {
             return Messages::VALIDATION_CRSF_ERROR;
         }
-        if ($this->memRepo->getMemberInfo('member_id', $request->username . '|' . $request->email)) {
+        if ($this->memberRepository->getMemberInfo('member_id', $request->username . '|' . $request->email)) {
             return sprintf(Messages::VALIDATION_USER_ALREADY_EXISTS, $request->username);
         }
         if (mb_strlen($request->password) < 6) {
@@ -60,7 +60,7 @@ class Validator
         if (!$this->validToken($request->token)) {
             return Messages::VALIDATION_CRSF_ERROR;
         }
-        if (!$this->memRepo->getMemberInfo('username', $request->username, 'username')) {
+        if (!$this->memberRepository->getMemberInfo('username', $request->username, 'username')) {
             return sprintf(Messages::VALIDATION_USER_NOT_EXIST, $request->username);
         }
         return null;
@@ -77,7 +77,7 @@ class Validator
         if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $request->email)) {
             return sprintf(Messages::VALIDATION_EMAIL_FORMAT, $request->email);
         }
-        if (!$this->memRepo->getMemberInfo('email', $request->email, 'email')) {
+        if (!$this->memberRepository->getMemberInfo('email', $request->email, 'email')) {
             return sprintf(Messages::VALIDATION_USER_NOT_EXIST, $request->email);
         }
         return null;

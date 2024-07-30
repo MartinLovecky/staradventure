@@ -45,22 +45,27 @@
     </tbody>
   </table>
 @php
-  if(isset($selector->queryAction)){
-    switch ($enc->decrypt($selector->queryAction)) {
+  // TODO: query message should be cleaned before use
+  // NOTE: this page is avaible just for Admin only
+  $action = $selector->getQueryMessage("action");
+  //NOTE - can be null if id not in query: ?action=xxx&id=ID
+  $memberID = $selector->getQueryMessage("id");
+  if($action){
+    switch ($enc->decrypt($action)) {
       case 'visitor':
-        $memberController->permission('visitor', $enc->decrypt($selector->queryID));
+        $memberController->permission('visitor', $enc->decrypt($memberID));
       break;
       case 'user':
-        $memberController->permission('user', $enc->decrypt($selector->queryID));
+        $memberController->permission('user', $enc->decrypt($memberID));
       break;
       case 'rewriter':
-        $memberController->permission('rewriter', $enc->decrypt($selector->queryID));
+        $memberController->permission('rewriter', $enc->decrypt($memberID));
       break;
       case 'admin':
-        $memberController->permission('admin', $enc->decrypt($selector->queryID));
+        $memberController->permission('admin', $enc->decrypt($memberID));
       break;
       case 'delete':
-        $memberController->delete($enc->decrypt($selector->queryID));
+        $memberController->delete($enc->decrypt($memberID));
       break;
     }
   }

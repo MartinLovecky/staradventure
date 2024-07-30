@@ -34,7 +34,7 @@ class ArticleController
      */
     public function update(Request $request): Response
     {
-        if (!$this->validArticle()) {
+        if (!$this->articleExist()) {
             return new Response(
                 "/update/{$request->articleName}/{$request->articlePage}?message=",
                 sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $this->selector->articleID, $request->articleName, $request->articlePage)
@@ -42,7 +42,7 @@ class ArticleController
         }
 
         $chapter = $request->chapter ?? null;
-        $articleBody = isset($request->editor1) ? json_encode(['article_body' => $request->editor1]) : '{"article_body":"error"}';
+        $articleBody = $request->editor1 ? json_encode(['article_body' => $request->editor1]) : '{"article_body":"error"}';
 
         $this->createOrUpdateArticle($chapter, $articleBody);
 
@@ -61,7 +61,7 @@ class ArticleController
      */
     public function create(Request $request): Response
     {
-        if (!$this->validArticle()) {
+        if (!$this->articleExist()) {
             return new Response(
                 "/update/{$request->articleName}/{$request->articlePage}?message=",
                 sprintf(Messages::ARTICLE_DOES_ALLREADY_EXIST, $this->selector->articleID, $request->articleName, $request->articlePage)
@@ -69,7 +69,7 @@ class ArticleController
         }
 
         $chapter = $request->chapter ?? null;
-        $articleBody = isset($request->editor1) ? json_encode(['article_body' => $request->editor1]) : '{"article_body":"empty"}';
+        $articleBody = $request->editor1 ? json_encode(['article_body' => $request->editor1]) : '{"article_body":"empty"}';
 
         $this->createOrUpdateArticle($chapter, $articleBody);
 
@@ -88,7 +88,7 @@ class ArticleController
      */
     public function delete(Request $request): Response
     {
-        if (!$this->validArticle()) {
+        if (!$this->articleExist()) {
             return new Response(
                 "/update/{$request->articleName}/{$request->articlePage}?message=",
                 sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $this->selector->articleID, $request->articleName, $request->articlePage)
@@ -118,19 +118,19 @@ class ArticleController
             ->setArticleChapter($chapter)
             ->setArticleBody($articleBody);
 
-        if ($this->validArticle()) {
+        if ($this->articleExist()) {
             $this->articleRepository->update($this->article);
         }
         $this->articleRepository->add($this->article);
     }
 
     /**
-     * validArticle
+     * articleExist
      * - from @param ArticleRepository 
      * - checks @param Selector->articleID
      * @return bool
      */
-    private function validArticle(): bool
+    private function articleExist(): bool
     {
         return $this->articleRepository->exist($this->selector->articleID);
     }

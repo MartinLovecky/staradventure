@@ -15,13 +15,13 @@ class MemberController
 {
     public function __construct(
         private Selector $selector,
-        private Encryption $enc,
+        private Encryption $encryption,
         private Member $member,
         private MemberRepository $memRepo,
         private Validator $validator,
         private string $token = ''
     ) {
-        $this->token = hash('sha256', random_bytes(32));
+        $this->token = $this->encryption->token();
     }
 
     public function register(Request $request): Response
@@ -56,7 +56,7 @@ class MemberController
         $this->memRepo->sendEmail(
             [
                 'username' => $request?->username,
-                'encryptedID' => $this->enc->encrypt($memberID),
+                'encryptedID' => $this->encryption->encrypt($memberID),
                 'active' => $this->token,
                 'recipient' => $request?->email,
                 'templateType' => 'register'
@@ -89,7 +89,7 @@ class MemberController
             [
                 'username' => $request->email,
                 'active' => $this->token,
-                'encryptedID' => $this->enc->encrypt($memberID),
+                'encryptedID' => $this->encryption->encrypt($memberID),
                 'recipient' => $request->email,
                 'templateType' => 'reset'
             ]
@@ -118,7 +118,7 @@ class MemberController
             [
                 'username' => $this->memRepo->getMemberInfo('email', $request->email, 'username'),
                 'active' => $this->token,
-                'encryptedID' => $this->enc->encrypt($this->memRepo->getMemberInfo('email', $request->email, 'member_id')),
+                'encryptedID' => $this->encryption->encrypt($this->memRepo->getMemberInfo('email', $request->email, 'member_id')),
                 'recipient' => $request->email,
                 'templateType' => 'user'
             ]
@@ -147,11 +147,15 @@ class MemberController
 
     public function activate(): Response
     {
-        $memberID = $this->enc->decrypt($this->selector->queryID);
+        // FIXME can be null
+        $id = $this->selector->getQueryMessage("id");
+        $token = $this->selector->getQueryMessage("token");
+
+        $memberID = $this->encryption->decrypt($id);
         $memberDB = $this->memRepo->getMemberInfo('member_id', $memberID, 'member_id');
         $tokenDB = $this->memRepo->getMemberInfo('member_id', $memberID, 'active');
 
-        if (strcmp($memberID, $memberDB) == 0 && strcmp($this->selector->queryToken, $tokenDB) == 0) {
+        if (strcmp($memberID, $memberDB) == 0 && strcmp($token, $tokenDB) == 0) {
             $this->memRepo->update(['active' => 'yes'], $memberID);
             return new Response(
                 '/login?message=',

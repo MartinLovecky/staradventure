@@ -1,8 +1,8 @@
 <?php
 
-namespace Mlkali\Sa\Controllers;
+namespace Mlkali\Sa\Engine;
 
-use Mlkali\Sa\Support\ViewModel;
+use Mlkali\Sa\Engine\ViewModel;
 
 //TODO - this should handle views not just render them
 class ViewController
