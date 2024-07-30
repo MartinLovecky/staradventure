@@ -1,9 +1,9 @@
 @use(Mlkali\Sa\Support\Enum)
 @if (!$member->logged)
-   {{ $response->redirect('/?message=', Enum::USER_NOT_LOGGED, '#'); }}
+    @redirect('/?message=', Enum::USER_NOT_LOGGED, '#')
 @endif
 @if (!$member->permission == 'admin' || !$member->permission == 'rewriter')
-   {{ $response->redirect('/member'.'/'.$member->username.'?message=', Enum::USER_PERMISSION) }}
+    @redirect('/member'.'/'.$member->username.'?message=', Enum::USER_PERMISSION)
 @endif
 <div class="article-list">
     <div class="container">

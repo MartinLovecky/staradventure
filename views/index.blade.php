@@ -1,9 +1,3 @@
-@set($x = 'test')
-@match($x)
-    @case(1)@do($selector->action)
-    @default(null)
-@endmatch
-{{-- comment 
 @include('includes.head')
 @if ($message->hasAny())
     @component('components.message')@endcomponent

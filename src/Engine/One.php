@@ -11,10 +11,9 @@ trait One
     protected array $args = [];
     protected ?string $do = null;
 
-    public function compileRedirect(string $expression)
+    public function compileRedirect(string $expression): string
     {
-        $this->args($expression);
-        dd($this->args);
+        return $this->phpTagEcho . "\$response->redirect{$expression};?>";
     }
 
     /**

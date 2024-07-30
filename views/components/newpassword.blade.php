@@ -29,5 +29,5 @@
 <script src="@asset("js/recaptcha.js")"></script>
 </article>
 @else
-    {{ $response->redirect('newpassword?message=', Enum::IVALID_URL, '#newpassword') }}
+    @redirect('newpassword?message=', Enum::IVALID_URL, '#newpassword')
 @endisset

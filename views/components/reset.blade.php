@@ -4,7 +4,7 @@
 @set($memberID = $selector->getQueryMessage("id"))
 
 @if ($member->logged)
-    {{ $response->redirect('/member'.'/'.$member->username.'/?message=', Enum::USER_LOGGED) }}
+    @redirect('/member'.'/'.$member->username.'/?message=', Enum::USER_LOGGED)
 @endif
 <article id="reset">
     <h2 class="major">@if(isset($memberID)) {{ "Zapomenutné Username" }} @else {{ "Reset hesla" }} @endif</h2>

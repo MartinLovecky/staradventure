@@ -1,6 +1,6 @@
 @use(Mlkali\Sa\Support\Enum)
 @if (!$member->logged)
-    {{ $response->redirect('/member'.'/'.$member->username.'/?message=', Enum::USER_NOT_LOGGED) }}
+    @redirect('/member'.'/'.$member->username.'/?message=', Enum::USER_NOT_LOGGED)
 @endif
 <article id="updatemember">
     <h2 class="major">Upravit profil</h2>

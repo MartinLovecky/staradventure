@@ -4,5 +4,5 @@
 @if ($memberID)
     {{ $memberController->activate() }}
 @else
-    {{ $response->redirect('/index?message=', sprintf(Enum::REQUETS_REGISTER, null))  }}
+    @redirect('/index?message=', sprintf(Enum::REQUETS_REGISTER, null))
 @endif

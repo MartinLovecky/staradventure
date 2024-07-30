@@ -1,6 +1,6 @@
 @use(Mlkali\Sa\Support\Enum)
 @if ($member->logged)
-    {{ $response->redirect('/member'.'/'.$member->username.'/?message=', Enum::USER_LOGGED) }}
+    @redirect('/member'.'/'.$member->username.'/?message=', Enum::USER_LOGGED)
 @endif
 
 <article id="register">
