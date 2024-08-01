@@ -5,19 +5,26 @@ namespace Mlkali\Sa\Database\Repository;
 use Mlkali\Sa\Database\Fluent;
 use Mlkali\Sa\Support\Mailer;
 use Mlkali\Sa\Support\Messages;
-use Mlkali\Sa\Support\Encryption;
 use Mlkali\Sa\Database\Entity\Member;
 
 class MemberRepository
 {
     public function __construct(
+        public Messages $messages,
         private Fluent $fluent,
-        private Mailer $mailer,
-        private Encryption $enc,
-        private Messages $message
+        private Mailer $mailer
     ) {
     }
 
+    /**
+     * Method getMemberInfo
+     *
+     * @param ?string $column [explicite description]
+     * @param ?string $value [explicite description]
+     * @param ?string $item [explicite description]
+     *
+     * @return mixed
+     */
     public function getMemberInfo(?string $column = null, ?string $value = null, ?string $item = null): mixed
     {
         $stmt = $this->fluent?->query
@@ -31,14 +38,29 @@ class MemberRepository
         return $stmt?->fetch($item);
     }
 
+    /**
+     * Method insert
+     *
+     * @param string $table [explicite description]
+     * @param array $values [explicite description]
+     *
+     * @return void
+     */
     public function insert(string $table, array $values): void
     {
         $this->fluent?->query?->insertInto($table)?->values($values)?->execute();
     }
 
+    /**
+     * Method sendEmail
+     *
+     * @param array $data [explicite description]
+     *
+     * @return void
+     */
     public function sendEmail(array $data): void
     {
-        $dynamic = $this->message->createEmailMessage(
+        $dynamic = $this->messages->createEmailMessage(
             $data['templateType'],
             [
                 $data['username'],
@@ -49,13 +71,20 @@ class MemberRepository
             ]
         );
 
-        $body = str_replace('TEMPLATE', $dynamic, $this->message->main());
+        $body = str_replace('TEMPLATE', $dynamic, $this->messages->main());
 
         $info = Messages::getEmailInfo($data['templateType'], $data['recipient']);
 
         $this->mailer->sender($body, $info);
     }
 
+    /**
+     * Method deleteMember
+     *
+     * @param string $memberID [explicite description]
+     *
+     * @return void
+     */
     public function deleteMember(string $memberID): void
     {
         $this->fluent?->query
@@ -64,6 +93,13 @@ class MemberRepository
             ?->execute();
     }
 
+    /**
+     * Method updateInfoMember
+     *
+     * @param Member $member [explicite description]
+     *
+     * @return void
+     */
     public function updateInfoMember(Member $member): void
     {
         $set = [
@@ -88,7 +124,7 @@ class MemberRepository
      * @param string|null $memberID
      * @return void
      */
-    public function update(array $set, ?string $memberID)
+    public function update(array $set, ?string $memberID): void
     {
         $this->fluent?->query
             ?->update('members')

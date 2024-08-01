@@ -50,23 +50,13 @@
   $action = $selector->getQueryMessage("action");
   //NOTE - can be null if id not in query: ?action=xxx&id=ID
   $memberID = $selector->getQueryMessage("id");
-  if($action){
-    switch ($enc->decrypt($action)) {
-      case 'visitor':
-        $memberController->permission('visitor', $enc->decrypt($memberID));
-      break;
-      case 'user':
-        $memberController->permission('user', $enc->decrypt($memberID));
-      break;
-      case 'rewriter':
-        $memberController->permission('rewriter', $enc->decrypt($memberID));
-      break;
-      case 'admin':
-        $memberController->permission('admin', $enc->decrypt($memberID));
-      break;
-      case 'delete':
-        $memberController->delete($enc->decrypt($memberID));
-      break;
-    }
-  }
 @endphp
+@if($action)
+  @match($enc->decrypt($action))
+    @case('visitor')@do($memberController->permission('visitor', $enc->decrypt($memberID)))
+    @case('user')@do($memberController->permission('user', $enc->decrypt($memberID)))
+    @case('rewriter')@do($memberController->permission('rewriter', $enc->decrypt($memberID)))
+    @case('admin')@do($memberController->permission('admin', $enc->decrypt($memberID)))
+    @case('delete')@do($memberController->delete($enc->decrypt($memberID))) 
+  @endmatch()
+@endif()

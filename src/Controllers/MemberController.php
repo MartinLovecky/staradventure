@@ -5,27 +5,22 @@ namespace Mlkali\Sa\Controllers;
 use Mlkali\Sa\Http\Request;
 use Mlkali\Sa\Http\Response;
 use Mlkali\Sa\Support\Messages;
-use Mlkali\Sa\Support\Selector;
-use Mlkali\Sa\Support\Encryption;
-use Mlkali\Sa\Database\Entity\Member;
-use Mlkali\Sa\Database\Repository\MemberRepository;
 use Mlkali\Sa\Support\Validator;
+use Mlkali\Sa\Database\Entity\Member;
 
 class MemberController
 {
     public function __construct(
-        private Selector $selector,
-        private Encryption $encryption,
-        private Member $member,
-        private MemberRepository $memRepo,
-        private Validator $validator,
-        private string $token = ''
+        protected Member $member,
+        protected Validator $validator,
+        protected string $token = '',
     ) {
-        $this->token = $this->encryption->token();
+        $this->token = $this->validator->memberRepository->messages->encryption->token();
     }
 
     public function register(Request $request): Response
     {
+        $memberRepository = $this->validator->memberRepository;
         $validate = $this->validator->validateRegister($request);
 
         if (isset($validate)) {
@@ -40,8 +35,8 @@ class MemberController
 
         $memberID = $request?->username . '|' . $request?->email;
         // Insert the member into the database
-        $this->memRepo->insert('info', ['member' => $memberID]);
-        $this->memRepo->insert(
+        $memberRepository->insert('info', ['member' => $memberID]);
+        $memberRepository->insert(
             'members',
             [
                 'username' => $request?->username,
@@ -53,10 +48,10 @@ class MemberController
             ]
         );
         // Send an activation email to the user
-        $this->memRepo->sendEmail(
+        $memberRepository->sendEmail(
             [
                 'username' => $request?->username,
-                'encryptedID' => $this->encryption->encrypt($memberID),
+                'encryptedID' => $memberRepository->messages->encryption->encrypt($memberID),
                 'active' => $this->token,
                 'recipient' => $request?->email,
                 'templateType' => 'register'
@@ -72,7 +67,7 @@ class MemberController
 
     public function sendResetToken(Request $request): Response
     {
-
+        $memberRepository = $this->validator->memberRepository;
         $validate = $this->validator->validateResetSend($request);
 
         if (isset($validate)) {
@@ -81,15 +76,15 @@ class MemberController
             return new Response('/?message=', $validate, '#reset');
         }
 
-        $memberID = $this->memRepo->getMemberInfo('email', $request?->email, 'member_id');
+        $memberID = $memberRepository->getMemberInfo('email', $request?->email, 'member_id');
 
-        $this->memRepo->update(['reset_token' => $this->token], $memberID);
+        $memberRepository->update(['reset_token' => $this->token], $memberID);
 
-        $this->memRepo->sendEmail(
+        $memberRepository->sendEmail(
             [
                 'username' => $request->email,
                 'active' => $this->token,
-                'encryptedID' => $this->encryption->encrypt($memberID),
+                'encryptedID' => $memberRepository->messages->encryption->encrypt($memberID),
                 'recipient' => $request->email,
                 'templateType' => 'reset'
             ]
@@ -104,6 +99,7 @@ class MemberController
 
     public function sendForgottenUser(Request $request): Response
     {
+        $memberRepository = $this->validator->memberRepository;
         $validate = $this->validator->validateResetSend($request);
 
         if (isset($validate)) {
@@ -114,11 +110,11 @@ class MemberController
             );
         }
 
-        $this->memRepo->sendEmail(
+        $memberRepository->sendEmail(
             [
-                'username' => $this->memRepo->getMemberInfo('email', $request->email, 'username'),
+                'username' => $memberRepository->getMemberInfo('email', $request->email, 'username'),
                 'active' => $this->token,
-                'encryptedID' => $this->encryption->encrypt($this->memRepo->getMemberInfo('email', $request->email, 'member_id')),
+                'encryptedID' => $memberRepository->messages->encryption->encrypt($memberRepository->getMemberInfo('email', $request->email, 'member_id')),
                 'recipient' => $request->email,
                 'templateType' => 'user'
             ]
@@ -133,6 +129,7 @@ class MemberController
 
     public function setNewPassword(Request $request): Response
     {
+        $memberRepository = $this->validator->memberRepository;
         $validate = $this->validator->validatePassword($request);
 
         if (isset($validate)) {
@@ -140,23 +137,27 @@ class MemberController
         }
 
         $set = ['password' => password_hash($request->password, PASSWORD_BCRYPT)];
-        $this->memRepo->update($set, $request->user_id);
+        $memberRepository->update($set, $request->user_id);
 
         return new Response('/?message=', Messages::REQUETS_RESET_PASSWORD, '#login');
     }
 
     public function activate(): Response
     {
-        // FIXME can be null
-        $id = $this->selector->getQueryMessage("id");
-        $token = $this->selector->getQueryMessage("token");
+        $memberRepository = $this->validator->memberRepository;
+        $messages = $memberRepository->messages;
+        $selector = $messages->selector;
 
-        $memberID = $this->encryption->decrypt($id);
-        $memberDB = $this->memRepo->getMemberInfo('member_id', $memberID, 'member_id');
-        $tokenDB = $this->memRepo->getMemberInfo('member_id', $memberID, 'active');
+        // FIXME can be null
+        $id = $selector->getQueryMessage("id");
+        $token = $selector->getQueryMessage("token");
+
+        $memberID = $messages->encryption->decrypt($id);
+        $memberDB = $memberRepository->getMemberInfo('member_id', $memberID, 'member_id');
+        $tokenDB = $memberRepository->getMemberInfo('member_id', $memberID, 'active');
 
         if (strcmp($memberID, $memberDB) == 0 && strcmp($token, $tokenDB) == 0) {
-            $this->memRepo->update(['active' => 'yes'], $memberID);
+            $memberRepository->update(['active' => 'yes'], $memberID);
             return new Response(
                 '/login?message=',
                 Messages::REQUEST_ACTIVATE,
@@ -173,7 +174,8 @@ class MemberController
 
     public function login(Request $request): Response
     {
-        $active = $this->memRepo->getMemberInfo('username', $request->username, 'active');
+        $memberRepository = $this->validator->memberRepository;
+        $active = $memberRepository->getMemberInfo('username', $request->username, 'active');
         $activeMember = is_string($active) ? $active : '';
         $validate = $this->validator->validateLogin($request, $activeMember);
 
@@ -212,7 +214,7 @@ class MemberController
     public function updateMember(Request $request): Response
     {
 
-        $validate = $this->validator->validateAvatar($request->grecaptcharesponse, $request->avatar);
+        $validate = $this->validator->validateAvatar($request);
 
         if (isset($validate)) {
             return new Response('/reset?message=', $validate, '#updatemember');
@@ -248,21 +250,24 @@ class MemberController
 
     public function permission(string $permission, string $memberID): Response
     {
-        $this->memRepo->update(['permission' => $permission], $memberID);
+        $memberRepository = $this->validator->memberRepository;
+        $memberRepository->update(['permission' => $permission], $memberID);
 
         return new Response('/usertable?message=', Messages::REQUEST_PERMISSION);
     }
 
     public function delete(string $memberID): Response
     {
-        $this->memRepo->deleteMember($memberID);
+        $memberRepository = $this->validator->memberRepository;
+        $memberRepository->deleteMember($memberID);
 
         return new Response('/usertable?message=', Messages::REQUEST_DELETE);
     }
 
     public function setMember(string $username): void
     {
-        $memberData = $this->memRepo->getMemberInfo('username', $username);
+        $memberRepository = $this->validator->memberRepository;
+        $memberData = $memberRepository->getMemberInfo('username', $username);
 
         foreach ($memberData as $key => $value) {
             @$_SESSION[$key] = $value;
@@ -271,12 +276,14 @@ class MemberController
 
     public function allMembers(): array
     {
-        return $this->memRepo->getMemberInfo();
+        $memberRepository = $this->validator->memberRepository;
+        return $memberRepository->getMemberInfo();
     }
 
     private function update(Member $member): void
     {
-        $this->memRepo->update(
+        $memberRepository = $this->validator->memberRepository;
+        $memberRepository->update(
             [
                 'username' => $member->username,
                 'email' => $member->email,
@@ -285,6 +292,6 @@ class MemberController
             $member->memberID
         );
 
-        $this->memRepo->updateInfoMember($member);
+        $memberRepository->updateInfoMember($member);
     }
 }

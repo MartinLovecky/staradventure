@@ -22,7 +22,7 @@ class Response
 
     public function redirect(?string $url = null, ?string $msg = null, ?string $id = null)
     {
-        $location = $url. $this->getMessage($msg) . $this->id;
+        $location = $url . $this->getMessage($msg) . $this->id;
         header('Location:' . $location);
     }
 
@@ -37,9 +37,9 @@ class Response
 
         $this->msg = $msg ?? $this->msg;
 
-        if (isset($this->msg)) {
-            $enc = new Encryption();
-            return $enc->encrypt($this->msg);
+        if ($this->msg) {
+            $encryption  = new Encryption();
+            return $encryption->encrypt($this->msg);
         }
         return null;
     }

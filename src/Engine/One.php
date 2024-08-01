@@ -19,7 +19,7 @@ trait One
     /**
      * IF we need convert $expression to array
      * @param string $expression
-     * @return array $args[0] , $args[1] ... 
+     * @return array $args[0] , $args[1] ...
      */
     protected function args(string $expression): array
     {
@@ -31,7 +31,7 @@ trait One
             // Remove surrounding whitespace and quotes
             $part = trim($part, " \t\n\r\0\x0B'\"");
             $part = is_numeric($part) ? (int)$part : $part;
-            // Add the part to the args array 
+            // Add the part to the args array
             $this->args[(int)$index] = $part;
         }
 
@@ -41,7 +41,7 @@ trait One
     /**
      * start of  @match()
      *
-     * @param mixed $expression 
+     * @param mixed $expression
      *
      * @return string
      */
@@ -66,7 +66,7 @@ trait One
     }
 
     /**
-     * @case(supports multiple, values)  
+     * @case(supports multiple, values)
      *
      * @param string $expression [explicite description]
      *

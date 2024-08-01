@@ -6,6 +6,14 @@ use Exception;
 
 class Encryption
 {
+    /**
+     * Method encrypt
+     *
+     * @param string $message [explicite description]
+     * @param $aad $aad [explicite description]
+     *
+     * @return string
+     */
     public function encrypt(string $message, $aad = ''): string
     {
         $nonce = random_bytes(SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES);
@@ -14,6 +22,14 @@ class Encryption
         return bin2hex($nonce . $ciphertext);
     }
 
+    /**
+     * Method decrypt
+     *
+     * @param string $ciphertext [explicite description]
+     * @param $aad $aad [explicite description]
+     *
+     * @return string
+     */
     public function decrypt(string $ciphertext, $aad = ''): string
     {
         if (empty($ciphertext)) {
@@ -40,12 +56,22 @@ class Encryption
         return $decrypted;
     }
 
+    /**
+     * Method token
+     *
+     * @return string
+     */
     public function token(): string
     {
         // hash('sha256', random_bytes(32)); if needed
         return bin2hex(random_bytes(32));
     }
 
+    /**
+     * Method generateKey
+     *
+     * @return string
+     */
     public function generateKey(): string
     {
         return base64_encode(sodium_crypto_aead_xchacha20poly1305_ietf_keygen());

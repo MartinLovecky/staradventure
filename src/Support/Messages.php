@@ -10,19 +10,31 @@ use Mlkali\Sa\Support\Encryption;
 class Messages extends Enum
 {
     public function __construct(
-        private Selector $selector,
-        private Encryption $enc,
+        public Selector $selector,
+        public Encryption $encryption,
         public ?string $style = null,
         public ?string $message = null,
         private array $messageBag = []
     ) {
     }
 
+    /**
+     * Method getMessageBag
+     *
+     * @return array
+     */
     public function getMessageBag(): array
     {
         return $this->messageBag;
     }
 
+    /**
+     * Method setMessageBag
+     *
+     * @param string $message [explicite description]
+     *
+     * @return self
+     */
     public function setMessageBag(string $message): self
     {
         $this->messageBag[] .= $message;
@@ -31,6 +43,11 @@ class Messages extends Enum
         return $this;
     }
 
+    /**
+     * Method hasAny
+     *
+     * @return bool
+     */
     public function hasAny(): bool
     {
         if (!empty($this->messageBag)) {
@@ -51,10 +68,18 @@ class Messages extends Enum
         $message = $this->selector->getQueryMessage("message");
 
         if ($message) {
-            $this->setMessageBag($this->enc->decrypt($message));
+            $this->setMessageBag($this->encryption->decrypt($message));
         }
     }
 
+    /**
+     * Method createEmailMessage
+     *
+     * @param string $templateName [explicite description]
+     * @param string|array $variables [explicite description]
+     *
+     * @return string
+     */
     public function createEmailMessage(string $templateName, string|array $variables): string
     {
 
@@ -67,6 +92,14 @@ class Messages extends Enum
         return vsprintf($template, $variables);
     }
 
+    /**
+     * Method getEmailInfo
+     *
+     * @param string $templateName [explicite description]
+     * @param string $recipient [explicite description]
+     *
+     * @return array
+     */
     public static function getEmailInfo(string $templateName, string $recipient): array
     {
         switch ($templateName) {
@@ -83,6 +116,11 @@ class Messages extends Enum
         return $info;
     }
 
+    /**
+     * Method main
+     *
+     * @return string
+     */
     public function main(): string
     {
         $template = preg_replace('/\s+/', ' ', file_get_contents(__DIR__ . '/../../public/template/main.html'));
@@ -90,6 +128,11 @@ class Messages extends Enum
         return str_replace('URL', $_SERVER['SERVER_NAME'], $template);
     }
 
+    /**
+     * Method getFristMessage
+     *
+     * @return void
+     */
     private function getFristMessage(): void
     {
         if ($this->hasAny()) {

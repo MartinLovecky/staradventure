@@ -1,18 +1,12 @@
-<?php
-
-if(isset($request->type))
-{
-    match($request->type){
-        'register'      => $memberController->register($request),
-        'login'         => $memberController->login($request),
-        'reset_send'    => $memberController->sendResetToken($request),
-        'reset_user'    => $memberController->sendForgottenUser($request),
-        'new_password'  => $memberController->setNewPassword($request),
-        'update_member' => $memberController->updateMember($request),
-        'update'        => $articleController->update($request),
-        'delete'        => $articleController->delete($request),
-        'create'        => $articleController->create($request),
-        default => null,
-    };
-}  
-?>
+@isset($request->type)
+    @match($request->type)
+        @case('register')       @do($memberController->register($request))
+        @case('login')          @do($memberController->login($request))
+        @case('reset_send')     @do($memberController->sendResetToken($request))
+        @case('reset_user')     @do($memberController->sendForgottenUser($request))
+        @case('new_password')   @do($memberController->setNewPassword($request))
+        @case('update')         @do($memberController->update($request))
+        @case('delete')         @do($memberController->delete($request))
+        @case('create')         @do($memberController->create($request))
+    @endmatch()
+@endisset()

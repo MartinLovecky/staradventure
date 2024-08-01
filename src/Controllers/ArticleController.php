@@ -7,21 +7,18 @@ use Mlkali\Sa\Http\Response;
 use Mlkali\Sa\Database\Entity\Article;
 use Mlkali\Sa\Database\Repository\ArticleRepository;
 use Mlkali\Sa\Support\Messages;
-use Mlkali\Sa\Support\Selector;
 
 class ArticleController
 {
-
     /**
      * ArticleController
      * - sending @param Response
-     * - on /update|create|delete/articleID | 
+     * - on /update|create|delete/articleID |
      * @return void
      */
     public function __construct(
-        private Article $article,
-        private ArticleRepository $articleRepository,
-        private Selector $selector
+        protected Article $article,
+        protected ArticleRepository $articleRepository,
     ) {
     }
 
@@ -34,10 +31,11 @@ class ArticleController
      */
     public function update(Request $request): Response
     {
+        $selector = $this->articleRepository->selector;
         if (!$this->articleExist()) {
             return new Response(
                 "/update/{$request->articleName}/{$request->articlePage}?message=",
-                sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $this->selector->articleID, $request->articleName, $request->articlePage)
+                sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $selector->articleID, $request->articleName, $request->articlePage)
             );
         }
 
@@ -48,7 +46,7 @@ class ArticleController
 
         return new Response(
             "/update/{$request->articleName}/{$request->articlePage}?message=",
-            sprintf(Messages::ARTICLE_UPDATED, $this->selector->articleID)
+            sprintf(Messages::ARTICLE_UPDATED, $selector->articleID)
         );
     }
 
@@ -61,10 +59,11 @@ class ArticleController
      */
     public function create(Request $request): Response
     {
+        $selector = $this->articleRepository->selector;
         if (!$this->articleExist()) {
             return new Response(
                 "/update/{$request->articleName}/{$request->articlePage}?message=",
-                sprintf(Messages::ARTICLE_DOES_ALLREADY_EXIST, $this->selector->articleID, $request->articleName, $request->articlePage)
+                sprintf(Messages::ARTICLE_DOES_ALLREADY_EXIST, $selector->articleID, $request->articleName, $request->articlePage)
             );
         }
 
@@ -75,7 +74,7 @@ class ArticleController
 
         return new Response(
             "/update/{$request->articleName}/{$request->articlePage}?message=",
-            sprintf(Messages::ARTICLE_CREATED, $this->selector->articleID)
+            sprintf(Messages::ARTICLE_CREATED, $selector->articleID)
         );
     }
 
@@ -88,18 +87,19 @@ class ArticleController
      */
     public function delete(Request $request): Response
     {
+        $selector = $this->articleRepository->selector;
         if (!$this->articleExist()) {
             return new Response(
                 "/update/{$request->articleName}/{$request->articlePage}?message=",
-                sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $this->selector->articleID, $request->articleName, $request->articlePage)
+                sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $selector->articleID, $request->articleName, $request->articlePage)
             );
         }
 
-        $this->articleRepository->remove($this->selector->articleID);
+        $this->articleRepository->remove($selector->articleID);
 
         return new Response(
             "/update/{$request->articleName}/{$request->articlePage}?message=",
-            sprintf(Messages::ARTICLE_DELETED, $this->selector->articleID)
+            sprintf(Messages::ARTICLE_DELETED, $selector->articleID)
         );
     }
 
@@ -113,8 +113,9 @@ class ArticleController
      */
     private function createOrUpdateArticle(?string $chapter, string $articleBody): void
     {
+        $selector = $this->articleRepository->selector;
         $this->article
-            ->setArticleID($this->selector->articleID)
+            ->setArticleID($selector->articleID)
             ->setArticleChapter($chapter)
             ->setArticleBody($articleBody);
 
@@ -126,12 +127,12 @@ class ArticleController
 
     /**
      * articleExist
-     * - from @param ArticleRepository 
+     * - from @param ArticleRepository
      * - checks @param Selector->articleID
      * @return bool
      */
     private function articleExist(): bool
     {
-        return $this->articleRepository->exist($this->selector->articleID);
+        return $this->articleRepository->exist($this->articleRepository->selector->articleID);
     }
 }

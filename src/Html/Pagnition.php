@@ -12,8 +12,8 @@ class Pagnition
         private int $page = 1
     ) {
         //Page must be int && article Must be set, viewName is allways set
-        //Deafault value of page is string = we must cast to int (if string then = 0)
         $this->article = ($this->selector->article) ?? $this->article;
+        //Deafault value of page is string = we must cast to int (if string then = 0)
         $this->page = ((int)$this->selector->page > 0) ? (int)$this->selector->page : $this->page;
     }
 
@@ -27,7 +27,7 @@ class Pagnition
         return '<li class="page-item"><a class="page-link" href="/' . $this->selector->action . '/' . $this->article . '/' . $previous_page . '#wp-pagnation" aria-label="Previous"><span aria-hidden="true">«</span></a></li>';
     }
 
-    public function main_pagnation()
+    public function main_pagnation(): void
     {
         $range = 5;
         $totalpages = 300;

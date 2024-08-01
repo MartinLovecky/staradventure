@@ -4,40 +4,38 @@ namespace Mlkali\Sa\Support;
 
 use Mlkali\Sa\Http\Request;
 use Mlkali\Sa\Support\Messages;
-use Mlkali\Sa\Support\Encryption;
 use Mlkali\Sa\Database\Repository\MemberRepository;
 
 class Validator
 {
+    /**
+     * Method __construct
+     * @param MemberRepository
+     * @return void
+     */
     public function __construct(
-        private Encryption $enc,
-        private MemberRepository $memberRepository
+        public MemberRepository $memberRepository
     ) {
     }
 
+    /**
+     * Validates registration input data.
+     *
+     * @param Request $request The HTTP request containing registration data.
+     *
+     * @return string|null Returns an error message if validation fails, or null if validation passes.
+     */
     public function validateRegister(Request $request): ?string
     {
+        $validationError = $this->commonValidation($request);
+        if ($validationError) {
+            return $validationError;
+        }
         if ($request->vops !== 'on' && $request->terms !== 'on') {
             return Messages::VALIDATION_REG_CHECKBOX_FAIL;
         }
-        if (!is_null($this->validateCaptcha($request->grecaptcharesponse))) {
-            return $this->validateCaptcha($request->grecaptcharesponse);
-        }
-        if (!$this->validToken($request->token)) {
-            return Messages::VALIDATION_CRSF_ERROR;
-        }
         if ($this->memberRepository->getMemberInfo('member_id', $request->username . '|' . $request->email)) {
             return sprintf(Messages::VALIDATION_USER_ALREADY_EXISTS, $request->username);
-        }
-        if (mb_strlen($request->password) < 6) {
-            return Messages::VALIDATION_LEN_PASSWORD;
-        }
-        if ($request->password != $request->password_again) {
-            return Messages::VALIDATION_PASSWORD_AGAIN;
-        }
-        //lowercase,uppercase,special symbol,number
-        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$%^&*]).*$/', $request->password)) {
-            return Messages::VALIDATION_PASSWORD_REGEX;
         }
         // email validation structure
         if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $request->email)) {
@@ -46,19 +44,28 @@ class Validator
         if (mb_strlen($request->username) < 4) {
             return sprintf(Messages::VALIDATION_LEN_USER, $request->username);
         }
-        return null;
+        return $this->validatePassword($request->password, $request->password_again);;
     }
 
+    /**
+     * Validates login input data.
+     *
+     * @param Request $request The HTTP request containing login data.
+     * @param string $activeMember The activation status of the member ('yes' or other values).
+     *
+     * @return string|null Returns an error message if validation fails, or null if validation passes.
+     */
     public function validateLogin(Request $request, string $activeMember): ?string
     {
-        if (!is_null($this->validateCaptcha($request->grecaptcharesponse))) {
-            return $this->validateCaptcha($request->grecaptcharesponse);
+        $validationError = $this->commonValidation($request);
+        if ($validationError) {
+            return $validationError;
         }
         if (strcmp($activeMember, 'yes') !== 0) {
             return Messages::VALIDATION_ACTIVE_MEMBER;
         }
         if (!$this->validToken($request->token)) {
-            return Messages::VALIDATION_CRSF_ERROR;
+            return Messages::VALIDATION_CSRF_ERROR;
         }
         if (!$this->memberRepository->getMemberInfo('username', $request->username, 'username')) {
             return sprintf(Messages::VALIDATION_USER_NOT_EXIST, $request->username);
@@ -66,51 +73,39 @@ class Validator
         return null;
     }
 
+    /**
+     * Validates reset password request data.
+     *
+     * @param Request $request The HTTP request containing reset password data.
+     *
+     * @return string|null Returns an error message if validation fails, or null if validation passes.
+     */
     public function validateResetSend(Request $request): ?string
     {
-        if (!is_null($this->validateCaptcha($request->grecaptcharesponse))) {
-            return $this->validateCaptcha($request->grecaptcharesponse);
-        }
-        if (!$this->validToken($request->token)) {
-            return Messages::VALIDATION_CRSF_ERROR;
-        }
-        if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $request->email)) {
-            return sprintf(Messages::VALIDATION_EMAIL_FORMAT, $request->email);
+        $validationError = $this->commonValidation($request);
+        if ($validationError) {
+            return $validationError;
         }
         if (!$this->memberRepository->getMemberInfo('email', $request->email, 'email')) {
             return sprintf(Messages::VALIDATION_USER_NOT_EXIST, $request->email);
         }
-        return null;
+        return $this->validatePassword($request);
     }
 
-    public function validatePassword(Request $request): ?string
+    /**
+     * Validates avatar upload data.
+     *
+     * @param Request $request The HTTP request containing avatar upload data.
+     *
+     * @return string|null Returns an error message if validation fails, or null if validation passes.
+     */
+    public function validateAvatar(Request $request): ?string
     {
-        if (!is_null($this->validateCaptcha($request->grecaptcharesponse))) {
-            return $this->validateCaptcha($request->grecaptcharesponse);
+        $validationError = $this->commonValidation($request);
+        if ($validationError) {
+            return $validationError;
         }
-        if (!$this->validToken($request->token)) {
-            return Messages::VALIDATION_CRSF_ERROR;
-        }
-        if (mb_strlen($request->password) < 6) {
-            return Messages::VALIDATION_LEN_PASSWORD;
-        }
-        if ($request->password != $request->password_again) {
-            return Messages::VALIDATION_PASSWORD_AGAIN;
-        }
-        //lowercase,uppercase,special symbol,number
-        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$%^&*]).*$/', $request->password)) {
-            return Messages::VALIDATION_PASSWORD_REGEX;
-        }
-        return null;
-    }
-
-    public function validateAvatar(string $recaptcha, array $avatar): ?string
-    {
-
-        if (!is_null($this->validateCaptcha($recaptcha))) {
-            return $this->validateCaptcha($recaptcha);
-        }
-        if (!is_uploaded_file($avatar['tmp_name'])) {
+        if (!isset($avatar['tmp_name']) || !is_uploaded_file($request->avatar['tmp_name'])) {
             return Messages::AVATAR_UPLOAD;
         }
         if (!isset($avatar['name'])) {
@@ -122,12 +117,66 @@ class Validator
         if ($avatar['size'] > 5145728) {
             return Messages::AVATAR_SIZE;
         }
-        if (!in_array(pathinfo($avatar['name'], PATHINFO_EXTENSION), ['png', 'jpg', 'jpeg'])) {
+        $allowedMimeTypes = ['png', 'jpg', 'jpeg'];
+        if (!in_array(pathinfo($avatar['name'], PATHINFO_EXTENSION), $allowedMimeTypes)) {
             return Messages::AVATAR_MIME_TYPE;
         }
         return null;
     }
 
+    /**
+     * Validates password data.
+     *
+     * @param Request $request The HTTP request containing new password data.
+     *
+     * @return string|null Returns an error message if validation fails, or null if validation passes.
+     */
+    private function validatePassword(Request $request): ?string
+    {
+        if (mb_strlen($request->password) < 6) {
+            return Messages::VALIDATION_LEN_PASSWORD;
+        }
+        if ($request->password != $request->password_again) {
+            return Messages::VALIDATION_PASSWORD_AGAIN;
+        }
+        //lowercase,uppercase,special symbol,number
+        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$%^&*]).*$/', $request->password)) {
+            return Messages::VALIDATION_PASSWORD_REGEX;
+        }
+        return null;
+    }
+
+    /**
+     * Performs common validation checks for user registration or related requests.
+     *
+     * This method consolidates common validation checks including CAPTCHA validation and CSRF token validation. 
+     * It is used by other validation methods to ensure that basic validation requirements are met before 
+     * proceeding with more specific checks.
+     *
+     * @param Request $request The request object containing the data to be validated. 
+     *                          It should include properties such as `grecaptcharesponse` and `token`.
+     *
+     * @return string|null Returns a validation error message if any of the checks fail, or `null` if all checks pass.
+     *                     The error message indicates what validation error occurred.
+     */
+    private function commonValidation(Request $request): ?string
+    {
+        if (!is_null($this->validateCaptcha($request->grecaptcharesponse))) {
+            return $this->validateCaptcha($request->grecaptcharesponse);
+        }
+        if (!$this->validToken($request->token)) {
+            return Messages::VALIDATION_CSRF_ERROR;
+        }
+        return null;
+    }
+
+    /**
+     * Validates CAPTCHA response with Google's reCAPTCHA API.
+     *
+     * @param ?string $response The CAPTCHA response from the user.
+     *
+     * @return string|null Returns an error message if CAPTCHA validation fails, or null if validation passes.
+     */
     private function validateCaptcha(?string $response): ?string
     {
         $ch = curl_init();
@@ -153,9 +202,17 @@ class Validator
         return null;
     }
 
+    /**
+     * Validates CSRF token.
+     *
+     * @param string $token The CSRF token to validate.
+     *
+     * @return bool Returns true if the token is valid, otherwise false.
+     */
     private function validToken(string $token): bool
     {
-        if (strcmp($this->enc->decrypt($token), $_ENV['CSRFKEY']) === 0) {
+        $encryption = $this->memberRepository->messages->encryption;
+        if (strcmp($encryption->decrypt($token), $_ENV['CSRFKEY']) === 0) {
             return true;
         }
         return false;

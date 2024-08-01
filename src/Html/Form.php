@@ -2,15 +2,19 @@
 
 namespace Mlkali\Sa\Html;
 
-use eftec\bladeone\BladeOne;
+use Mlkali\Sa\Controllers\ArticleController;
+use Mlkali\Sa\Engine\Blade;
+use Mlkali\Sa\Http\Request;
 
 class Form
 {
     public function __construct(
-        private BladeOne $blade,
+        protected Blade $blade,
+        protected Request $request,
+        protected ArticleController $articleController,
         private string $class = 'text-center',
         private string $method = 'POST',
-        private ?string $target = null,
+        private string $target = 'requestHandler',
         private string $id = 'contact-form',
         private array $values = [],
         private string $autocomplete = 'off',

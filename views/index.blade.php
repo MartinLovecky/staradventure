@@ -18,4 +18,3 @@
     @component('articles.'.$component)@endcomponent
     @include('includes.footer')
 @endif
---}}

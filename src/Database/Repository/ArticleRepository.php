@@ -9,9 +9,9 @@ use Mlkali\Sa\Database\Entity\Article;
 class ArticleRepository
 {
     public function __construct(
-        private Selector $selector,
-        private Fluent $fluent,
-        private ?string $repoID = null
+        public Selector $selector,
+        protected Fluent $fluent,
+        protected ?string $repoID = null
     ) {
         $this->repoID = ($this->selector->article && $this->selector->page) ? $this->selector->article . '|' . $this->selector->page : null;
     }
@@ -32,14 +32,16 @@ class ArticleRepository
             ?->select($column)
             ?->where('article_id', $this->repoID);
 
-        $data = $stmt?->fetch($column);
-
-        if (!$data) {
-            return null;
-        }
-        return $data;
+        return $stmt?->fetch($column);
     }
 
+    /**
+     * Method exist
+     *
+     * @param ?string $articleID [explicite description]
+     *
+     * @return bool
+     */
     public function exist(?string $articleID = null): bool
     {
         if (!$this->allowedArticle()) {
@@ -55,52 +57,72 @@ class ArticleRepository
         return (bool)$result;
     }
 
+    /**
+     * Method update
+     *
+     * @param Article $article [explicite description]
+     *
+     * @return bool
+     */
     public function update(Article $article): bool
     {
-        if (!isset($article->articleID)) {
+        if (!$article->articleID) {
             return false;
         }
 
         $set = [
-            'article_body' => $article?->articleBody,
-            'article_chapter' => $article?->articleChapter
+            'article_body' => $article->articleBody,
+            'article_chapter' => $article->articleChapter
         ];
 
-        $stmt = $this->fluent?->query
+        return $this->fluent?->query
             ?->update('articles')
             ?->set($set)
-            ?->where('article_id', $article?->articleID)
+            ?->where('article_id', $article->articleID)
             ?->execute();
-
-        return $stmt;
     }
 
+    /**
+     * Method add
+     *
+     * @param Article $article [explicite description]
+     *
+     * @return bool
+     */
     public function add(Article $article): bool
     {
         $values = [
-            'article_chapter' => $article?->articleChapter,
-            'article_body' => $article?->articleBody,
-            'article_id' =>  $article?->articleID
+            'article_chapter' => $article->articleChapter,
+            'article_body' => $article->articleBody,
+            'article_id' =>  $article->articleID
         ];
 
-        $stmt = $this->fluent?->query
+        return $this->fluent?->query
             ?->insertInto('articles')
             ?->values($values)
             ?->execute();
-
-        return $stmt;
     }
 
+    /**
+     * Method remove
+     *
+     * @param string $articleID [explicite description]
+     *
+     * @return bool
+     */
     public function remove(string $articleID): bool
     {
-        $stmt = $this->fluent?->query
+        return $this->fluent?->query
             ?->deleteFrom('articles')
             ?->where('article_id', $articleID)
             ?->execute();
-
-        return $stmt;
     }
 
+    /**
+     * Method allowedArticle
+     *
+     * @return bool
+     */
     private function allowedArticle(): bool
     {
         $stmt = $this->fluent?->query
@@ -108,8 +130,6 @@ class ArticleRepository
             ?->select('name')
             ?->where('name', $this->selector->article);
 
-        $result = $stmt->fetch('name');
-
-        return (bool)$result;
+        return (bool)$stmt->fetch('name');
     }
 }
