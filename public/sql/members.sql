@@ -28,7 +28,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `members` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(255) NOT NULL DEFAULT 'visitor',
   `email` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
@@ -37,26 +37,10 @@ CREATE TABLE `members` (
   `permission` varchar(255) NOT NULL DEFAULT 'visit',
   `reset_token` varchar(255) DEFAULT NULL,
   `reset_complete` tinyint(1) NOT NULL DEFAULT 0,
-  `member_id` varchar(255) DEFAULT NULL
+  `member_id` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_czech_ci;
 
---
--- Dumping data for table `members`
---
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `members`
---
-ALTER TABLE `members`
-  ADD PRIMARY KEY (`id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
 
 --
 -- AUTO_INCREMENT for table `members`

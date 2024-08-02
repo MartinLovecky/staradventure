@@ -3,23 +3,22 @@
 namespace Mlkali\Sa\Support;
 
 use Exception;
+use Mlkali\Sa\Engine\Blade;
 use Mlkali\Sa\Support\Enum;
-use Mlkali\Sa\Support\Selector;
-use Mlkali\Sa\Support\Encryption;
 
 class Messages extends Enum
 {
     public function __construct(
-        public Selector $selector,
-        public Encryption $encryption,
         public ?string $style = null,
         public ?string $message = null,
-        private array $messageBag = []
+        private array $messageBag = [],
+        private string $templatePath = ''
     ) {
+        // TODO : $message = $this->selector->getQueryMessage("message");
     }
 
     /**
-     * Method getMessageBag
+     * Retrieves all messages.
      *
      * @return array
      */
@@ -29,18 +28,61 @@ class Messages extends Enum
     }
 
     /**
-     * Method setMessageBag
+     * Retrieves messages of a specific type.
      *
-     * @param string $message [explicite description]
+     * @param string $type The type of messages to retrieve (success, warning, danger).
+     *
+     * @return array
+     */
+    public function getMessagesByType(string $type): array
+    {
+        return array_filter($this->messageBag, function ($message) use ($type) {
+            return strpos($message, $type . '_') === 0;
+        });
+    }
+
+    /**
+     * Adds a single message or multiple messages to the message bag.
+     *
+     * @param string|array $message Single message as a string or multiple messages as an array.
+     * @param string|null $type The type of message (success, warning, danger, etc.).
      *
      * @return self
      */
-    public function setMessageBag(string $message): self
+    public function addMessage(string|array $message, ?string $type = null): self
     {
-        $this->messageBag[] .= $message;
-        $this->getFristMessage();
+        if (is_array($message)) {
+            foreach ($message as $msg) {
+                $this->messageBag[] = $this->formatMessage($msg, $type);
+            }
+        } else {
+            $this->messageBag[] = $this->formatMessage($message, $type);
+        }
 
         return $this;
+    }
+
+    /**
+     * Clears the message bag.
+     *
+     * @return self
+     */
+    public function clearMessages(): self
+    {
+        $this->messageBag = [];
+        return $this;
+    }
+
+    /**
+     * Checks if there are any messages of a specific type.
+     *
+     * @param string $type The type of messages to check for.
+     *
+     * @return bool
+     */
+    public function hasMessagesOfType(string $type): bool
+    {
+        return !empty($this->getMessagesByType($type));
     }
 
     /**
@@ -50,82 +92,7 @@ class Messages extends Enum
      */
     public function hasAny(): bool
     {
-        if (!empty($this->messageBag)) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * After header we want display message /url?message=TEXTtoDISPLAY,
-     * message should be encrypted ? maybe not -> we don't sent personal data
-     *
-     * @return void adds message to messageBag
-     */
-    public function getQueryMessage(): void
-    {
-        // $message can be null -> if url ?message=is_not_set
-        $message = $this->selector->getQueryMessage("message");
-
-        if ($message) {
-            $this->setMessageBag($this->encryption->decrypt($message));
-        }
-    }
-
-    /**
-     * Method createEmailMessage
-     *
-     * @param string $templateName [explicite description]
-     * @param string|array $variables [explicite description]
-     *
-     * @return string
-     */
-    public function createEmailMessage(string $templateName, string|array $variables): string
-    {
-
-        if (!is_readable(__DIR__ . '/../../public/template/' . $templateName . '.html')) {
-            throw new Exception("$templateName.html nexistuje ve složce /public/templates", 1);
-        }
-
-        $template = str_replace("\n", " ", preg_replace('/\s+/', ' ', file_get_contents(__DIR__ . '/../../public/template/' . $templateName . '.html')));
-
-        return vsprintf($template, $variables);
-    }
-
-    /**
-     * Method getEmailInfo
-     *
-     * @param string $templateName [explicite description]
-     * @param string $recipient [explicite description]
-     *
-     * @return array
-     */
-    public static function getEmailInfo(string $templateName, string $recipient): array
-    {
-        switch ($templateName) {
-            case 'register':
-                $info = ['subject' => 'Potvrzení registrace', 'to' => $recipient];
-                break;
-            case 'reset':
-                $info = ['subject ' => 'Reset hesla', 'to' => $recipient];
-                break;
-            case 'user':
-                $info = ['subject' => 'Zapomenutné username', 'to' => $recipient];
-                break;
-        }
-        return $info;
-    }
-
-    /**
-     * Method main
-     *
-     * @return string
-     */
-    public function main(): string
-    {
-        $template = preg_replace('/\s+/', ' ', file_get_contents(__DIR__ . '/../../public/template/main.html'));
-
-        return str_replace('URL', $_SERVER['SERVER_NAME'], $template);
+        return !empty($this->messageBag);
     }
 
     /**
@@ -133,14 +100,26 @@ class Messages extends Enum
      *
      * @return void
      */
-    private function getFristMessage(): void
+    private function getFirstMessage(): void
     {
         if ($this->hasAny()) {
-            foreach ($this->getMessageBag() as $key => $value) {
-                $exploded = explode('_', $value);
-                $this->style = $exploded[0];
-                $this->message = $exploded[1];
-            }
+            $firstMessage = reset($this->messageBag);
+            $exploded = explode('_', $firstMessage);
+            $this->style = $exploded[0];
+            $this->message = $exploded[1] ?? '';
         }
+    }
+
+    /**
+     * Formats a message with an optional type prefix.
+     *
+     * @param string $message The message to format.
+     * @param string|null $type The optional message type (e.g., success, warning, danger).
+     *
+     * @return string
+     */
+    private function formatMessage(string $message, ?string $type): string
+    {
+        return $type ? "{$type}_{$message}" : $message;
     }
 }

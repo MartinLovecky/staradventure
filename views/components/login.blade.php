@@ -4,11 +4,7 @@
 @endif
 <article id="login">
     <h2 class="major">Přihlášení</h2>
-    {!! 
-        $form->options(['target'=>'requestHandler'])
-        ->vars(['memberController'=>$memberController, 'request' => $request])
-        ->run() 
-    !!}
+    @form()
     <div class="fields">
         <div class="field"><input class="form-control text-white" type="text" name="username" value="@isset($_SESSION['old_username']){{$_SESSION['old_username']}}@endisset" placeholder="Username"></div>
         <div class="field"><input class="form-control text-white" type="password" name="password" placeholder="Heslo" autocomplete="new-password"></div>

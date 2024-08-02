@@ -15,10 +15,7 @@ $dotenv->required(['DB_NAME', 'DB_USER', 'DB_HOST', 'DB_PASS']);
 $container = new League\Container\Container();
 $container->delegate(new League\Container\ReflectionContainer(true));
 
-
-$memberController = $container->get(\Mlkali\Sa\Controllers\MemberController::class);
-
-dd($memberController);
+$fluent = $container->get(\Mlkali\Sa\Database\Fluent::class);
 
 //$viewController = $container->get(\Mlkali\Sa\Engine\ViewController::class);
 

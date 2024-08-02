@@ -14,7 +14,8 @@ class Validator
      * @return void
      */
     public function __construct(
-        public MemberRepository $memberRepository
+        public MemberRepository $memberRepository,
+        public Encryption $encryption
     ) {
     }
 
@@ -44,7 +45,8 @@ class Validator
         if (mb_strlen($request->username) < 4) {
             return sprintf(Messages::VALIDATION_LEN_USER, $request->username);
         }
-        return $this->validatePassword($request->password, $request->password_again);;
+        return $this->validatePassword($request->password, $request->password_again);
+        ;
     }
 
     /**
@@ -131,7 +133,7 @@ class Validator
      *
      * @return string|null Returns an error message if validation fails, or null if validation passes.
      */
-    private function validatePassword(Request $request): ?string
+    public function validatePassword(Request $request): ?string
     {
         if (mb_strlen($request->password) < 6) {
             return Messages::VALIDATION_LEN_PASSWORD;
@@ -149,11 +151,11 @@ class Validator
     /**
      * Performs common validation checks for user registration or related requests.
      *
-     * This method consolidates common validation checks including CAPTCHA validation and CSRF token validation. 
-     * It is used by other validation methods to ensure that basic validation requirements are met before 
+     * This method consolidates common validation checks including CAPTCHA validation and CSRF token validation.
+     * It is used by other validation methods to ensure that basic validation requirements are met before
      * proceeding with more specific checks.
      *
-     * @param Request $request The request object containing the data to be validated. 
+     * @param Request $request The request object containing the data to be validated.
      *                          It should include properties such as `grecaptcharesponse` and `token`.
      *
      * @return string|null Returns a validation error message if any of the checks fail, or `null` if all checks pass.
@@ -211,8 +213,7 @@ class Validator
      */
     private function validToken(string $token): bool
     {
-        $encryption = $this->memberRepository->messages->encryption;
-        if (strcmp($encryption->decrypt($token), $_ENV['CSRFKEY']) === 0) {
+        if (strcmp($this->encryption->decrypt($token), $_ENV['CSRFKEY']) === 0) {
             return true;
         }
         return false;

@@ -7,7 +7,7 @@ use Mlkali\Sa\Support\Selector;
 class Pagnition
 {
     public function __construct(
-        private Selector $selector,
+        public Selector $selector,
         private string $article = 'allwin',
         private int $page = 1
     ) {

@@ -63,7 +63,7 @@ class ArticleController
         if (!$this->articleExist()) {
             return new Response(
                 "/update/{$request->articleName}/{$request->articlePage}?message=",
-                sprintf(Messages::ARTICLE_DOES_ALLREADY_EXIST, $selector->articleID, $request->articleName, $request->articlePage)
+                sprintf(Messages::ARTICLE_ALREADY_EXISTS, $selector->articleID, $request->articleName, $request->articlePage)
             );
         }
 

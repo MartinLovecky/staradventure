@@ -5,12 +5,7 @@
 
 <article id="register">
     <h2 class="major">Přidej se</h2>
-    {!! 
-	    $form
-        ->options(['target' => 'requestHandler'])
-		->vars(['memberController' => $memberController, 'request' => $request])
-		->run() 
-	!!}
+        @form()
         <div class="fields">
             <div class="field half"><input class="form-control text-white" type="text" name="username" placeholder="Username" value="@isset($_SESSION['old_username']){{ $_SESSION['old_username'] }}@endisset" required></div>
             <div class="field half"><input class="form-control text-white" type="email" name="email" placeholder="Email" value="@isset($_SESSION['old_email']){{ $_SESSION['old_email'] }}@endisset" required></div>

@@ -7,24 +7,20 @@ class Member
     public function __construct(
         private bool $logged = false,
         private bool $visible = false,
-        private string $username = 'visitor',
-        private ?string $email = null,
-        private string $permission = 'visit',
+        private string $username = '',
+        private string $email = '',
+        private string $permission = '',
         private ?string $memberName = null,
         private ?string $memberSurname = null,
         private ?string $location = null,
         //private $age = null, //not sure about type
-        private string $avatar = 'empty_profile.png',
+        private string $avatar = '',
         private ?string $resetToken = null,
         private bool $resetComplete = false,
-        private ?string $memberID = 'visitor|visitor@gmail.com'
+        private string $memberID = ''
     ) {
         if (isset($_SESSION['member_id'])) {
             $this->logged = true;
-
-            foreach ($_SESSION as $key => $value) {
-                $this->{$key} = $value;
-            }
         }
     }
 

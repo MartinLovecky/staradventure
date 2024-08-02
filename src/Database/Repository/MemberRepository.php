@@ -11,17 +11,17 @@ class MemberRepository
 {
     public function __construct(
         public Messages $messages,
-        private Fluent $fluent,
-        private Mailer $mailer
+        public Fluent $fluent,
+        public Mailer $mailer
     ) {
     }
 
     /**
      * Method getMemberInfo
      *
-     * @param ?string $column [explicite description]
-     * @param ?string $value [explicite description]
-     * @param ?string $item [explicite description]
+     * @param ?string $column
+     * @param ?string $value
+     * @param ?string $item
      *
      * @return mixed
      */
@@ -33,16 +33,16 @@ class MemberRepository
             ?->select('info.*')
             ?->where($column, $value);
         if (!$column && !$value) {
-            return $stmt?->fetchAll();
+            return $stmt->fetchAll();
         }
-        return $stmt?->fetch($item);
+        return $stmt->fetch($item);
     }
 
     /**
      * Method insert
      *
-     * @param string $table [explicite description]
-     * @param array $values [explicite description]
+     * @param string $table
+     * @param array $values
      *
      * @return void
      */
@@ -54,34 +54,20 @@ class MemberRepository
     /**
      * Method sendEmail
      *
-     * @param array $data [explicite description]
+     * @param array $data
      *
      * @return void
      */
-    public function sendEmail(array $data): void
+    public function sendEmail(string $body, string $subject, string $to): void
     {
-        $dynamic = $this->messages->createEmailMessage(
-            $data['templateType'],
-            [
-                $data['username'],
-                $_SERVER['SERVER_NAME'],
-                rand(),
-                $data['encryptedID'],
-                $data['active']
-            ]
-        );
 
-        $body = str_replace('TEMPLATE', $dynamic, $this->messages->main());
-
-        $info = Messages::getEmailInfo($data['templateType'], $data['recipient']);
-
-        $this->mailer->sender($body, $info);
+        $this->mailer->sender($body, $subject, $to);
     }
 
     /**
      * Method deleteMember
      *
-     * @param string $memberID [explicite description]
+     * @param string $memberID
      *
      * @return void
      */
@@ -96,7 +82,7 @@ class MemberRepository
     /**
      * Method updateInfoMember
      *
-     * @param Member $member [explicite description]
+     * @param Member $member
      *
      * @return void
      */

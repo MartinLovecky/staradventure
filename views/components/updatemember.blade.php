@@ -4,11 +4,7 @@
 @endif
 <article id="updatemember">
     <h2 class="major">Upravit profil</h2>
-    {!! 
-	    $form->options(['target'=>'requestHandler', 'enctype' => 'multipart/form-data'])
-		->vars(['memberController'=>$memberController, 'request' => $request])
-		->run() 
-	!!}
+        @form()
         <div class="fields">
             <div class="field half">
                 <input class="form-control text-white" type="text" name="username" placeholder="{{$member->username}}*">

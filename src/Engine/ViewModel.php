@@ -2,43 +2,34 @@
 
 namespace Mlkali\Sa\Engine;
 
+use Envms\FluentPDO\Queries\Select;
 use Mlkali\Sa\Controllers\ArticleController;
 use Mlkali\Sa\Controllers\MemberController;
 use Mlkali\Sa\Database\Entity\Article;
 use Mlkali\Sa\Database\Entity\Member;
-use Mlkali\Sa\Engine\Blade;
 use Mlkali\Sa\Html\Form;
 use Mlkali\Sa\Html\Pagnition;
-use Mlkali\Sa\Http\Request;
 use Mlkali\Sa\Http\Response;
 use Mlkali\Sa\Support\Encryption;
 use Mlkali\Sa\Support\Messages;
-use Mlkali\Sa\Support\Selector;
 
 class ViewModel
 {
     public function __construct(
-        protected Blade $blade,
-        protected Selector $selector,
-        protected Form $form,
-        protected MemberController $memberController,
-        protected ArticleController $articleController,
-        protected Request $request,
-        protected Member $member,
-        protected Encryption $enc,
-        protected Messages $messages,
-        protected Article $article,
         protected Pagnition $pagnition,
-        protected Response $response
+        protected Form $form,
+        protected Response $response,
+        protected ?string $queryMessage = null
     ) {
-        $this->messages->getQueryMessage();
+        $this->$queryMessage = $this->pagnition->selector->getQueryMessage("message");
+        //$this->messages->add();
     }
 
     public function render(): string
     {
         $data = $this->setViewData();
 
-        return $this->blade->run('index', $data);
+        return $this->form->blade->run('index', $data);
     }
 
     private function setViewData(): array
@@ -60,13 +51,13 @@ class ViewModel
 
     private function componentName(string $endpoint): string
     {
-        $component = match ($this->selector->action) {
+        $component = match ($this->pagnition->selector->action) {
             '', 'index' => 'header',
             '404' => 'notFound',
             'update', 'delete', 'create' => 'editor',
             'newpassword' => 'pwd',
             'show' => 'story',
-            default => $this->selector->action
+            default => $this->pagnition->selector->action
         };
 
         if ($endpoint === 'article' && !file_exists($_SERVER['DOCUMENT_ROOT'] . '/views/articles/' . $component . '.blade.php')) {
@@ -85,7 +76,7 @@ class ViewModel
      */
     private function endpoint(): string
     {
-        $endpoint = match ($this->selector->action) {
+        $endpoint = match ($this->pagnition->selector->action) {
             '', 'index', 'intro', 'register', 'login', 'storylist', 'vop', 'terms', 'reset', 'newpassword', 'updatemember', 'logout', 'activate' => 'intro',
             default => 'article'
         };
@@ -96,7 +87,7 @@ class ViewModel
     private function baseData(string $componentName, string $endpoint): array
     {
         return [
-            'selector' => $this->selector,
+            'selector' => $this->pagnition->selector,
             'message' => $this->messages,
             'member' => $this->member,
             'component' => $componentName,
@@ -114,9 +105,8 @@ class ViewModel
             'login', 'register', 'reset', 'pwd' => [
                 'form' => $this->form,
                 'memberController' => $this->memberController,
-                'request' => $this->request,
                 'member' => $this->member,
-                'enc' => $this->enc
+                'encryption' => $this->enc
             ],
             'logout', 'activate' => [$this->memberController],
             // 404 will propably display some data not sure yet
@@ -132,7 +122,6 @@ class ViewModel
             'editor' => [
                 'article' => $this->article,
                 'pagnition' => $this->pagnition,
-                'request' => $this->request,
                 'articleController' => $this->articleController,
                 'form' => $this->form
             ],

@@ -8,11 +8,7 @@
 @endif
 <article id="reset">
     <h2 class="major">@if(isset($memberID)) {{ "Zapomenutné Username" }} @else {{ "Reset hesla" }} @endif</h2>
-    {!! 
-        $form->options(['target'=>'requestHandler'])
-        ->vars(['memberController'=>$memberController, 'request' => $request])
-        ->run() 
-    !!}
+    @form()
     <div class="fields">
         <div class="field"><input class="form-control text-white" type="email" name="email" placeholder="Email" required></div>
     </div>

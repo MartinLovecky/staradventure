@@ -17,6 +17,18 @@ trait One
     }
 
     /**
+     * @form([options]) default are used when array not provided
+     * - check \Mlkali\Sa\Html\Form options
+     * @param string $expression
+     *
+     * @return void
+     */
+    public function compileForm(string $expression)
+    {
+        return $this->phpTag . "\$form->run{$expression};?>";
+    }
+
+    /**
      * IF we need convert $expression to array
      * @param string $expression
      * @return array $args[0] , $args[1] ...
@@ -40,9 +52,9 @@ trait One
 
     /**
      * start of  @match()
-     *
+     * - preset is optional for default value
      * @param mixed $expression
-     *
+     * @example - @match(x) @state('this')@do(1..)@preset()@endmatch()
      * @return string
      */
     protected function compileMatch($expression): string
@@ -55,7 +67,7 @@ trait One
     /**
      * @do(action that should happen)
      * @example usage: @case(1) @do()
-     * @param string $expression [explicite description]
+     * @param string $expression
      *
      * @return mixed
      */
@@ -66,13 +78,13 @@ trait One
     }
 
     /**
-     * @case(supports multiple, values)
+     * @state(supports multiple, values)
      *
-     * @param string $expression [explicite description]
+     * @param string $expression
      *
      * @return string
      */
-    protected function compileCase(string $expression): string
+    protected function compileState(string $expression): string
     {
         $args = $this->args($expression);
         $caseStrings = [];
@@ -91,12 +103,12 @@ trait One
     }
 
     /**
-     * @default($value) can be used in @match before @endmatch
-     * @param string $expression [explicite description]
+     * @preset($value) can be used in @match before @endmatch
+     * @param string $expression
      *
      * @return string
      */
-    protected function compileDefault($expression): string
+    protected function compilePreset($expression): string
     {
         if ($this->firstCaseInMatch) {
             return $this->showError('@default', '@match without any @case', true);

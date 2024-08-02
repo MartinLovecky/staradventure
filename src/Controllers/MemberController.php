@@ -7,172 +7,83 @@ use Mlkali\Sa\Http\Response;
 use Mlkali\Sa\Support\Messages;
 use Mlkali\Sa\Support\Validator;
 use Mlkali\Sa\Database\Entity\Member;
+use Mlkali\Sa\Database\Repository\MemberRepository;
+use Mlkali\Sa\Support\Selector;
 
 class MemberController
 {
     public function __construct(
-        protected Member $member,
-        protected Validator $validator,
+        public Member $member,
+        public MemberRepository $memberRepository,
+        public Validator $validator,
         protected string $token = '',
+        protected string $url = ''
     ) {
-        $this->token = $this->validator->memberRepository->messages->encryption->token();
+        $this->token = $this->validator->encryption->token();
+        $this->url = $_SERVER['SERVER_NAME'] ?? 'localhost';
     }
 
-    public function register(Request $request): Response
+    public function response(string $type, array $templateData): Response
     {
-        $memberRepository = $this->validator->memberRepository;
+        if (isset($templateData['body'], $templateData['subject'], $templateData['to'])) {
+            $this->memberRepository->sendEmail($templateData['body'], $templateData['subject'], $templateData['to']);
+        }
+        $message = $this->getMessageForType($type, $templateData['to']);
+        $url = "/{$type}?message=";
+
+        return new Response($url, $message, "#{$type}");
+    }
+
+    /**
+     * - if validation fail redirect to form
+     * - if success return valid data
+     * @param Request $request
+     *
+     * @return array|Response
+     */
+    public function proccesRegister(Request $request): array|Response
+    {
         $validate = $this->validator->validateRegister($request);
-
-        if (isset($validate)) {
-
+        // When validation fail
+        if ($validate) {
             @$_SESSION = [
-                'old_username' => $request?->username,
-                'old_email' => $request?->email
+                'old_username' => $request->username,
+                'old_email' => $request->email
             ];
-
             return new Response('/register?message=', $validate, '#register');
         }
-
-        $memberID = $request?->username . '|' . $request?->email;
-        // Insert the member into the database
+        $memberRepository = $this->validator->memberRepository;
+        // We have valid data
+        $memberID = $request->username . '|' . $request->email;
+        // info is table for profile edit
         $memberRepository->insert('info', ['member' => $memberID]);
+        // insert user data to table
         $memberRepository->insert(
             'members',
             [
-                'username' => $request?->username,
-                'email' => $request?->email,
-                'password' => password_hash($request?->password, PASSWORD_BCRYPT),
+                'username' => $request->username,
+                'email' => $request->email,
+                'password' => password_hash($request->password, PASSWORD_BCRYPT),
                 'active' => $this->token,
                 'permission' => 'user',
                 'member_id' => $memberID
             ]
         );
-        // Send an activation email to the user
-        $memberRepository->sendEmail(
-            [
-                'username' => $request?->username,
-                'encryptedID' => $memberRepository->messages->encryption->encrypt($memberID),
-                'active' => $this->token,
-                'recipient' => $request?->email,
-                'templateType' => 'register'
-            ]
-        );
 
-        return new Response(
-            '/login?message=',
-            sprintf(Messages::REQUETS_REGISTER, $request->email),
-            '#login'
-        );
+        $memberID = $this->validator->encryption->encrypt($memberID);
+        $templateData = [
+            'url' =>  $this->url,
+            'username' => $request->username,
+            'encryptedID' => $memberID,
+            'token' => $this->token,
+            'recipient' => $request->email,
+            'memberID' => $memberID
+        ];
+
+        return $templateData;
     }
 
-    public function sendResetToken(Request $request): Response
-    {
-        $memberRepository = $this->validator->memberRepository;
-        $validate = $this->validator->validateResetSend($request);
-
-        if (isset($validate)) {
-            @$_SESSION = ['old_email' => $request?->email];
-
-            return new Response('/?message=', $validate, '#reset');
-        }
-
-        $memberID = $memberRepository->getMemberInfo('email', $request?->email, 'member_id');
-
-        $memberRepository->update(['reset_token' => $this->token], $memberID);
-
-        $memberRepository->sendEmail(
-            [
-                'username' => $request->email,
-                'active' => $this->token,
-                'encryptedID' => $memberRepository->messages->encryption->encrypt($memberID),
-                'recipient' => $request->email,
-                'templateType' => 'reset'
-            ]
-        );
-
-        return new Response(
-            '/?message=',
-            sprintf(Messages::REQUETS_RESET_SEND, $request->email),
-            '#'
-        );
-    }
-
-    public function sendForgottenUser(Request $request): Response
-    {
-        $memberRepository = $this->validator->memberRepository;
-        $validate = $this->validator->validateResetSend($request);
-
-        if (isset($validate)) {
-            return new Response(
-                '/reset?message=',
-                sprintf(Messages::VALIDATION_FORGOTEN_USER, $request->email),
-                '#reset'
-            );
-        }
-
-        $memberRepository->sendEmail(
-            [
-                'username' => $memberRepository->getMemberInfo('email', $request->email, 'username'),
-                'active' => $this->token,
-                'encryptedID' => $memberRepository->messages->encryption->encrypt($memberRepository->getMemberInfo('email', $request->email, 'member_id')),
-                'recipient' => $request->email,
-                'templateType' => 'user'
-            ]
-        );
-
-        return new Response(
-            '/login?message=',
-            sprintf(Messages::REQUETS_FORGOTEN_USER, $request->email),
-            '#login'
-        );
-    }
-
-    public function setNewPassword(Request $request): Response
-    {
-        $memberRepository = $this->validator->memberRepository;
-        $validate = $this->validator->validatePassword($request);
-
-        if (isset($validate)) {
-            return new Response('/?message=', $validate, '#newpassword');
-        }
-
-        $set = ['password' => password_hash($request->password, PASSWORD_BCRYPT)];
-        $memberRepository->update($set, $request->user_id);
-
-        return new Response('/?message=', Messages::REQUETS_RESET_PASSWORD, '#login');
-    }
-
-    public function activate(): Response
-    {
-        $memberRepository = $this->validator->memberRepository;
-        $messages = $memberRepository->messages;
-        $selector = $messages->selector;
-
-        // FIXME can be null
-        $id = $selector->getQueryMessage("id");
-        $token = $selector->getQueryMessage("token");
-
-        $memberID = $messages->encryption->decrypt($id);
-        $memberDB = $memberRepository->getMemberInfo('member_id', $memberID, 'member_id');
-        $tokenDB = $memberRepository->getMemberInfo('member_id', $memberID, 'active');
-
-        if (strcmp($memberID, $memberDB) == 0 && strcmp($token, $tokenDB) == 0) {
-            $memberRepository->update(['active' => 'yes'], $memberID);
-            return new Response(
-                '/login?message=',
-                Messages::REQUEST_ACTIVATE,
-                '#login'
-            );
-        }
-
-        return new Response(
-            '/register?message=',
-            Messages::REQUEST_ACTIVATE_FAIL,
-            '#register'
-        );
-    }
-
-    public function login(Request $request): Response
+    public function proccesLogin(Request $request): Response
     {
         $memberRepository = $this->validator->memberRepository;
         $active = $memberRepository->getMemberInfo('username', $request->username, 'active');
@@ -189,7 +100,7 @@ class MemberController
 
             return new Response(
                 "member/{$request->username}?message=",
-                sprintf(Messages::REQUETS_LOGIN, $request->username)
+                sprintf(Messages::REQUEST_LOGIN, $request->username)
             );
         }
 
@@ -197,7 +108,119 @@ class MemberController
 
         return new Response(
             "member/{$request->username}?message=",
-            sprintf(Messages::REQUETS_LOGIN, $request->username)
+            sprintf(Messages::REQUEST_LOGIN, $request->username)
+        );
+    }
+
+    public function setMember(string $username): void
+    {
+        $memberRepository = $this->validator->memberRepository;
+        $memberData = $memberRepository->getMemberInfo('username', $username);
+
+        @$_SESSION['memberID'] = $memberData['member_id'];
+
+        foreach ($memberData as $key => $value) {
+            $this->member->{$key} = $value;
+        }
+    }
+
+    public function proccessResetToken(Request $request): array|Response
+    {
+        $memberRepository = $this->validator->memberRepository;
+        $validate = $this->validator->validateResetSend($request);
+
+        if (isset($validate)) {
+            @$_SESSION = ['old_email' => $request?->email];
+
+            return new Response('/?message=', $validate, '#reset');
+        }
+
+        $memberID = $memberRepository->getMemberInfo('email', $request?->email, 'member_id');
+
+        $memberRepository->update(['reset_token' => $this->token], $memberID);
+
+        $memberID = $this->validator->encryption->encrypt($memberID);
+
+        $templateData = [
+            'url' => $this->url,
+            'username' => $request->email,
+            'token' => $this->token,
+            'encryptedID' => $memberID,
+            'recipient' => $request->email,
+        ];
+
+        return $templateData;
+    }
+
+    public function proccessForgottenUser(Request $request): array|Response
+    {
+        $memberRepository = $this->validator->memberRepository;
+        $validate = $this->validator->validateResetSend($request);
+
+        if (isset($validate)) {
+            return new Response(
+                '/reset?message=',
+                sprintf(Messages::VALIDATION_FORGOTTEN_USER, $request->email),
+                '#reset'
+            );
+        }
+        $username = $memberRepository->getMemberInfo('email', $request->email, 'username');
+        $memberID = $this->validator->encryption->encrypt($memberRepository->getMemberInfo('email', $request->email, 'member_id'));
+
+        $templateData = [
+            'username' => $username,
+            'active' => $this->token,
+            'encryptedID' => $memberID,
+            'recipient' => $request->email,
+        ];
+
+        return $templateData;
+    }
+
+    public function setNewPassword(Request $request): Response
+    {
+        $memberRepository = $this->validator->memberRepository;
+        $validate = $this->validator->validatePassword($request);
+
+        if (isset($validate)) {
+            return new Response('/?message=', $validate, '#newpassword');
+        }
+
+        $set = ['password' => password_hash($request->password, PASSWORD_BCRYPT)];
+        $memberRepository->update($set, $request->user_id);
+
+        return new Response('/?message=', Messages::REQUEST_RESET_PASSWORD, '#login');
+    }
+
+    public function activate(Selector $selector): Response
+    {
+        $memberRepository = $this->validator->memberRepository;
+        $messages = $memberRepository->messages;
+
+        $id = $selector->getQueryMessage("id");
+        $token = $selector->getQueryMessage("token");
+
+        if (!$id || !$token) {
+            return new Response('/index?message=', Messages::INVALID_URL);
+        }
+
+        $memberID = $this->validator->encryption->decrypt($id);
+        $memberDB = $memberRepository->getMemberInfo('member_id', $memberID, 'member_id');
+        $tokenDB = $memberRepository->getMemberInfo('member_id', $memberID, 'active');
+
+        if (strcmp($memberID, $memberDB) == 0 && strcmp($token, $tokenDB) == 0) {
+            $memberRepository->update(['active' => 'yes'], $memberID);
+            return new Response(
+                '/login?message=',
+                Messages::REQUEST_ACTIVATE,
+                '#login'
+            );
+        }
+
+        return new Response(
+            '/register?message=',
+            Messages::REQUEST_ACTIVATE_FAIL,
+            '#register'
         );
     }
 
@@ -264,15 +287,6 @@ class MemberController
         return new Response('/usertable?message=', Messages::REQUEST_DELETE);
     }
 
-    public function setMember(string $username): void
-    {
-        $memberRepository = $this->validator->memberRepository;
-        $memberData = $memberRepository->getMemberInfo('username', $username);
-
-        foreach ($memberData as $key => $value) {
-            @$_SESSION[$key] = $value;
-        }
-    }
 
     public function allMembers(): array
     {
@@ -293,5 +307,19 @@ class MemberController
         );
 
         $memberRepository->updateInfoMember($member);
+    }
+
+    private function getMessageForType(string $type, string $replace)
+    {
+        $messageMap = [
+            'login' => Messages::REQUEST_LOGIN,
+            'register' => Messages::REQUEST_REGISTER,
+            'reset' => Messages::REQUEST_RESET_SEND,
+            'user' => Messages::REQUEST_FORGOTTEN_USER,
+        ];
+
+        $messageTemplate = $messageMap[$type] ?? 'Unknown type: ' . $type;
+
+        return sprintf($messageTemplate, $replace);
     }
 }

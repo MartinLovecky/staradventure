@@ -18,7 +18,7 @@ class Mailer extends PHPMailer
         $this->Body = $body;
     }
 
-    public function sender($body, $email): bool
+    public function sender(string $body, string $subject, string $to): bool
     {
         $this->IsSMTP();
         $this->body($body);
@@ -30,10 +30,10 @@ class Mailer extends PHPMailer
         $this->Password = $_ENV['EMAIL_PASS'];
         $this->SMTPSecure = 'ssl';
         $this->Port = $_ENV['EMAIL_PORT'];
-        $this->subject($email['subject']);
+        $this->subject($subject);
         $this->isHTML(true);
         $this->setFrom($_ENV['EMAIL_NAME'], 'sadventure.com');
-        $this->addAddress($email['to']);
+        $this->addAddress($to);
         //$this->addAttachment
         return parent::send();
     }

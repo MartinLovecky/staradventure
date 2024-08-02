@@ -28,29 +28,15 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `info` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `member_name` varchar(255) DEFAULT NULL,
   `member_surname` varchar(255) DEFAULT NULL,
   `visible` tinyint(1) NOT NULL DEFAULT 0,
   `location` varchar(255) DEFAULT NULL,
   `age` date DEFAULT NULL,
-  `member` varchar(255) NOT NULL
+  `member` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_czech_ci;
-
---
--- Dumping data for table `info`
---
-
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `info`
---
-ALTER TABLE `info`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
