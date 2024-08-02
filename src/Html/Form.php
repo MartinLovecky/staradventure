@@ -42,13 +42,11 @@ class Form
 
     public function run(?array $options = null)
     {
-        if ($options) {
+        if (isset($options)) {
             $this->options($options);
         }
 
-        //NOTE   TESTING ZONE
-
-        if ($this->request->type) {
+        if ($_POST) {
             match ($this->request->type) {
                 'register' => $this->handleDataProcessing('proccesRegister', 'activate', 'register'),
                 'reset_send' => $this->handleDataProcessing('proccessResetToken', 'reset', 'reset'),
@@ -58,8 +56,7 @@ class Form
                 'updateMember' => $this->memberController->updateMember($this->request)
             };
         }
-
-        return "<form method='$this->method' target='_self' class='$this->class' id='$this->id' autocomplete='$this->autocomplete' enctype='$this->enctype'>";
+        return "<form method='{$this->method}' target='_self' class='{$this->class}' id='{$this->id}' autocomplete='{$this->autocomplete}' enctype='{$this->enctype}'>";
     }
 
     /**
@@ -123,7 +120,7 @@ class Form
         $templateFile = $this->templatePath . $templateName . 'blade.php';
 
         if (!is_readable($templateFile)) {
-            throw new Exception("Template $templateName.blade.php nexistuje ve složce /public/templates");
+            throw new Exception("Template $templateName.blade.php nexistuje ve složce $this->templatePath");
         }
 
         return $this->blade->run('templates.' . $templateName, $data);

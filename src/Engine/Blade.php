@@ -19,7 +19,7 @@ class Blade extends BladeOne
         $this->path = dirname(__DIR__, 2) . '\\';
         $this->viewPath = $this->path . 'views';
         $this->compiledPath = $this->path . 'compiles';
-        $this->publicPath = $this->path . 'public';
+        $this->publicPath = '/public';
 
         $this->setPath($this->viewPath, $this->compiledPath);
         $this->setBaseUrl($this->publicPath);

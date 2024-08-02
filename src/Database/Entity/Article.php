@@ -7,7 +7,7 @@ use Mlkali\Sa\Database\Repository\ArticleRepository;
 class Article
 {
     public function __construct(
-        private ArticleRepository $artRepo,
+        private ArticleRepository $articleRepository,
         public ?string $articleChapter = null,
         public ?string $articleID = null,
         public ?string $articleBody = null
@@ -16,7 +16,7 @@ class Article
 
     public function getArticleID(): ?string
     {
-        $this->articleID = $this->artRepo->getCurrentArticle('article_id');
+        $this->articleID = $this->articleRepository->getCurrentArticle('article_id');
 
         return $this->articleID;
     }
@@ -30,7 +30,7 @@ class Article
 
     public function getArticleChapter(): ?string
     {
-        $this->articleChapter = $this->artRepo->getCurrentArticle('article_chapter');
+        $this->articleChapter = $this->articleRepository->getCurrentArticle('article_chapter');
 
         return $this->articleChapter;
     }
@@ -44,7 +44,7 @@ class Article
 
     public function getArticleBody(): ?string
     {
-        $this->articleBody = $this->artRepo->getCurrentArticle('article_body');
+        $this->articleBody = $this->articleRepository->getCurrentArticle('article_body');
 
         return $this->articleBody;
     }

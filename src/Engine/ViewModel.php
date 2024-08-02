@@ -2,16 +2,14 @@
 
 namespace Mlkali\Sa\Engine;
 
-use Envms\FluentPDO\Queries\Select;
+
 use Mlkali\Sa\Controllers\ArticleController;
-use Mlkali\Sa\Controllers\MemberController;
 use Mlkali\Sa\Database\Entity\Article;
-use Mlkali\Sa\Database\Entity\Member;
 use Mlkali\Sa\Html\Form;
 use Mlkali\Sa\Html\Pagnition;
 use Mlkali\Sa\Http\Response;
 use Mlkali\Sa\Support\Encryption;
-use Mlkali\Sa\Support\Messages;
+
 
 class ViewModel
 {
@@ -19,10 +17,9 @@ class ViewModel
         protected Pagnition $pagnition,
         protected Form $form,
         protected Response $response,
-        protected ?string $queryMessage = null
+        protected ArticleController $articleController,
     ) {
-        $this->$queryMessage = $this->pagnition->selector->getQueryMessage("message");
-        //$this->messages->add();
+        $this->queryMessage();
     }
 
     public function render(): string
@@ -30,6 +27,14 @@ class ViewModel
         $data = $this->setViewData();
 
         return $this->form->blade->run('index', $data);
+    }
+
+    private function queryMessage()
+    {
+        $message = $this->pagnition->selector->getQueryMessage("message");
+        if ($message) {
+            $this->form->memberController->validator->memberRepository->messages->addMessage($message);
+        }
     }
 
     private function setViewData(): array
@@ -88,13 +93,14 @@ class ViewModel
     {
         return [
             'selector' => $this->pagnition->selector,
-            'message' => $this->messages,
-            'member' => $this->member,
+            'message' => $this->form->memberController->validator->memberRepository->messages,
+            'member' => $this->form->memberController->member,
             'component' => $componentName,
             'title' =>  'SA | ' . $componentName,
             'endpoint' => $endpoint,
             'csrf' => $_ENV['CSRFKEY'],
-            'response' => $this->response
+            'response' => $this->response,
+            'form' => $this->form
         ];
     }
 
@@ -104,11 +110,9 @@ class ViewModel
             'intro', 'storylist', 'terms', 'vop' => [],
             'login', 'register', 'reset', 'pwd' => [
                 'form' => $this->form,
-                'memberController' => $this->memberController,
-                'member' => $this->member,
-                'encryption' => $this->enc
+                'encryption' => $this->form->memberController->validator->encryption
             ],
-            'logout', 'activate' => [$this->memberController],
+            'logout', 'activate' => [$this->form->memberController],
             // 404 will propably display some data not sure yet
             'notFound' => [],
             default => []
@@ -120,13 +124,13 @@ class ViewModel
     {
         $articleData = match ($articleName) {
             'editor' => [
-                'article' => $this->article,
+                'article' => $this->articleController->article,
                 'pagnition' => $this->pagnition,
                 'articleController' => $this->articleController,
                 'form' => $this->form
             ],
             'story' => [
-                'article' => $this->article,
+                'article' => $this->articleController->article,
                 'pagnition' => $this->pagnition
             ],
             default => []

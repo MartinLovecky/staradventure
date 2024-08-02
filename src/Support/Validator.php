@@ -45,8 +45,7 @@ class Validator
         if (mb_strlen($request->username) < 4) {
             return sprintf(Messages::VALIDATION_LEN_USER, $request->username);
         }
-        return $this->validatePassword($request->password, $request->password_again);
-        ;
+        return $this->validatePassword($request);
     }
 
     /**
@@ -196,7 +195,7 @@ class Validator
         curl_close($ch);
         $res = json_decode($response, true);
 
-        if (!$res['success']) {
+        if (!isset($res['success'])) {
             foreach ($res['error-codes'] as $msg) {
                 return 'danger_' . $msg;
             }

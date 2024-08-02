@@ -17,7 +17,7 @@ class ArticleController
      * @return void
      */
     public function __construct(
-        protected Article $article,
+        public Article $article,
         protected ArticleRepository $articleRepository,
     ) {
     }

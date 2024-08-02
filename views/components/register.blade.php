@@ -2,7 +2,6 @@
 @if ($member->logged)
     @redirect('/member'.'/'.$member->username.'/?message=', Enum::USER_LOGGED)
 @endif
-
 <article id="register">
     <h2 class="major">Přidej se</h2>
         @form()
@@ -26,11 +25,11 @@
             <li><button class="button primary" name="submit" value="submit" type="submit">Registrovat</button></li>
         </ul>
         <p class="text-muted text-center">Máte již účet?<a href="/login#login">&nbsp;přihlásit se</a></p>
-        <input type='hidden' name="token" value="{{$enc->encrypt($csrf)}}">
+        <input type='hidden' name="token" value="{{$encryption->encrypt($csrf)}}">
         <input type="hidden" id="g-recaptcha-response" name="grecaptcharesponse">
     	<input type="hidden" name="action" value="validate_captcha">
         <input type="hidden" name="type" value="register">
     </form>
-    <script src="https://www.google.com/recaptcha/api.js?render=6LclhVIjAAAAAAUcH7r8tvwJl3GIUg8bLJmr2alF"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render=6LdKkYEUAAAAAE5Ykg8LY5gOPNXzgTyIG3FVuCqM"></script>
     <script src="@asset("js/recaptcha.js")"></script>
 </article>

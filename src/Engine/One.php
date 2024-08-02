@@ -24,8 +24,9 @@ trait One
      * @return void
      */
     public function compileForm(string $expression)
-    {
-        return $this->phpTag . "\$form->run{$expression};?>";
+    { //@form()
+        //return $this->wrapPHP("\$form->run{$expression}", false, false);
+        return $this->phpTag . "echo \$form->run{$expression};?>";
     }
 
     /**
@@ -48,6 +49,11 @@ trait One
         }
 
         return $this->args;
+    }
+
+    public function compileDe($expression)
+    {
+        return $this->phpTag . "\dd{$expression};?>";
     }
 
     /**

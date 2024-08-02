@@ -7,14 +7,12 @@ use Mlkali\Sa\Http\Response;
 use Mlkali\Sa\Support\Messages;
 use Mlkali\Sa\Support\Validator;
 use Mlkali\Sa\Database\Entity\Member;
-use Mlkali\Sa\Database\Repository\MemberRepository;
 use Mlkali\Sa\Support\Selector;
 
 class MemberController
 {
     public function __construct(
         public Member $member,
-        public MemberRepository $memberRepository,
         public Validator $validator,
         protected string $token = '',
         protected string $url = ''
@@ -26,7 +24,7 @@ class MemberController
     public function response(string $type, array $templateData): Response
     {
         if (isset($templateData['body'], $templateData['subject'], $templateData['to'])) {
-            $this->memberRepository->sendEmail($templateData['body'], $templateData['subject'], $templateData['to']);
+            $this->validator->memberRepository->sendEmail($templateData['body'], $templateData['subject'], $templateData['to']);
         }
         $message = $this->getMessageForType($type, $templateData['to']);
         $url = "/{$type}?message=";
