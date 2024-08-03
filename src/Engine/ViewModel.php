@@ -2,14 +2,10 @@
 
 namespace Mlkali\Sa\Engine;
 
-
-use Mlkali\Sa\Controllers\ArticleController;
-use Mlkali\Sa\Database\Entity\Article;
-use Mlkali\Sa\Html\Form;
 use Mlkali\Sa\Html\Pagnition;
+use Mlkali\Sa\Html\Form;
 use Mlkali\Sa\Http\Response;
-use Mlkali\Sa\Support\Encryption;
-
+use Mlkali\Sa\Controllers\ArticleController;
 
 class ViewModel
 {
@@ -99,8 +95,7 @@ class ViewModel
             'title' =>  'SA | ' . $componentName,
             'endpoint' => $endpoint,
             'csrf' => $_ENV['CSRFKEY'],
-            'response' => $this->response,
-            'form' => $this->form
+            'response' => $this->response
         ];
     }
 

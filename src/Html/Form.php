@@ -119,7 +119,7 @@ class Form
     {
         $templateFile = $this->templatePath . $templateName . 'blade.php';
 
-        if (!is_readable($templateFile)) {
+        if (!is_file($templateFile)) {
             throw new Exception("Template $templateName.blade.php nexistuje ve složce $this->templatePath");
         }
 

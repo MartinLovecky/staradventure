@@ -15,6 +15,9 @@ $dotenv->required(['DB_NAME', 'DB_USER', 'DB_HOST', 'DB_PASS']);
 $container = new League\Container\Container();
 $container->delegate(new League\Container\ReflectionContainer(true));
 
+//$repo = $container->get(\Mlkali\Sa\Database\Fluent::class);
+//dd($repo->query->from('members')->fetchAll());
+// COULD MANUALY ACTIVATE BUT I want test mailing
 $viewController = $container->get(\Mlkali\Sa\Engine\ViewController::class);
 
 echo $viewController->view();

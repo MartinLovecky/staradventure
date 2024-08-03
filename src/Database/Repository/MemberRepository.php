@@ -17,33 +17,36 @@ class MemberRepository
     }
 
     /**
-     * Method getMemberInfo
+     * Retrieves member information based on a specific column and value.
      *
-     * @param ?string $column
-     * @param ?string $value
-     * @param ?string $item
-     *
-     * @return mixed
+     * @param ?string $column The column to search in the database. If null, fetch all members.
+     * @param ?string $value The value to match in the specified column. If null, fetch all members.
+     * @param ?string $item The specific item to fetch. If null, fetch all columns.
+     * @return mixed The fetched member information, or an array of members if no column and value are provided.
      */
-    public function getMemberInfo(?string $column = null, ?string $value = null, ?string $item = null): mixed
-    {
+    public function getMemberInfo(
+        ?string $column = null,
+        ?string $value = null,
+        ?string $item = null
+    ): mixed {
         $stmt = $this->fluent?->query
             ?->from('members')
             ?->leftJoin('info ON members.member_id = info.member')
             ?->select('info.*')
             ?->where($column, $value);
-        if (!$column && !$value) {
-            return $stmt->fetchAll();
+        if ($item) {
+            return $stmt->fetch($item);
+        } elseif ($column && $value) {
+            return $stmt->fetch();
         }
-        return $stmt->fetch($item);
+        return $stmt->fetchAll();
     }
 
     /**
-     * Method insert
+     * Inserts a new record into the specified table.
      *
-     * @param string $table
-     * @param array $values
-     *
+     * @param string $table The name of the table to insert into.
+     * @param array $values An associative array of column-value pairs to insert.
      * @return void
      */
     public function insert(string $table, array $values): void
@@ -52,23 +55,25 @@ class MemberRepository
     }
 
     /**
-     * Method sendEmail
+     * Sends an email using the Mailer class.
      *
-     * @param array $data
-     *
+     * @param string $body The body of the email.
+     * @param string $subject The subject of the email.
+     * @param string $to The recipient email address.
      * @return void
      */
-    public function sendEmail(string $body, string $subject, string $to): void
-    {
-
+    public function sendEmail(
+        string $body,
+        string $subject,
+        string $to
+    ): void {
         $this->mailer->sender($body, $subject, $to);
     }
 
     /**
-     * Method deleteMember
+     * Deletes a member from the members table by member ID.
      *
-     * @param string $memberID
-     *
+     * @param string $memberID The ID of the member to delete.
      * @return void
      */
     public function deleteMember(string $memberID): void
@@ -80,10 +85,9 @@ class MemberRepository
     }
 
     /**
-     * Method updateInfoMember
+     * Updates member information in the info table.
      *
-     * @param Member $member
-     *
+     * @param Member $member The Member entity containing updated information.
      * @return void
      */
     public function updateInfoMember(Member $member): void
@@ -104,10 +108,10 @@ class MemberRepository
     }
 
     /**
-     * Update members table inside db
-     * - I am lazzy so I use null safe operator -> latter logs -> error reports
-     * @param array $set 'fileds' you want update ['filed_name' => $value]
-     * @param string|null $memberID
+     * Updates the members table with specified fields.
+     *
+     * @param array $set An associative array of fields and their new values.
+     * @param ?string $memberID The ID of the member to update. If null, it must be specified in the $set array.
      * @return void
      */
     public function update(array $set, ?string $memberID): void

@@ -38,7 +38,7 @@ class ArticleRepository
     /**
      * Method exist
      *
-     * @param ?string $articleID [explicite description]
+     * @param ?string $articleID
      *
      * @return bool
      */
@@ -60,7 +60,7 @@ class ArticleRepository
     /**
      * Method update
      *
-     * @param Article $article [explicite description]
+     * @param Article $article
      *
      * @return bool
      */
@@ -85,7 +85,7 @@ class ArticleRepository
     /**
      * Method add
      *
-     * @param Article $article [explicite description]
+     * @param Article $article
      *
      * @return bool
      */
@@ -106,7 +106,7 @@ class ArticleRepository
     /**
      * Method remove
      *
-     * @param string $articleID [explicite description]
+     * @param string $articleID
      *
      * @return bool
      */

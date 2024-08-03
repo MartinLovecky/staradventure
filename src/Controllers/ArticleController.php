@@ -25,7 +25,7 @@ class ArticleController
     /**
      * Method update
      *
-     * @param Request $request [explicite description]
+     * @param Request $request
      *
      * @return Response
      */
@@ -53,7 +53,7 @@ class ArticleController
     /**
      * Method create
      *
-     * @param Request $request [explicite description]
+     * @param Request $request
      *
      * @return Response
      */
@@ -81,7 +81,7 @@ class ArticleController
     /**
      * Method delete
      *
-     * @param Request $request [explicite description]
+     * @param Request $request
      *
      * @return Response
      */
@@ -106,8 +106,8 @@ class ArticleController
     /**
      * Method createOrUpdateArticle
      *
-     * @param ?string $chapter [explicite description]
-     * @param string $articleBody [explicite description]
+     * @param ?string $chapter
+     * @param string $articleBody
      *
      * @return void
      */

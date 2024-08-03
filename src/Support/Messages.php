@@ -14,7 +14,6 @@ class Messages extends Enum
         private array $messageBag = [],
         private string $templatePath = ''
     ) {
-        // TODO : $message = $this->selector->getQueryMessage("message");
     }
 
     /**
@@ -100,14 +99,12 @@ class Messages extends Enum
      *
      * @return void
      */
-    private function getFirstMessage(): void
+    public function getMessage(): void
     {
-        if ($this->hasAny()) {
-            $firstMessage = reset($this->messageBag);
-            $exploded = explode('_', $firstMessage);
-            $this->style = $exploded[0];
-            $this->message = $exploded[1] ?? '';
-        }
+        $last = array_pop($this->messageBag);
+        $exploded = explode('_', $last);
+        $this->style = $exploded[0];
+        $this->message = base64_encode($exploded[1]) ?? '';
     }
 
     /**
