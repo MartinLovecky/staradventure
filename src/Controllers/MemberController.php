@@ -98,7 +98,8 @@ class MemberController
 
             return new Response(
                 "member/{$request->username}?message=",
-                sprintf(Messages::REQUEST_LOGIN, $request->username)
+                sprintf(Messages::REQUEST_LOGIN, $request->username),
+                '#member'
             );
         }
 
@@ -106,7 +107,8 @@ class MemberController
 
         return new Response(
             "member/{$request->username}?message=",
-            sprintf(Messages::REQUEST_LOGIN, $request->username)
+            sprintf(Messages::REQUEST_LOGIN, $request->username),
+            '#member'
         );
     }
 
@@ -208,18 +210,11 @@ class MemberController
 
         if (strcmp($memberID, $memberDB) == 0 && strcmp($token, $tokenDB) == 0) {
             $memberRepository->update(['active' => 'yes'], $memberID);
-            return new Response(
-                '/login?message=',
-                Messages::REQUEST_ACTIVATE,
-                '#login'
-            );
+
+            return new Response('/login?message=', Messages::REQUEST_ACTIVATE, '#login');
         }
 
-        return new Response(
-            '/register?message=',
-            Messages::REQUEST_ACTIVATE_FAIL,
-            '#register'
-        );
+        return new Response('/register?message=', Messages::REQUEST_ACTIVATE_FAIL, '#register');
     }
 
     public function logout(): Response
@@ -229,7 +224,7 @@ class MemberController
         unset($_COOKIE['remember']);
         setcookie('remember', '', time() - 3600, '/');
 
-        return new Response('/?message=', Messages::REQUEST_LOGOUT, '#');
+        return new Response('/?message=', Messages::REQUEST_LOGOUT);
     }
 
     public function updateMember(Request $request): Response
@@ -266,7 +261,7 @@ class MemberController
 
         $this->update($this->member);
 
-        return new Response('/member' . $request->username . '?message=', 'succes.Informace upraveny');
+        return new Response("/member/{$request->username}?message=", 'succes.Informace upraveny');
     }
 
     public function permission(string $permission, string $memberID): Response

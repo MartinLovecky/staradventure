@@ -2,6 +2,7 @@
 
 {{-- //NOTE - not ideal should be fixed soon --}}
 {{-- //TODO we could set $memberID in $viewConttroller --}}
+{{-- //REVIEW - $memberID should be encrypted and be process in that form --}}
 @set($memberID = $selector->getQueryMessage("id"))
 
 @isset($memberID)
@@ -15,11 +16,12 @@
     <ul class="actions">
         <li><button class="button primary" name="submit" value="submit" type="submit">Změnit heslo</button></li>
     </ul>
-    <input type='hidden' name="token" value="{{   }}">
+    {{-- //TODO - TEST --}}
+    <input type='hidden' name="token" value="{{  $encryption->encrypt($csrf)  }}">
     <input type="hidden" id="g-recaptcha-response" name="grecaptcharesponse">
     <input type="hidden" name="action" value="validate_captcha">
     <input type="hidden" name="type" value="new_password">
-    <input type="hidden" name="user_id" value ="">
+    <input type="hidden" name="user_id" value ="{{  $memberID  }}">
     <input type="hidden" name="etoken" value="">
 </form>
 <script src="https://www.google.com/recaptcha/api.js?render=6LclhVIjAAAAAAUcH7r8tvwJl3GIUg8bLJmr2alF"></script>

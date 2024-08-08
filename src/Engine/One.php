@@ -4,13 +4,19 @@ namespace Mlkali\Sa\Engine;
 
 trait One
 {
-    public $phpTag = '<?php ';
-    protected $phpTagEcho = '<?php' . ' echo ';
+
     protected int $matchCount = 0;
     protected bool $firstCaseInMatch = true;
     protected array $args = [];
     protected ?string $do = null;
 
+    /**
+     * used in views via @redirect('view', 'optional message')
+     *
+     * @param string $expression 
+     *
+     * @return string
+     */
     public function compileRedirect(string $expression): string
     {
         return $this->phpTagEcho . "\$response->redirect{$expression};?>";
@@ -23,9 +29,8 @@ trait One
      *
      * @return void
      */
-    public function compileForm(string $expression)
-    { //@form()
-        //return $this->wrapPHP("\$form->run{$expression}", false, false);
+    public function compileForm(string $expression): string
+    {
         return $this->phpTag . "echo \$form->run{$expression};?>";
     }
 
@@ -51,7 +56,7 @@ trait One
         return $this->args;
     }
 
-    public function compileDe($expression)
+    public function compileDe($expression): string
     {
         return $this->phpTag . "\dd{$expression};?>";
     }

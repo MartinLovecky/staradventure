@@ -2,45 +2,56 @@
 
 namespace Mlkali\Sa\Http;
 
-use Mlkali\Sa\Support\Encryption;
-
 class Response
 {
-    /** Response message is encrypted so $msg need to be raw message
-     * @param null|string $url where to redirect
-     * @param null|string $msg raw message
-     * @param null|string $id used at index to identify which html id to display
+    public function __construct(
+        private string $url = '',
+        private ?string $message = null,
+        private string $id = '#',
+    ) {
+        $this->setTargetUrl();
+    }
+
+    /**
+     * This is used with @redirect in views
+     *
+     * @param string $url 
+     * @param ?string $msg 
+     * @param ?string $id 
+     *
      * @return void
      */
-    public function __construct(
-        private ?string $url = null,
-        private ?string $msg = null,
-        private ?string $id = null
-    ) {
-        isset($this->url) ? $this->setTargetUrl() : null;
-    }
-
-    public function redirect(?string $url = null, ?string $msg = null, ?string $id = null)
+    public function redirect(string $url, ?string $msg = null, ?string $id = null): void
     {
-        $location = $url . $this->getMessage($msg) . $this->id;
+        $location = $url . $this->getMessage($msg) . $id;
         header('Location:' . $location);
     }
 
+    /**
+     * used in class for redirtects 
+     * @example return new Response(url, optional message, #id[page to display])
+     * @return void
+     */
     private function setTargetUrl(): void
     {
-        $location = $this->url . $this->getMessage() . $this->id;
-        header('Location:' . $location);
+        if (!empty($this->url)) {
+            $location = $this->url . $this->getMessage($this->message) . $this->id;
+            header('Location:' . $location);
+        }
     }
 
-    private function getMessage(?string $msg = null): string|null
+    /**
+     * Encode message we dont send any private data
+     * - we could use Encryption if we want send private data
+     * - if you want Decrypt them you need go in /views/includes/message.blade.php
+     * @param ?string $message 
+     *
+     * @return string
+     */
+    private function getMessage(?string $message = null): string|null
     {
-
-        $this->msg = $msg ?? $this->msg;
-
-        if ($this->msg) {
-            $encryption  = new Encryption();
-            return $encryption->encrypt($this->msg);
-        }
-        return null;
+        // $encryption = new Encryption();
+        // $encryption->encrypt($message);
+        return $message ? base64_encode($message) : null;
     }
 }

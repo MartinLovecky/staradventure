@@ -19,8 +19,7 @@ class ArticleController
     public function __construct(
         public Article $article,
         protected ArticleRepository $articleRepository,
-    ) {
-    }
+    ) {}
 
     /**
      * Method update
@@ -35,7 +34,8 @@ class ArticleController
         if (!$this->articleExist()) {
             return new Response(
                 "/update/{$request->articleName}/{$request->articlePage}?message=",
-                sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $selector->articleID, $request->articleName, $request->articlePage)
+                sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $selector->articleID, $request->articleName, $request->articlePage),
+                '#editor'
             );
         }
 
@@ -46,7 +46,8 @@ class ArticleController
 
         return new Response(
             "/update/{$request->articleName}/{$request->articlePage}?message=",
-            sprintf(Messages::ARTICLE_UPDATED, $selector->articleID)
+            sprintf(Messages::ARTICLE_UPDATED, $selector->articleID),
+            '#editor'
         );
     }
 
@@ -63,7 +64,8 @@ class ArticleController
         if (!$this->articleExist()) {
             return new Response(
                 "/update/{$request->articleName}/{$request->articlePage}?message=",
-                sprintf(Messages::ARTICLE_ALREADY_EXISTS, $selector->articleID, $request->articleName, $request->articlePage)
+                sprintf(Messages::ARTICLE_ALREADY_EXISTS, $selector->articleID, $request->articleName, $request->articlePage),
+                '#editor'
             );
         }
 
@@ -74,7 +76,8 @@ class ArticleController
 
         return new Response(
             "/update/{$request->articleName}/{$request->articlePage}?message=",
-            sprintf(Messages::ARTICLE_CREATED, $selector->articleID)
+            sprintf(Messages::ARTICLE_CREATED, $selector->articleID),
+            '#editor'
         );
     }
 
@@ -91,7 +94,8 @@ class ArticleController
         if (!$this->articleExist()) {
             return new Response(
                 "/update/{$request->articleName}/{$request->articlePage}?message=",
-                sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $selector->articleID, $request->articleName, $request->articlePage)
+                sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $selector->articleID, $request->articleName, $request->articlePage),
+                '#editor'
             );
         }
 
@@ -99,8 +103,14 @@ class ArticleController
 
         return new Response(
             "/update/{$request->articleName}/{$request->articlePage}?message=",
-            sprintf(Messages::ARTICLE_DELETED, $selector->articleID)
+            sprintf(Messages::ARTICLE_DELETED, $selector->articleID),
+            '#editor'
         );
+    }
+
+    public function cardItems(): array
+    {
+        return $this->articleRepository->fluent?->query?->from('cards')?->fetchAll();
     }
 
     /**

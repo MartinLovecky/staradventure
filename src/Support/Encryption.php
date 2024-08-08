@@ -7,10 +7,10 @@ use Exception;
 class Encryption
 {
     /**
-     * Method encrypt
+     * encrypt message with sodium
      *
-     * @param string $message [explicite description]
-     * @param $aad $aad [explicite description]
+     * @param string $message 
+     * @param $aad $aad 
      *
      * @return string
      */
@@ -23,10 +23,10 @@ class Encryption
     }
 
     /**
-     * Method decrypt
+     * decrypt message
      *
-     * @param string $ciphertext [explicite description]
-     * @param $aad $aad [explicite description]
+     * @param string $ciphertext 
+     * @param $aad $aad 
      *
      * @return string
      */
@@ -57,7 +57,7 @@ class Encryption
     }
 
     /**
-     * Method token
+     * token can be used for reset password
      *
      * @return string
      */
@@ -68,7 +68,7 @@ class Encryption
     }
 
     /**
-     * Method generateKey
+     * generateKey for encryption
      *
      * @return string
      */

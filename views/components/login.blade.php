@@ -1,6 +1,6 @@
 @use(Mlkali\Sa\Support\Enum)
 @if ($member->logged)
-    @redirect('/member'.'/'.$member->username.'/?message=', Enum::USER_LOGGED)
+    @redirect("/member/{$member->username}?message=", Enum::USER_LOGGED, '#member')
 @endif
 <article id="login">
     <h2 class="major">Přihlášení</h2>
@@ -20,6 +20,7 @@
         </ul>
         <p class="text-muted text-center">Nemáte účet?<a href="/register#register">&nbsp;přidejte se</a>.<br>
             <a href="/reset#reset">Zapomenutné heslo?</a><br>
+            {{-- //TODO - THIS should be encrypted --}}
             <a href="/reset?id={{base64_encode('forgotenUser')}}#reset">Zapomenutný Username?</a>
         </p>
         <input type='hidden' name="token" value="{{$encryption->encrypt($csrf)}}">

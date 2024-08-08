@@ -1,6 +1,6 @@
 @use(Mlkali\Sa\Support\Enum)
 @if($member->permission == "visit")
-	@redirect('/?message=', Enum::USER_PERMISSION, '#')
+	@redirect('/?message=', Enum::USER_PERMISSION)
 @endif
 <div class="book">
 	<div class="container-story">

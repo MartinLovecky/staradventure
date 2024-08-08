@@ -1,9 +1,6 @@
 @use(Mlkali\Sa\Support\Enum)
-@if (!$member->logged)
-    @redirect('/?message=', Enum::USER_NOT_LOGGED, '#')
-@endif
-@if ($member->permission !== 'admin')
-    @redirect('/?message=', Enum::USER_PERMISSION, '#')
+@if ($member->permission != 'admin')
+    @redirect('/?message=', Enum::USER_PERMISSION)
 @endif
 <table class="table table-bordered table-dark">
     <thead>

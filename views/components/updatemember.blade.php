@@ -1,16 +1,16 @@
 @use(Mlkali\Sa\Support\Enum)
 @if (!$member->logged)
-    @redirect('/member'.'/'.$member->username.'/?message=', Enum::USER_NOT_LOGGED)
+    @redirect("/member/{$member->username}?message=", Enum::USER_NOT_LOGGED)
 @endif
 <article id="updatemember">
     <h2 class="major">Upravit profil</h2>
         @form()
         <div class="fields">
             <div class="field half">
-                <input class="form-control text-white" type="text" name="username" placeholder="{{$member->username}}*">
+                <input class="form-control text-white" type="text" name="username" placeholder="{{  $member->username  }}*">
             </div>
             <div class="field half">
-                <input class="form-control text-white" type="email" name="email" placeholder="{{$member->email}}*">
+                <input class="form-control text-white" type="email" name="email" placeholder="{{  $member->email  }}*">
             </div>
             <div class="field half">
                 <input class="form-control text-white" type="text" name="name" placeholder="@isset($member->memberName){{$member->memberName}}*@endisset{{'Jméno*'}}">
@@ -35,7 +35,7 @@
             <li><button class="button primary" name="submit" value="submit" type="submit">Upravit Info</button></li>
         </ul>
         <p class="text-muted text-center">* Pole není povinné <br>** Informace budou viditelné pro všechny uživatele<br>Zpět na profil&nbsp;<a href="/member/{{$member->username}}">{{$member->username}}</a></p>
-        <input type='hidden' name="token" value="{{$enc->encrypt($csrf)}}">
+        <input type='hidden' name="token" value="{{  $encryption->encrypt($csrf)  }}">
         <input type="hidden" id="g-recaptcha-response" name="grecaptcharesponse">
     	<input type="hidden" name="action" value="validate_captcha">
         <input type="hidden" name="type" value="update_member">

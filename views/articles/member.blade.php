@@ -1,6 +1,6 @@
 @use(Mlkali\Sa\Support\Enum)
 @if(!$member->logged)
-    @redirect('/?message=', Enum::USER_NOT_LOGGED, '#')
+    @redirect('/?message=', Enum::USER_NOT_LOGGED)
 @endif
 <div class="article-list">
     <div class="container-fluid features-boxed">

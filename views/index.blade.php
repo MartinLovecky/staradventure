@@ -1,20 +1,15 @@
 @include('includes.head')
 @if ($message->hasAny())
-    @component('components.message')@endcomponent
+    @include('includes.message')
 @endif
-@if($endpoint == 'intro')
-    @if($component == 'header')
-        @component('components.'.$component)@endcomponent 
-    @endif
+{{-- header need be outside <div id="main"> --}}
+@if($component == 'header')
+    @component('components.header')@endcomponent 
+@endif
+@if($component != 'header')   
 <div id="main">
-    @if($component != 'header')   
-        @component('components.'.$component)@endcomponent
-    @endif
+    @component('components.'.$component)@endcomponent
 </div>
-</div>
-    @include('includes.endOfMainPage')
-@elseif($endpoint == 'article')
-    @include('includes.menu')
-    @component('articles.'.$component)@endcomponent
-    @include('includes.footer')
 @endif
+</div>
+@include('includes.endPage')

@@ -1,3 +1,4 @@
+{{-- kepp this file for refrence  --}}
 <nav class="navbar navbar-light navbar-expand-lg">
     <div class="container"><a class="navbar-brand" href="/"><img class="img-fluid" src="@asset('img/android-chrome-256x256.png')" style="height: 70px;width: 70px;margin-right: -20px;" alt="brand" width="70" height="70">tarAdventure</a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1" type="button"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse text-center" id="navcol-1">

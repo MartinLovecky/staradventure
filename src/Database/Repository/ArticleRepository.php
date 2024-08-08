@@ -10,7 +10,7 @@ class ArticleRepository
 {
     public function __construct(
         public Selector $selector,
-        protected Fluent $fluent,
+        public Fluent $fluent,
         protected ?string $repoID = null
     ) {
         $this->repoID = ($this->selector->article && $this->selector->page) ? $this->selector->article . '|' . $this->selector->page : null;

@@ -8,11 +8,7 @@ use Mlkali\Sa\Database\Repository\MemberRepository;
 
 class Validator
 {
-    /**
-     * Method __construct
-     * @param MemberRepository
-     * @return void
-     */
+
     public function __construct(
         public MemberRepository $memberRepository,
         public Encryption $encryption
@@ -148,17 +144,26 @@ class Validator
     }
 
     /**
-     * Performs common validation checks for user registration or related requests.
+     * check if string is Base64 encoded
+     *
+     * @param string $str 
+     *
+     * @return bool
+     */
+    public function isBase64(string $str): bool
+    {
+        return preg_match('/^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$/', $str);
+    }
+
+    /**
+     * Performs common validation checks for related requests.
      *
      * This method consolidates common validation checks including CAPTCHA validation and CSRF token validation.
-     * It is used by other validation methods to ensure that basic validation requirements are met before
-     * proceeding with more specific checks.
      *
-     * @param Request $request The request object containing the data to be validated.
-     *                          It should include properties such as `grecaptcharesponse` and `token`.
+     * @param Request $request containing the data to be validated.                    
      *
      * @return string|null Returns a validation error message if any of the checks fail, or `null` if all checks pass.
-     *                     The error message indicates what validation error occurred.
+     * 
      */
     private function commonValidation(Request $request): ?string
     {

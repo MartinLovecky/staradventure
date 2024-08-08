@@ -4,17 +4,7 @@ namespace Mlkali\Sa\Support;
 
 class Selector
 {
-    /**
-     * Constructor for Selector class.
-     *
-     * @param string $action Default action.
-     * @param string $title Default title.
-     * @param string|null $article Default article identifier.
-     * @param string|null $page Default page identifier.
-     * @param string|null $articleID Computed article ID.
-     * @param array $queryValues Array of query parameters.
-     * @param array $url Array of URL segments.
-     */
+
     public function __construct(
         public string $action = '',
         public string $title = '',

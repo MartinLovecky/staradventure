@@ -1,6 +1,6 @@
 @use(Mlkali\Sa\Support\Enum)
 @if ($member->logged)
-    @redirect('/member'.'/'.$member->username.'/?message=', Enum::USER_LOGGED)
+    @redirect("/member/{$member->username}?message=", Enum::USER_LOGGED, '#member')
 @endif
 <article id="register">
     <h2 class="major">Přidej se</h2>

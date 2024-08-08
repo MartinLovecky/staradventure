@@ -14,9 +14,4 @@ class ViewController
     {
         return $this->viewModel->render();
     }
-
-    private function baseData(string $componentName, string $endpoint): array
-    {
-        return [];
-    }
 }

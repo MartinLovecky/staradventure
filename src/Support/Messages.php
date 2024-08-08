@@ -2,8 +2,6 @@
 
 namespace Mlkali\Sa\Support;
 
-use Exception;
-use Mlkali\Sa\Engine\Blade;
 use Mlkali\Sa\Support\Enum;
 
 class Messages extends Enum
@@ -14,6 +12,7 @@ class Messages extends Enum
         private array $messageBag = [],
         private string $templatePath = ''
     ) {
+        $this->getMessageBag();
     }
 
     /**
@@ -27,65 +26,22 @@ class Messages extends Enum
     }
 
     /**
-     * Retrieves messages of a specific type.
+     * Adds a message to the message bag.
      *
-     * @param string $type The type of messages to retrieve (success, warning, danger).
-     *
-     * @return array
-     */
-    public function getMessagesByType(string $type): array
-    {
-        return array_filter($this->messageBag, function ($message) use ($type) {
-            return strpos($message, $type . '_') === 0;
-        });
-    }
-
-    /**
-     * Adds a single message or multiple messages to the message bag.
-     *
-     * @param string|array $message Single message as a string or multiple messages as an array.
+     * @param string $message Single message as a string.
      * @param string|null $type The type of message (success, warning, danger, etc.).
      *
      * @return self
      */
-    public function addMessage(string|array $message, ?string $type = null): self
+    public function addMessage(string $message, ?string $type = null): self
     {
-        if (is_array($message)) {
-            foreach ($message as $msg) {
-                $this->messageBag[] = $this->formatMessage($msg, $type);
-            }
-        } else {
-            $this->messageBag[] = $this->formatMessage($message, $type);
-        }
+        $this->messageBag[] = $this->formatMessage($message, $type);
 
         return $this;
     }
 
     /**
-     * Clears the message bag.
-     *
-     * @return self
-     */
-    public function clearMessages(): self
-    {
-        $this->messageBag = [];
-        return $this;
-    }
-
-    /**
-     * Checks if there are any messages of a specific type.
-     *
-     * @param string $type The type of messages to check for.
-     *
-     * @return bool
-     */
-    public function hasMessagesOfType(string $type): bool
-    {
-        return !empty($this->getMessagesByType($type));
-    }
-
-    /**
-     * Method hasAny
+     * Cheks if we have abny message in message bag
      *
      * @return bool
      */
@@ -95,16 +51,16 @@ class Messages extends Enum
     }
 
     /**
-     * Method getFristMessage
+     * Method getMessage return last message
      *
      * @return void
      */
     public function getMessage(): void
     {
-        $last = array_pop($this->messageBag);
+        $last = base64_decode(array_pop($this->messageBag));
         $exploded = explode('_', $last);
         $this->style = $exploded[0];
-        $this->message = base64_encode($exploded[1]) ?? '';
+        $this->message = $exploded[1] ?? '';
     }
 
     /**
