@@ -10,11 +10,11 @@ class Encryption
      * encrypt message with sodium
      *
      * @param string $message 
-     * @param $aad $aad 
+     * @param string $aad 
      *
      * @return string
      */
-    public function encrypt(string $message, $aad = ''): string
+    public function encrypt(string $message, string $aad = ''): string
     {
         $nonce = random_bytes(SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES);
         $ciphertext = sodium_crypto_aead_xchacha20poly1305_ietf_encrypt($message, $aad, $nonce, base64_decode($_ENV['EKEY']));
@@ -26,11 +26,11 @@ class Encryption
      * decrypt message
      *
      * @param string $ciphertext 
-     * @param $aad $aad 
+     * @param string $aad 
      *
      * @return string
      */
-    public function decrypt(string $ciphertext, $aad = ''): string
+    public function decrypt(string $ciphertext, string $aad = ''): string
     {
         if (empty($ciphertext)) {
             return '';

@@ -2,6 +2,7 @@
 
 namespace Mlkali\Sa\Controllers;
 
+use Exception;
 use Mlkali\Sa\Http\Request;
 use Mlkali\Sa\Http\Response;
 use Mlkali\Sa\Support\Messages;
@@ -18,7 +19,6 @@ class MemberController
         protected string $url = ''
     ) {
         $this->token = $this->validator->encryption->token();
-        $this->url = $_SERVER['SERVER_NAME'] ?? 'localhost';
     }
 
     public function response(string $type, array $templateData): Response
@@ -70,7 +70,6 @@ class MemberController
 
         $memberID = $this->validator->encryption->encrypt($memberID);
         $templateData = [
-            'url' =>  $this->url,
             'username' => $request->username,
             'encryptedID' => $memberID,
             'token' => $this->token,
@@ -117,7 +116,7 @@ class MemberController
         $memberRepository = $this->validator->memberRepository;
         $memberData = $memberRepository->getMemberInfo('username', $username);
 
-        @$_SESSION['memberID'] = $memberData['member_id'];
+        $_SESSION['member_id'] = $memberData['member_id'];
 
         foreach ($memberData as $key => $value) {
             $this->member->{$key} = $value;
@@ -142,7 +141,6 @@ class MemberController
         $memberID = $this->validator->encryption->encrypt($memberID);
 
         $templateData = [
-            'url' => $this->url,
             'username' => $request->email,
             'token' => $this->token,
             'encryptedID' => $memberID,
@@ -219,7 +217,7 @@ class MemberController
 
     public function logout(): Response
     {
-        @$_SESSION = array();
+        @$_SESSION = [];
         session_destroy();
         unset($_COOKIE['remember']);
         setcookie('remember', '', time() - 3600, '/');
@@ -279,7 +277,6 @@ class MemberController
 
         return new Response('/usertable?message=', Messages::REQUEST_DELETE);
     }
-
 
     public function allMembers(): array
     {

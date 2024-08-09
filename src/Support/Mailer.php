@@ -20,6 +20,7 @@ class Mailer extends PHPMailer
 
     public function sender(string $body, string $subject, string $to): bool
     {
+        $dir = dirname(__DIR__, 2) . '\\';
         $this->IsSMTP();
         $this->body($body);
         $this->Host = $_ENV['EMAIL_HOST'];
@@ -34,7 +35,7 @@ class Mailer extends PHPMailer
         $this->isHTML(true);
         $this->setFrom($_ENV['EMAIL_NAME'], 'sadventure.com');
         $this->addAddress($to);
-        //$this->addAttachment
+        $this->addEmbeddedImage("{$dir}public/img/favicon_io/android-chrome-192x192.png", 'image_cid');
         return parent::send();
     }
 }

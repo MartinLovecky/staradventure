@@ -5,19 +5,21 @@
 <div class="book">
 	<div class="container-story">
 		<div class="text"> 
-			@if ($article->getArticleChapter() !== null && !empty($article->getArticleChapter())) 
+			@if (!empty($article->getArticleChapter())) 
 			<h1>{{ $article->getArticleChapter() }}</h1> 
 			@endif 
-			@if ($article->getArticleBody() !== null && !empty($article->getArticleBody())) 
+			@if (!empty($article->getArticleBody())) 
 			@foreach (json_decode($article->getArticleBody()) as $item) 
 			{!! $item !!} 
 			@endforeach 
 			@endif 
 		</div>
 	</div>
-	<div class="pagination">
-		{!!  $pagnition->previous_page()   !!}
-		{!!  $pagnition->main_pagnation()  !!}
-		{!!  $pagnition->next_page()  !!}
-	</div>
+	<nav aria-label="...">
+		<ul class="pagination justify-content-center">
+			{!!  $pagnition->previous_page()   !!}
+			{!!  $pagnition->main_pagnation()  !!}
+			{!!  $pagnition->next_page()  !!}
+		</ul>
+	</nav>
 </div>

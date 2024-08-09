@@ -4,38 +4,22 @@ namespace Mlkali\Sa\Database\Entity;
 
 class Member
 {
-    public function __construct(
-        private bool $logged = false,
-        private bool $visible = false,
-        private string $username = '',
-        private string $email = '',
-        private string $permission = '',
-        private ?string $memberName = null,
-        private ?string $memberSurname = null,
-        private ?string $location = null,
-        //private $age = null, //not sure about type
-        private string $avatar = '',
-        private ?string $resetToken = null,
-        private bool $resetComplete = false,
-        private string $memberID = ''
-    ) {
-        if (isset($_SESSION['member_id'])) {
-            $this->logged = true;
-        }
-    }
-
-    public function __set(string $name, $value): void
+    public function __construct(public array $data = [])
     {
-        if (property_exists($this, $name)) {
-            $this->$name = $value;
+        if (isset($_SESSION['member_id'])) {
+            $this->data['logged'] = true;
+        } else {
+            $this->data['logged'] = false;
         }
     }
 
     public function __get(string $name): mixed
     {
-        if (property_exists($this, $name)) {
-            return $this->$name;
-        }
-        return null;
+        return $this->data[$name];
+    }
+
+    public function __set(string $name, $value): void
+    {
+        $this->data[$name] = $value;
     }
 }

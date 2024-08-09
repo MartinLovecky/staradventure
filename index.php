@@ -17,6 +17,11 @@ $container = new League\Container\Container();
 $container->delegate(new League\Container\ReflectionContainer(true));
 
 $repo = $container->get(\Mlkali\Sa\Database\Fluent::class);
+
+//TODO - EMAIL put their  own email htpp frist reasearch needed
+
+//$info = $repo->query->deleteFrom('info')->where("member", "Sensei|lovecky92@seznam.cz")->execute();
+//dd($info);
 // Insert data into the cards table
 // $repo->query->insertInto('cards')->values([
 //     'img_src' => "@asset('img/cards/allwin.png')",
@@ -27,13 +32,6 @@ $repo = $container->get(\Mlkali\Sa\Database\Fluent::class);
 //     'author_link' => '/member/sensei',
 //     'author_name' => '@Sensei'
 // ])->execute();
-
-//$cardsData = $repo->query->from('cards')->fetchAll();
-//$x = $repo->query->from('cards')->fetch();
-//$p = $repo->query->update('cards')->set(['author_img' => "img/avatars/sensei400x400.png", 'img_src' => "img/cards/allwin.png"])->where('author_name', '@Sensei')->execute();
-//dd($p, $x);
-//dd($cardsData);
-
 
 // COULD MANUALY ACTIVATE BUT I want test mailing
 $viewController = $container->get(\Mlkali\Sa\Engine\ViewController::class);

@@ -117,10 +117,10 @@ class Form
      */
     private function createEmailMessage(string $templateName, array $data): string
     {
-        $templateFile = $this->templatePath . $templateName . 'blade.php';
+        $templateFile = $this->templatePath . $templateName . '.blade.php';
 
         if (!is_file($templateFile)) {
-            throw new Exception("Template $templateName.blade.php nexistuje ve složce $this->templatePath");
+            throw new Exception("File: {$templateFile} cant be found");
         }
 
         return $this->blade->run('templates.' . $templateName, $data);

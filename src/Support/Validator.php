@@ -12,8 +12,7 @@ class Validator
     public function __construct(
         public MemberRepository $memberRepository,
         public Encryption $encryption
-    ) {
-    }
+    ) {}
 
     /**
      * Validates registration input data.
@@ -200,7 +199,7 @@ class Validator
         curl_close($ch);
         $res = json_decode($response, true);
 
-        if (!isset($res['success'])) {
+        if (isset($res['error-codes'])) {
             foreach ($res['error-codes'] as $msg) {
                 return 'danger_' . $msg;
             }

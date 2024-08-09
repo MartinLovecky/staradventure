@@ -16,6 +16,7 @@ class ViewModel
         protected ArticleController $articleController,
     ) {
         $this->setQueryMessage();
+        $this->userData();
     }
 
     public function render(): string
@@ -90,7 +91,7 @@ class ViewModel
                 'form' => $this->form,
                 'encryption' => $this->form->memberController->validator->encryption
             ],
-            'logout', 'activate' => [$this->form->memberController],
+            'logout', 'activate' => ['memberController' => $this->form->memberController],
             'editor' => [
                 'articleController' => $this->articleController,
                 'article' => $this->articleController->article,
@@ -116,6 +117,16 @@ class ViewModel
 
         if ($queryMessage && $validator->isBase64($queryMessage)) {
             $messageClass->addMessage($queryMessage);
+        }
+    }
+
+    private function userData(): void
+    {
+        if (!isset($_SESSION['member_id'])) {
+            $this->form->memberController->setMember('visitor');
+        } elseif (isset($_SESSION['member_id'])) {
+            $username = explode('|', $_SESSION['member_id'])[0];
+            $this->form->memberController->setMember($username);
         }
     }
 }

@@ -13,7 +13,7 @@
             <li><a href="/register#register">Register</a></li>
             <li><a href="/login#login">Login</a></li>
             @else
-            <li><a href="/member/{{$member->username}}">Profil</a></li>
+            <li><a href="/member/{{$member->username}}#member">Profil</a></li>
             <li><a href="/logout">Odhlásit</a></li>
             @endif
             <li><a href="/storylist#storylist">Příběhy</a></li>
