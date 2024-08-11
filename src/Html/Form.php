@@ -21,7 +21,7 @@ class Form
         private string $target = 'requestHandler',
         private string $id = 'contact-form',
         private string $autocomplete = 'off',
-        private string $enctype = 'url-encoded',
+        private string $enctype = 'application/x-www-form-urlencoded',
         private string $templatePath = '',
         protected string $url = ''
     ) {
@@ -53,7 +53,10 @@ class Form
                 'reset_user' => $this->handleDataProcessing('proccessForgottenUser', 'user', 'user'),
                 'login' =>   $this->memberController->proccesLogin($this->request),
                 'new_password' => $this->memberController->setNewPassword($this->request),
-                'updateMember' => $this->memberController->updateMember($this->request)
+                'updateMember' => $this->memberController->updateMember($this->request),
+                'update' => $this->articleController->update($this->request),
+                'create' => $this->articleController->create($this->request),
+                'delete' => $this->articleController->delete($this->request)
             };
         }
         return "<form method='{$this->method}' target='_self' class='{$this->class}' id='{$this->id}' autocomplete='{$this->autocomplete}' enctype='{$this->enctype}'>";

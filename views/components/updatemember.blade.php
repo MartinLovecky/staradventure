@@ -34,12 +34,12 @@
         <ul class="actions">
             <li><button class="button primary" name="submit" value="submit" type="submit">Upravit Info</button></li>
         </ul>
-        <p class="text-muted text-center">* Pole není povinné <br>** Informace budou viditelné pro všechny uživatele<br>Zpět na profil&nbsp;<a href="/member/{{$member->username}}">{{$member->username}}</a></p>
+        <p class="text-white text-center">* Pole není povinné <br>** Informace budou viditelné pro všechny uživatele</p>
         <input type='hidden' name="token" value="{{  $encryption->encrypt($csrf)  }}">
         <input type="hidden" id="g-recaptcha-response" name="grecaptcharesponse">
     	<input type="hidden" name="action" value="validate_captcha">
         <input type="hidden" name="type" value="update_member">
     </form>
-    <script src="https://www.google.com/recaptcha/api.js?render=6LclhVIjAAAAAAUcH7r8tvwJl3GIUg8bLJmr2alF"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render=6LdKkYEUAAAAAE5Ykg8LY5gOPNXzgTyIG3FVuCqM"></script>
     <script src="@asset("js/recaptcha.js")"></script>
 </article>

@@ -39,10 +39,9 @@ class ArticleController
             );
         }
 
-        $chapter = $request->chapter ?? null;
-        $articleBody = $request->editor1 ? json_encode(['article_body' => $request->editor1]) : '{"article_body":"error"}';
+        $articleBody = $request->content ? json_encode(['article_body' => $request->content]) : '{"article_body":"error"}';
 
-        $this->createOrUpdateArticle($chapter, $articleBody);
+        $this->createOrUpdateArticle(null, $articleBody);
 
         return new Response(
             "/update/{$request->articleName}/{$request->articlePage}?message=",

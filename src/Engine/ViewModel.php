@@ -87,7 +87,7 @@ class ViewModel
     private function componentData(string $componentName): array
     {
         $commonetData = match ($componentName) {
-            'login', 'register', 'reset' => [
+            'login', 'register', 'reset', 'updatemember' => [
                 'form' => $this->form,
                 'encryption' => $this->form->memberController->validator->encryption
             ],

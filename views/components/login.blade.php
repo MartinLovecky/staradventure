@@ -6,21 +6,24 @@
     <h2 class="major">Přihlášení</h2>
     @form()
     <div class="fields">
-        <div class="field"><input class="form-control text-white" type="text" name="username" value="@isset($_SESSION['old_username']){{$_SESSION['old_username']}}@endisset" placeholder="Username"></div>
-        <div class="field"><input class="form-control text-white" type="password" name="password" placeholder="Heslo" autocomplete="new-password"></div>
+        <div class="field">
+            <input class="form-control text-white" type="text" name="username" value="@isset($_SESSION['old_username']){{$_SESSION['old_username']}}@endisset" placeholder="Username">
+        </div>
+        <div class="field">
+            <input class="form-control text-white" type="password" name="password" placeholder="Heslo" autocomplete="new-password">
+        </div>
         <div class="field half">
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="formCheck-3" name="remember">
-                <label class="form-check-label text-muted" for="formCheck-3">Pamatovat si mě</label>
+                <label class="form-check-label text-secondary" for="formCheck-3">Pamatovat si mě</label>
             </div>
         </div>
     </div>
         <ul class="actions">
             <li><button class="button primary" name="submit" type="submit">Přihlásit</button></li>
         </ul>
-        <p class="text-muted text-center">Nemáte účet?<a href="/register#register">&nbsp;přidejte se</a>.<br>
+        <p class="text-secondary text-center"><a href="/register#register">Nemáte účet?</a><br>
             <a href="/reset#reset">Zapomenutné heslo?</a><br>
-            {{-- //TODO - THIS should be encrypted --}}
             <a href="/reset?id={{base64_encode('forgotenUser')}}#reset">Zapomenutný Username?</a>
         </p>
         <input type='hidden' name="token" value="{{$encryption->encrypt($csrf)}}">

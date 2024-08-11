@@ -115,8 +115,9 @@ class MemberController
     {
         $memberRepository = $this->validator->memberRepository;
         $memberData = $memberRepository->getMemberInfo('username', $username);
-
-        $_SESSION['member_id'] = $memberData['member_id'];
+        if ($memberData['member_id'] !== 'visitor|visitor@gmail.com') {
+            $_SESSION['member_id'] = $memberData['member_id'];
+        }
 
         foreach ($memberData as $key => $value) {
             $this->member->{$key} = $value;

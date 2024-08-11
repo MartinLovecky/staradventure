@@ -42,6 +42,7 @@
     </tbody>
   </table>
 @php
+  // TODO:  THIS FILE will be done last its not necessary for working website
   // TODO: query message should be cleaned before use
   // NOTE: this page is avaible just for Admin only
   $action = $selector->getQueryMessage("action");

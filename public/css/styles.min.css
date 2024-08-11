@@ -1,83 +1,69 @@
-a,
-abbr,
-acronym,
-address,
-applet,
-article,
-aside,
-audio,
-b,
-big,
-blockquote,
-body,
-canvas,
-caption,
-center,
-cite,
-code,
-dd,
-del,
-details,
-dfn,
-div,
-dl,
-dt,
-em,
-embed,
-fieldset,
-figcaption,
-figure,
-footer,
-form,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-header,
-hgroup,
-html,
-i,
-iframe,
-img,
-ins,
-kbd,
-label,
-legend,
-li,
-mark,
-menu,
-nav,
-object,
-ol,
-output,
-p,
-pre,
-q,
-ruby,
-s,
-samp,
-section,
-small,
-span,
-strike,
-strong,
-sub,
-summary,
-sup,
-table,
-tbody,
-td,
-tfoot,
-th,
-thead,
-time,
-tr,
-tt,
-u,
-ul,
-var,
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+@media print {
+    body {
+        margin: 0 !important;
+    }
+}
+
+/* EDITOR style */
+
+.main-container {
+    font-family: 'Lato';
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    color: black;
+}
+
+
+.ck-content {
+    font-family: 'Lato';
+    line-height: 1.6;
+    word-break: break-word;
+    color: black;
+}
+
+.ck-content h1,
+.ck-content h2,
+.ck-content h3,
+.ck-content h4,
+.ck-content h5,
+.ck-content h6 {
+    color: black;
+}
+
+.ck-content strong {
+    color: black;
+    font-weight: bold;
+}
+
+.editor-container_classic-editor .editor-container__editor {
+    width: 100%;
+    max-width: 100%;
+}
+
+.editor-container_include-block-toolbar {
+    margin-left: 42px;
+    color: black;
+}
+
+.ck.ck-toolbar .ck-button,
+.ck.ck-toolbar .ck-dropdown__button-label {
+    color: black !important;
+}
+
+.ck.ck-toolbar .ck-button__icon,
+.ck.ck-toolbar .ck-icon {
+    filter: invert(0%) sepia(0%) saturate(7500%) hue-rotate(202deg) brightness(0%) contrast(100%);
+}
+
+.ck-dropdown__panel .ck-button__label {
+    color: black !important;
+}
+
+/* END OF EDITOR style */
+
 video {
     margin: 0;
     padding: 0;
@@ -87,21 +73,10 @@ video {
     vertical-align: baseline
 }
 
-article,
-aside,
-details,
-figcaption,
-figure,
-footer,
-header,
-hgroup,
-menu,
-nav,
 section {
     display: block
 }
 
-blockquote,
 q {
     quotes: none
 }
@@ -136,7 +111,10 @@ input::-moz-focus-inner {
     padding: 0
 }
 
-input,
+input.form-control {
+    color: white;
+}
+
 select,
 textarea {
     -moz-appearance: none;
@@ -175,17 +153,31 @@ body.is-preload :before {
 
 a {
     text-decoration: none !important;
-    -moz-transition: color .1s ease-in-out, background-color .1s ease-in-out, border-bottom-color .1s ease-in-out;
-    -webkit-transition: color .1s ease-in-out, background-color .1s ease-in-out, border-bottom-color .1s ease-in-out;
-    -ms-transition: color .1s ease-in-out, background-color .1s ease-in-out, border-bottom-color .1s ease-in-out;
+    /* Ensures no underline */
+    color: inherit;
+    /* Inherits color from parent element */
     transition: color .1s ease-in-out, background-color .1s ease-in-out, border-bottom-color .1s ease-in-out;
-    border-bottom: 1px dotted rgba(255, 255, 255, .5);
-    color: inherit
+    /* Smooth transitions */
+}
+
+a::after,
+a::before {
+    text-decoration: none !important;
 }
 
 a:hover {
-    color: #fff;
-    border-bottom-color: transparent
+    color: #ffcc00;
+    content: none;
+}
+
+.container a {
+    text-decoration: none !important;
+    /* Remove underline */
+    color: inherit;
+    /* Inherit color */
+    /* Custom border style */
+    transition: color .1s ease-in-out, background-color .1s ease-in-out, border-bottom-color .1s ease-in-out;
+    /* Smooth transitions */
 }
 
 .navbar-nav .nav-item .nav-link {
@@ -212,6 +204,18 @@ a:hover {
 .dropdown-item {
     font-family: 'Cookie', cursive;
     font-size: 3vh;
+}
+
+.card-text {
+    color: whitesmoke;
+}
+
+
+.card-body a,
+.card-body a:visited,
+.card-body a:focus,
+.card-body a:hover {
+    text-decoration: none !important;
 }
 
 @media screen and (max-width:1680px) {
