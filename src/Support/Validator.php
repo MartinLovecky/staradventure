@@ -11,8 +11,7 @@ class Validator
     public function __construct(
         public MemberRepository $memberRepository,
         public Encryption $encryption
-    ) {
-    }
+    ) {}
 
     /**
      * Validates registration input data.
@@ -189,7 +188,7 @@ class Validator
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(
             [
-                'secret' => $_ENV['RECAPTCHA'],
+                'secret' => $_ENV['RECAPTCHA_PRIVATE'],
                 'response' => $response
             ]
         ));

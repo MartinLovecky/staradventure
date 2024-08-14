@@ -6,7 +6,7 @@
         "symfony/var-dumper": "6.2.x-dev",
         "eftec/bladeone": "dev-master",
         "phpmailer/phpmailer": "dev-master",
-        "vlucas/phpdotenv": "5.5.x-dev",
+        "vlucas/phpdotenv": "5.5.*",
         "envms/fluentpdo": "dev-master",
         "league/container": "4.x-dev",
         "voku/html-min": "dev-master"

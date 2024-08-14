@@ -2,9 +2,8 @@ compiles
 vendor/
 public/img/
 .*
+!public/.env
 !.gitignore
 !.htaccess
-composer-unused.phar
-views/test.blade.php
 tools/
 colors.txt

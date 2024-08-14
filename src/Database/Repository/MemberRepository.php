@@ -13,16 +13,16 @@ class MemberRepository
         public Messages $messages,
         public Fluent $fluent,
         public Mailer $mailer
-    ) {
-    }
+    ) {}
 
     /**
-     * Retrieves member information based on a specific column and value.
-     *
-     * @param ?string $column The column to search in the database. If null, fetch all members.
-     * @param ?string $value The value to match in the specified column. If null, fetch all members.
-     * @param ?string $item The specific item to fetch. If null, fetch all columns.
-     * @return mixed The fetched member information, or an array of members if no column and value are provided.
+     * Retrieves member information
+     * -  IF $column is provided , $value must be also provided -> same if not provided
+     *  - IF you want just specific $item you must also provide $column and $value
+     * @param ?string $column to search in the database. If null, fetch all members.
+     * @param ?string $value  to match in the specified column. If null, fetch all members.
+     * @param ?string $item The specific item to fetch. If null, return array.
+     * @return mixed
      */
     public function getMemberInfo(
         ?string $column = null,
@@ -34,12 +34,15 @@ class MemberRepository
             ?->leftJoin('info ON members.member_id = info.member')
             ?->select('info.*')
             ?->where($column, $value);
-        if ($item) {
-            return $stmt->fetch($item);
+        if ($column && $value && $item) {
+            // specific value
+            return $stmt?->fetch($item);
         } elseif ($column && $value) {
-            return $stmt->fetch();
+            // array data for specific member
+            return $stmt?->fetch();
         }
-        return $stmt->fetchAll();
+        // all members data
+        return $stmt?->fetchAll();
     }
 
     /**

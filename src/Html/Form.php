@@ -23,10 +23,8 @@ class Form
         private string $autocomplete = 'off',
         private string $enctype = 'application/x-www-form-urlencoded',
         private string $templatePath = '',
-        protected string $url = ''
     ) {
         $this->templatePath = dirname(__DIR__, 2) . "/views/templates/";
-        $this->url = $_SERVER['SERVER_NAME'] ?? 'localhost';
     }
 
     public function options(array $options): self

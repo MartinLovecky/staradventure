@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-use Mlkali\Sa\Support\Messages;
-
 session_start();
 ini_set('display_startup_errors', 1);
 ini_set('display_errors', 1);
@@ -21,7 +19,6 @@ $container->delegate(new League\Container\ReflectionContainer(true));
 
 $repo = $container->get(\Mlkali\Sa\Database\Fluent::class);
 
-// COULD MANUALY ACTIVATE BUT I want test mailing
 $viewController = $container->get(\Mlkali\Sa\Engine\ViewController::class);
 
 echo $viewController->view();

@@ -1,1 +1,1 @@
-{{ $memberController->activate($selector) }}
+{{ $memberController->activate($id, $token) }}

@@ -8,12 +8,11 @@ use Envms\FluentPDO\Query;
 
 class Fluent
 {
-    public ?PDO $pdo;
-    public ?Query $query;
-    public string $dir = '';
-
-    public function __construct()
-    {
+    public function __construct(
+        public $pdo = null,
+        public $query = null,
+        public string $dir = ''
+    ) {
         $this->dir = dirname(__DIR__, 2) . '\\';
         try {
             $conn = "mysql:host={$_ENV['DB_HOST']};port={$_ENV['DB_PORT']};dbname={$_ENV['DB_NAME']};sslmode=verify-ca;sslrootcert=ca.pem;charset={$_ENV['CHAR']}";
@@ -22,9 +21,8 @@ class Fluent
             $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
             $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            if ($e->getCode() == 2002) {
-                $this->pdo = null;
-            }
+            // Log the exception message
+            error_log("PDOException: " . $e->getMessage());
         }
 
         $this->query = $this->pdo ? new Query($this->pdo) : null;

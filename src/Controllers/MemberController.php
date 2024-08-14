@@ -2,21 +2,21 @@
 
 namespace Mlkali\Sa\Controllers;
 
-use Exception;
+
 use Mlkali\Sa\Http\Request;
 use Mlkali\Sa\Http\Response;
 use Mlkali\Sa\Support\Messages;
 use Mlkali\Sa\Support\Validator;
 use Mlkali\Sa\Database\Entity\Member;
-use Mlkali\Sa\Support\Selector;
+use Mlkali\Sa\Support\MessageFormatter;
 
 class MemberController
 {
     public function __construct(
         public Member $member,
         public Validator $validator,
+        protected MessageFormatter $messageFormatter,
         protected string $token = '',
-        protected string $url = ''
     ) {
         $this->token = $this->validator->encryption->token();
     }
@@ -69,15 +69,34 @@ class MemberController
         );
 
         $memberID = $this->validator->encryption->encrypt($memberID);
-        $templateData = [
+        return [
             'username' => $request->username,
             'encryptedID' => $memberID,
             'token' => $this->token,
             'recipient' => $request->email,
             'memberID' => $memberID
         ];
+    }
 
-        return $templateData;
+    public function activate(?string $id, ?string $token): Response
+    {
+        $memberRepository = $this->validator->memberRepository;
+
+        if (!$id || !$token) {
+            return new Response('/index?message=', Messages::INVALID_URL);
+        }
+
+        $memberID = $this->validator->encryption->decrypt($id);
+        $memberDB = $memberRepository->getMemberInfo('member_id', $memberID, 'member_id');
+        $tokenDB = $memberRepository->getMemberInfo('member_id', $memberID, 'active');
+
+        if (strcmp($memberID, $memberDB) == 0 && strcmp($token, $tokenDB) == 0) {
+            $memberRepository->update(['active' => 'yes'], $memberID);
+
+            return new Response('/login?message=', Messages::REQUEST_ACTIVATE, '#login');
+        }
+
+        return new Response('/register?message=', Messages::REQUEST_ACTIVATE_FAIL, '#register');
     }
 
     public function proccesLogin(Request $request): Response
@@ -130,12 +149,12 @@ class MemberController
         $validate = $this->validator->validateResetSend($request);
 
         if (isset($validate)) {
-            @$_SESSION = ['old_email' => $request?->email];
+            @$_SESSION = ['old_email' => $request->email];
 
             return new Response('/?message=', $validate, '#reset');
         }
 
-        $memberID = $memberRepository->getMemberInfo('email', $request?->email, 'member_id');
+        $memberID = $memberRepository->getMemberInfo('email', $request->email, 'member_id');
 
         $memberRepository->update(['reset_token' => $this->token], $memberID);
 
@@ -191,31 +210,6 @@ class MemberController
         return new Response('/?message=', Messages::REQUEST_RESET_PASSWORD, '#login');
     }
 
-    public function activate(Selector $selector): Response
-    {
-        $memberRepository = $this->validator->memberRepository;
-        $messages = $memberRepository->messages;
-
-        $id = $selector->getQueryMessage("id");
-        $token = $selector->getQueryMessage("token");
-
-        if (!$id || !$token) {
-            return new Response('/index?message=', Messages::INVALID_URL);
-        }
-
-        $memberID = $this->validator->encryption->decrypt($id);
-        $memberDB = $memberRepository->getMemberInfo('member_id', $memberID, 'member_id');
-        $tokenDB = $memberRepository->getMemberInfo('member_id', $memberID, 'active');
-
-        if (strcmp($memberID, $memberDB) == 0 && strcmp($token, $tokenDB) == 0) {
-            $memberRepository->update(['active' => 'yes'], $memberID);
-
-            return new Response('/login?message=', Messages::REQUEST_ACTIVATE, '#login');
-        }
-
-        return new Response('/register?message=', Messages::REQUEST_ACTIVATE_FAIL, '#register');
-    }
-
     public function logout(): Response
     {
         @$_SESSION = [];
@@ -228,7 +222,6 @@ class MemberController
 
     public function updateMember(Request $request): Response
     {
-
         $validate = $this->validator->validateAvatar($request);
 
         if (isset($validate)) {
@@ -260,7 +253,7 @@ class MemberController
 
         $this->update($this->member);
 
-        return new Response("/member/{$request->username}?message=", 'succes.Informace upraveny');
+        return new Response("/member/{$request->username}?message=", 'success_Informace upraveny');
     }
 
     public function permission(string $permission, string $memberID): Response

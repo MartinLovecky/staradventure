@@ -91,7 +91,12 @@ class ViewModel
                 'form' => $this->form,
                 'encryption' => $this->form->memberController->validator->encryption
             ],
-            'logout', 'activate' => ['memberController' => $this->form->memberController],
+            'logout' => ['memberController' => $this->form->memberController],
+            'activate' => [
+                'memberController' => $this->form->memberController,
+                'id' => $this->pagnition->selector->getQueryMessage("id"),
+                'token' => $this->pagnition->selector->getQueryMessage("token")
+            ],
             'editor' => [
                 'articleController' => $this->articleController,
                 'article' => $this->articleController->article,

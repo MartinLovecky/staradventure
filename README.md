@@ -1,26 +1,14 @@
-# php 8 is required also in php.ini enable extension=sodium
+# [php 8.3.0](https://www.php.net/releases/8.3/en.php) is required 
+## In php.ini enable extension
+1. extension=pdo_mysql
+2. extension=sodium
 
-Before you can use this application you need to create .env file in root directory of your application and then add these variables:
+### In public directory: 
+1. .env file - move it to root dir
+2. sql for all necessary DB tables
 
-### THESE will change !!! 
-
-- DB_NAME = ""
-- DB_USER = ""
-- DB_HOST = "localhost"
-- DB_PASS = ""
-- CHAR = "utf8mb4"
-- EMAIL_HOST = ""
-- EMAIL_NAME = ""
-- EMAIL_PASS = ""
-- EMAIL_PORT = 587
-- EKEY = $enc->generateKey();
-- RECAPTCHA = ""
-- CSRFKEY = ""
-
-inside public directory is sql dir for all necessary DB tables
-
-# Important
-you need creare these folders in root:  compiles, public/img, .htaccess
+#### you need creare these folders:  
+compiles, public/img
 
 and run in terminal
 ```bash
