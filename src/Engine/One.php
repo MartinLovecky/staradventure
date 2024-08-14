@@ -4,7 +4,6 @@ namespace Mlkali\Sa\Engine;
 
 trait One
 {
-
     protected int $matchCount = 0;
     protected bool $firstCaseInMatch = true;
     protected array $args = [];
@@ -13,7 +12,7 @@ trait One
     /**
      * used in views via @redirect('view', 'optional message')
      *
-     * @param string $expression 
+     * @param string $expression
      *
      * @return string
      */

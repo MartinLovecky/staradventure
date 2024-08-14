@@ -6,142 +6,116 @@ use Mlkali\Sa\Http\Request;
 use Mlkali\Sa\Http\Response;
 use Mlkali\Sa\Database\Entity\Article;
 use Mlkali\Sa\Database\Repository\ArticleRepository;
+use Mlkali\Sa\Support\MessageFormatter;
 use Mlkali\Sa\Support\Messages;
 
+/**
+ * Class ArticleController
+ * 
+ * This controller handles the creation, updating, and deletion of articles.
+ * It interacts with the Article entity and the ArticleRepository to manage
+ * article data.
+ *
+ * @package Mlkali\Sa\Controllers
+ */
 class ArticleController
 {
-    /**
-     * ArticleController
-     * - sending @param Response
-     * - on /update|create|delete/articleID |
-     * @return void
-     */
+
+    private const UPDATE_PATH = "/update/%s/%s?message=";
+    private const EDITOR_SELECTOR = '#editor';
+
     public function __construct(
         public Article $article,
         protected ArticleRepository $articleRepository,
+        protected MessageFormatter $messageFormatter
     ) {}
 
     /**
-     * Method update
+     * Updates an existing article.
      *
-     * @param Request $request
+     * @param Request $request containing article data.
      *
-     * @return Response
+     * @return Response indicating the outcome of the update operation.
      */
     public function update(Request $request): Response
     {
-        $selector = $this->articleRepository->selector;
-        if (!$this->articleExist()) {
-            return new Response(
-                "/update/{$request->articleName}/{$request->articlePage}?message=",
-                sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $selector->articleID, $request->articleName, $request->articlePage),
-                '#editor'
+        $articleID = $request->articleName . '|' . $request->articlePage;
+        $path = $this->messageFormatter->formatMessage(self::UPDATE_PATH, [$request->articleName, $request->articlePage]);
+
+        if (!$this->articleRepository->exist($articleID)) {
+            $message = $this->messageFormatter->formatMessage(
+                Messages::ARTICLE_DOES_NOT_EXIST,
+                [$articleID, $request->articleName, $request->articlePage]
             );
+
+            return new Response($path, $message, self::EDITOR_SELECTOR);
         }
 
-        $articleBody = $request->content ? json_encode(['article_body' => $request->content]) : '{"article_body":"error"}';
+        $message = $this->messageFormatter->formatMessage(Messages::ARTICLE_UPDATED, [$articleID]);
+        //TODO: Article body must not be empty also we shoudl fix exmpty spaces
+        $articleBody = json_encode(['article_body' => $request->content]);
+        // Article entity
+        $this->article->setArticleID($articleID)->setArticleBody($articleBody);
+        // Update article
+        $this->articleRepository->update($this->article);
 
-        $this->createOrUpdateArticle(null, $articleBody);
-
-        return new Response(
-            "/update/{$request->articleName}/{$request->articlePage}?message=",
-            sprintf(Messages::ARTICLE_UPDATED, $selector->articleID),
-            '#editor'
-        );
+        return new Response($path, $message, self::EDITOR_SELECTOR);
     }
 
     /**
-     * Method create
+     * Creates a new article.
      *
-     * @param Request $request
+     * @param Request $request containing article data.
      *
-     * @return Response
+     * @return Response indicating the outcome of the creation operation.
      */
     public function create(Request $request): Response
     {
-        $selector = $this->articleRepository->selector;
-        if (!$this->articleExist()) {
-            return new Response(
-                "/update/{$request->articleName}/{$request->articlePage}?message=",
-                sprintf(Messages::ARTICLE_ALREADY_EXISTS, $selector->articleID, $request->articleName, $request->articlePage),
-                '#editor'
+        $articleID = $request->articleName . '|' . $request->articlePage;
+        $path = $this->messageFormatter->formatMessage(self::UPDATE_PATH, [$request->articleName, $request->articlePage]);
+
+        if ($this->articleRepository->exist($articleID)) {
+            $message = $this->messageFormatter->formatMessage(
+                Messages::ARTICLE_ALREADY_EXISTS,
+                [$articleID, $request->articleName, $request->articlePage]
             );
+
+            return new Response($path, $message, self::EDITOR_SELECTOR);
         }
+        // Data from editor or dummy data that can be edited latter
+        $articleBody = $request->content ? json_encode(['article_body' => $request->content]) : '{"article_body":"<p>dummy data</p>"}';
+        // Article entity
+        $this->article->setArticleID($articleID)->setArticleBody($articleBody);
+        // add article to DB that can be edited
+        $this->articleRepository->add($this->article);
+        $message = $this->messageFormatter->formatMessage(Messages::ARTICLE_CREATED, [$articleID]);
 
-        $chapter = $request->chapter ?? null;
-        $articleBody = $request->editor1 ? json_encode(['article_body' => $request->editor1]) : '{"article_body":"empty"}';
-
-        $this->createOrUpdateArticle($chapter, $articleBody);
-
-        return new Response(
-            "/update/{$request->articleName}/{$request->articlePage}?message=",
-            sprintf(Messages::ARTICLE_CREATED, $selector->articleID),
-            '#editor'
-        );
+        return new Response($path, $message, self::EDITOR_SELECTOR);
     }
 
     /**
-     * Method delete
+     * Deletes an existing article.
      *
-     * @param Request $request
+     * @param Request $request identifying the article to be deleted.
      *
-     * @return Response
+     * @return Response indicating the outcome of the deletion operation.
      */
     public function delete(Request $request): Response
     {
-        $selector = $this->articleRepository->selector;
-        if (!$this->articleExist()) {
-            return new Response(
-                "/update/{$request->articleName}/{$request->articlePage}?message=",
-                sprintf(Messages::ARTICLE_DOES_NOT_EXIST, $selector->articleID, $request->articleName, $request->articlePage),
-                '#editor'
+        $articleID = $request->articleName . '|' . $request->articlePage;
+        $path = $this->messageFormatter->formatMessage(self::UPDATE_PATH, [$request->articleName, $request->articlePage]);
+
+        if (!$this->articleRepository->exist($articleID)) {
+            $message = $this->messageFormatter->formatMessage(
+                Messages::ARTICLE_DOES_NOT_EXIST,
+                [$articleID, $request->articleName, $request->articlePage]
             );
+
+            return new Response($path, $message, self::EDITOR_SELECTOR);
         }
+        $message = $this->messageFormatter->formatMessage(Messages::ARTICLE_DELETED, [$articleID]);
+        $this->articleRepository->remove($articleID);
 
-        $this->articleRepository->remove($selector->articleID);
-
-        return new Response(
-            "/update/{$request->articleName}/{$request->articlePage}?message=",
-            sprintf(Messages::ARTICLE_DELETED, $selector->articleID),
-            '#editor'
-        );
-    }
-
-    public function cardItems(): array
-    {
-        return $this->articleRepository->fluent?->query?->from('cards')?->fetchAll();
-    }
-
-    /**
-     * Method createOrUpdateArticle
-     *
-     * @param ?string $chapter
-     * @param string $articleBody
-     *
-     * @return void
-     */
-    private function createOrUpdateArticle(?string $chapter, string $articleBody): void
-    {
-        $selector = $this->articleRepository->selector;
-        $this->article
-            ->setArticleID($selector->articleID)
-            ->setArticleChapter($chapter)
-            ->setArticleBody($articleBody);
-
-        if ($this->articleExist()) {
-            $this->articleRepository->update($this->article);
-        }
-        $this->articleRepository->add($this->article);
-    }
-
-    /**
-     * articleExist
-     * - from @param ArticleRepository
-     * - checks @param Selector->articleID
-     * @return bool
-     */
-    private function articleExist(): bool
-    {
-        return $this->articleRepository->exist($this->articleRepository->selector->articleID);
+        return new Response($path, $message, self::EDITOR_SELECTOR);
     }
 }

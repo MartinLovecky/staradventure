@@ -9,8 +9,8 @@ class Encryption
     /**
      * encrypt message with sodium
      *
-     * @param string $message 
-     * @param string $aad 
+     * @param string $message
+     * @param string $aad
      *
      * @return string
      */
@@ -25,8 +25,8 @@ class Encryption
     /**
      * decrypt message
      *
-     * @param string $ciphertext 
-     * @param string $aad 
+     * @param string $ciphertext
+     * @param string $aad
      *
      * @return string
      */

@@ -15,9 +15,9 @@ class Response
     /**
      * This is used with @redirect in views
      *
-     * @param string $url 
-     * @param ?string $msg 
-     * @param ?string $id 
+     * @param string $url
+     * @param ?string $msg
+     * @param ?string $id
      *
      * @return void
      */
@@ -28,7 +28,7 @@ class Response
     }
 
     /**
-     * used in class for redirtects 
+     * used in class for redirtects
      * @example return new Response(url, optional message, #id[page to display])
      * @return void
      */
@@ -44,7 +44,7 @@ class Response
      * Encode message we dont send any private data
      * - we could use Encryption if we want send private data
      * - if you want Decrypt them you need go in /views/includes/message.blade.php
-     * @param ?string $message 
+     * @param ?string $message
      *
      * @return string
      */

@@ -36,7 +36,7 @@ class ViewModel
     }
 
     /**
-     * changes the name of the file we want to run from /action in views/componets, 
+     * changes the name of the file we want to run from /action in views/componets,
      * or assigns multiple actions to a single view.
      * @return string
      */
@@ -58,7 +58,7 @@ class ViewModel
     }
 
     /**
-     * Variables needed for almost every view  
+     * Variables needed for almost every view
      *
      * @param string $componentName
      *
@@ -78,16 +78,16 @@ class ViewModel
     }
 
     /**
-     * 
+     * Variables needed for specific view
      *
-     * @param string $componentName 
+     * @param string $componentName
      *
      * @return array
      */
     private function componentData(string $componentName): array
     {
         $commonetData = match ($componentName) {
-            'login', 'register', 'reset', 'updatemember' => [
+            'login', 'register', 'resetPassword', 'updatemember', 'resetUsername' => [
                 'form' => $this->form,
                 'encryption' => $this->form->memberController->validator->encryption
             ],
@@ -102,6 +102,11 @@ class ViewModel
                 'articleController' => $this->articleController,
                 'article' => $this->articleController->article,
                 'pagnition' => $this->pagnition
+            ],
+            'newpassword' => [
+                'form' => $this->form,
+                'encryption' => $this->form->memberController->validator->encryption,
+                'memberID' => $this->pagnition->selector->getQueryMessage("id")
             ],
             default => []
         };

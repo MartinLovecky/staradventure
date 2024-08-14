@@ -49,9 +49,9 @@ class Form
         if ($_POST) {
             match ($this->request->type) {
                 'register' => $this->handleDataProcessing('proccesRegister', 'activate', 'register'),
-                'reset_send' => $this->handleDataProcessing('proccessResetToken', 'reset', 'reset'),
-                'reset_user' => $this->handleDataProcessing('proccessForgottenUser', 'user', 'user'),
                 'login' =>   $this->memberController->proccesLogin($this->request),
+                'forgotenUsername' => $this->handleDataProcessing('proccessForgottenUser', 'user', 'user'),
+                'passwordResetSend' => $this->handleDataProcessing('proccessResetToken', 'reset', 'reset'),
                 'new_password' => $this->memberController->setNewPassword($this->request),
                 'updateMember' => $this->memberController->updateMember($this->request),
                 'update' => $this->articleController->update($this->request),

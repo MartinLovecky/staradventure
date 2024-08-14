@@ -187,6 +187,10 @@ a:hover {
 
 }
 
+.navbar-nav .nav-item .nav-link.active {
+    color: #ffcc00;
+}
+
 .navbar-nav .nav-item .nav-link:hover {
     color: #ffcc00;
 }

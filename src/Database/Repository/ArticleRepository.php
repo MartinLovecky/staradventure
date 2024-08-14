@@ -36,25 +36,23 @@ class ArticleRepository
     }
 
     /**
-     * Method exist
+     * Checks if an article with the given ID exists in the repository.
      *
-     * @param ?string $articleID
+     * @param string $articleID The unique identifier for the article.
      *
-     * @return bool
+     * @return bool True if the article exists, false otherwise.
      */
-    public function exist(?string $articleID = null): bool
+    public function exist(string $articleID): bool
     {
-        if (!$this->allowedArticle()) {
+        $articleName = explode('|', $articleID)[0];
+        if (!$this->allowedArticle($articleName)) {
             return false;
         }
-        $stmt = $this->fluent?->query
+        return (bool)$this->fluent?->query
             ?->from('articles')
             ?->select('article_id')
-            ?->where('article_id', $articleID);
-
-        $result = $stmt?->fetch('article_id');
-        //if on-empty $result is string = true. If null = false.
-        return (bool)$result;
+            ?->where('article_id', $articleID)
+            ?->fetch('article_id');
     }
 
     /**
@@ -66,14 +64,7 @@ class ArticleRepository
      */
     public function update(Article $article): bool
     {
-        if (!$article->articleID) {
-            return false;
-        }
-
-        $set = [
-            'article_body' => $article->articleBody,
-            'article_chapter' => $article->articleChapter
-        ];
+        $set = ['article_body' => $article->articleBody];
 
         return $this->fluent?->query
             ?->update('articles')
@@ -92,7 +83,6 @@ class ArticleRepository
     public function add(Article $article): bool
     {
         $values = [
-            'article_chapter' => $article->articleChapter,
             'article_body' => $article->articleBody,
             'article_id' =>  $article->articleID
         ];
@@ -119,17 +109,17 @@ class ArticleRepository
     }
 
     /**
-     * Method allowedArticle
-     *
+     * if name is in DB it returns string 
+     * that why we need to cast it to bool
+     * -  if not default is false
      * @return bool
      */
-    private function allowedArticle(): bool
+    private function allowedArticle($articleName): bool
     {
-        $stmt = $this->fluent?->query
+        return (bool)$this->fluent?->query
             ?->from('allowed_articles')
             ?->select('name')
-            ?->where('name', $this->selector->article);
-
-        return (bool)$stmt->fetch('name');
+            ?->where('name', $articleName)
+            ?->fetch('name');
     }
 }

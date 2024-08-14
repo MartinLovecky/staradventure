@@ -4,13 +4,11 @@ namespace Mlkali\Sa\Support;
 
 class Selector
 {
-
     public function __construct(
         public string $action = '',
         public string $title = '',
         public ?string $article = null,
         public ?string $page = null,
-        public ?string $articleID = null,
         private array $queryValues = [],
         private array $url = []
     ) {
@@ -18,7 +16,6 @@ class Selector
         $this->action = $this->url[0] ?? $this->action;
         $this->article = $this->url[1] ?? $this->article;
         $this->page = $this->url[2] ?? $this->page;
-        $this->articleID = ($this->article && $this->page) ? $this->article . '|' . $this->page : $this->articleID;
         $this->queryValues = $this->parseQueryString();
     }
 

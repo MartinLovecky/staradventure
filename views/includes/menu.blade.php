@@ -44,7 +44,7 @@
                         <li><a class="dropdown-item" href="/member/{{$member->username}}#member">Profil</a></li>
                         <li><a class="dropdown-item" href="/updatemember#updatemember">Upravit profil</a></li>
                         @if ($member->permission == 'admin' || $member->permission == 'rewriter')
-                        <li><a class="dropdown-item" href="/update#editor">Editor</a></li>
+                        <li><a class="dropdown-item" href="/update#edit">Editor</a></li>
                         <li><a class="dropdown-item" href="/usertable#usertable">Permissions</a></li>
                         @endif
                         <li><a class="dropdown-item" href="/logout">Odhlásit</a></li>

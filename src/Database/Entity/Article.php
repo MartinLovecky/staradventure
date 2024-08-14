@@ -8,7 +8,6 @@ class Article
 {
     public function __construct(
         private ArticleRepository $articleRepository,
-        public ?string $articleChapter = null,
         public ?string $articleID = null,
         public ?string $articleBody = null
     ) {
@@ -24,20 +23,6 @@ class Article
     public function setArticleID(string $articleID): self
     {
         $this->articleID = $articleID;
-
-        return $this;
-    }
-
-    public function getArticleChapter(): ?string
-    {
-        $this->articleChapter = $this->articleRepository->getCurrentArticle('article_chapter');
-
-        return $this->articleChapter;
-    }
-
-    public function setArticleChapter(?string $chapter = null): self
-    {
-        $this->articleChapter = $chapter;
 
         return $this;
     }

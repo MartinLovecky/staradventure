@@ -8,11 +8,11 @@ use Mlkali\Sa\Database\Repository\MemberRepository;
 
 class Validator
 {
-
     public function __construct(
         public MemberRepository $memberRepository,
         public Encryption $encryption
-    ) {}
+    ) {
+    }
 
     /**
      * Validates registration input data.
@@ -145,7 +145,7 @@ class Validator
     /**
      * check if string is Base64 encoded
      *
-     * @param string $str 
+     * @param string $str
      *
      * @return bool
      */
@@ -159,10 +159,10 @@ class Validator
      *
      * This method consolidates common validation checks including CAPTCHA validation and CSRF token validation.
      *
-     * @param Request $request containing the data to be validated.                    
+     * @param Request $request containing the data to be validated.
      *
      * @return string|null Returns a validation error message if any of the checks fail, or `null` if all checks pass.
-     * 
+     *
      */
     private function commonValidation(Request $request): ?string
     {

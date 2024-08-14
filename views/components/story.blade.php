@@ -5,12 +5,10 @@
     @redirect('/?message=', Enum::USER_PERMISSION)
 @else
 <article id="story" style="width: 80vw;">
+	@include('includes.menu')
 <div class="book">
 	<div class="container-story">
-		<div class="text"> 
-			@if (!empty($article->getArticleChapter())) 
-			<h1>{{ $article->getArticleChapter() }}</h1> 
-			@endif 
+		<div class="text">
 			@if (!empty($article->getArticleBody())) 
 			@foreach (json_decode($article->getArticleBody()) as $item) 
 			{!! $item !!} 
