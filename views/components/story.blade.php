@@ -1,18 +1,16 @@
 @use(Mlkali\Sa\Support\Enum)
 @if(!$selector->page)
-    @redirect('/storylist#storylist')
+	@redirect('/storylist#storylist')
 @elseif($member->permission == "visit")
-    @redirect('/?message=', Enum::USER_PERMISSION)
+	@redirect('/?message=', Enum::USER_PERMISSION)
 @else
 <article id="story" style="width: 80vw;">
 	@include('includes.menu')
-<div class="book">
-	<div class="container-story">
-		<div class="text">
-			@if (!empty($article->getArticleBody())) 
-			@foreach (json_decode($article->getArticleBody()) as $item) 
-			{!! $item !!} 
-			@endforeach 
+	<div class="book">
+		<div class="container-story">
+			<div class="text">
+			@if ($article->articleBody) 
+				{!! $article->articleBody !!} 
 			@endif 
 		</div>
 	</div>

@@ -10,13 +10,13 @@ use Mlkali\Sa\Controllers\ArticleController;
 class ViewModel
 {
     public function __construct(
-        protected Pagnition $pagnition,
-        protected Form $form,
-        protected Response $response,
-        protected ArticleController $articleController,
+        public Pagnition $pagnition,
+        public Form $form,
+        public Response $response,
+        public ArticleController $articleController,
+        public string $articleID = ''
     ) {
-        $this->setQueryMessage();
-        $this->userData();
+        $this->articleID = $this->pagnition->selector->article . '|' . $this->pagnition->selector->page;
     }
 
     public function render(): string
@@ -101,12 +101,14 @@ class ViewModel
                 'articleController' => $this->articleController,
                 'article' => $this->articleController->article,
                 'pagnition' => $this->pagnition,
-                'form' => $this->form
+                'form' => $this->form,
+                'articleID' => $this->pagnition->selector->article . '|' . $this->pagnition->selector->page
             ],
             'story' => [
                 'articleController' => $this->articleController,
                 'article' => $this->articleController->article,
-                'pagnition' => $this->pagnition
+                'pagnition' => $this->pagnition,
+                'articleID' => $this->pagnition->selector->article . '|' . $this->pagnition->selector->page
             ],
             'newpassword' => [
                 'form' => $this->form,
@@ -117,26 +119,5 @@ class ViewModel
         };
 
         return $commonetData;
-    }
-
-    private function setQueryMessage(): void
-    {
-        $queryMessage = $this->pagnition->selector->getQueryMessage('message');
-        $messageClass = $this->form->memberController->validator->memberRepository->messages;
-        $validator = $this->form->memberController->validator;
-
-        if ($queryMessage && $validator->isBase64($queryMessage)) {
-            $messageClass->addMessage($queryMessage);
-        }
-    }
-
-    private function userData(): void
-    {
-        if (!isset($_SESSION['member_id'])) {
-            $this->form->memberController->setMember('visitor');
-        } elseif (isset($_SESSION['member_id'])) {
-            $username = explode('|', $_SESSION['member_id'])[0];
-            $this->form->memberController->setMember($username);
-        }
     }
 }

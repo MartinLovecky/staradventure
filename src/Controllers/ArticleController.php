@@ -20,9 +20,9 @@ use Mlkali\Sa\Support\Messages;
  */
 class ArticleController
 {
-
+    //TODO - only trusted user have access to editor if we should sanitaze Request $data anyway 
     private const UPDATE_PATH = "/update/%s/%s?message=";
-    private const EDITOR_SELECTOR = '#editor';
+    private const EDITOR_SELECTOR = '#edit';
 
     public function __construct(
         public Article $article,
@@ -41,7 +41,7 @@ class ArticleController
     {
         $articleID = $request->articleName . '|' . $request->articlePage;
         $path = $this->messageFormatter->formatMessage(self::UPDATE_PATH, [$request->articleName, $request->articlePage]);
-
+        $url = "<a href='/show/{$request->articleName}/{$request->articlePage}#story'>{$articleID}</a>";
         if (!$this->articleRepository->exist($articleID)) {
             $message = $this->messageFormatter->formatMessage(
                 Messages::ARTICLE_DOES_NOT_EXIST,
@@ -51,13 +51,13 @@ class ArticleController
             return new Response($path, $message, self::EDITOR_SELECTOR);
         }
 
-        $message = $this->messageFormatter->formatMessage(Messages::ARTICLE_UPDATED, [$articleID]);
-        //TODO: Article body must not be empty also we shoudl fix exmpty spaces
-        $articleBody = json_encode(['article_body' => $request->content]);
+        //TODO: Article body must not be empty also we shoudl fix empty spaces
+        $articleBody = json_encode(['article_body' => mb_convert_encoding($request->content, 'UTF-8')]);
         // Article entity
         $this->article->setArticleID($articleID)->setArticleBody($articleBody);
         // Update article
         $this->articleRepository->update($this->article);
+        $message = $this->messageFormatter->formatMessage(Messages::ARTICLE_UPDATED, [$articleID, $url]);
 
         return new Response($path, $message, self::EDITOR_SELECTOR);
     }
@@ -73,7 +73,7 @@ class ArticleController
     {
         $articleID = $request->articleName . '|' . $request->articlePage;
         $path = $this->messageFormatter->formatMessage(self::UPDATE_PATH, [$request->articleName, $request->articlePage]);
-
+        $url = "<a href='/show/{$request->articleName}/{$request->articlePage}#story'>{$articleID}</a>";
         if ($this->articleRepository->exist($articleID)) {
             $message = $this->messageFormatter->formatMessage(
                 Messages::ARTICLE_ALREADY_EXISTS,
@@ -88,7 +88,7 @@ class ArticleController
         $this->article->setArticleID($articleID)->setArticleBody($articleBody);
         // add article to DB that can be edited
         $this->articleRepository->add($this->article);
-        $message = $this->messageFormatter->formatMessage(Messages::ARTICLE_CREATED, [$articleID]);
+        $message = $this->messageFormatter->formatMessage(Messages::ARTICLE_CREATED, [$articleID, $url]);
 
         return new Response($path, $message, self::EDITOR_SELECTOR);
     }
@@ -104,7 +104,7 @@ class ArticleController
     {
         $articleID = $request->articleName . '|' . $request->articlePage;
         $path = $this->messageFormatter->formatMessage(self::UPDATE_PATH, [$request->articleName, $request->articlePage]);
-
+        $url = "<a href='/show/{$request->articleName}/{$request->articlePage}#story'>{$articleID}</a>";
         if (!$this->articleRepository->exist($articleID)) {
             $message = $this->messageFormatter->formatMessage(
                 Messages::ARTICLE_DOES_NOT_EXIST,
@@ -113,7 +113,7 @@ class ArticleController
 
             return new Response($path, $message, self::EDITOR_SELECTOR);
         }
-        $message = $this->messageFormatter->formatMessage(Messages::ARTICLE_DELETED, [$articleID]);
+        $message = $this->messageFormatter->formatMessage(Messages::ARTICLE_DELETED, [$articleID, $url]);
         $this->articleRepository->remove($articleID);
 
         return new Response($path, $message, self::EDITOR_SELECTOR);

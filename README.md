@@ -1,5 +1,5 @@
 # [php 8.3.0](https://www.php.net/releases/8.3/en.php) is required 
-## In php.ini enable extension
+### In php.ini enable extension
 1. extension=pdo_mysql
 2. extension=sodium
 

@@ -170,6 +170,18 @@ a:hover {
     content: none;
 }
 
+.link-info {
+    color: #6D03A6 !important;
+}
+
+.link-info a {
+    color: #000 !important;
+}
+
+.link-info a:hover {
+    color: #000 !important;
+}
+
 .container a {
     text-decoration: none !important;
     /* Remove underline */
@@ -220,6 +232,11 @@ a:hover {
 .card-body a:focus,
 .card-body a:hover {
     text-decoration: none !important;
+}
+
+/* STORY fromating */
+.text h1 {
+    text-align: center;
 }
 
 @media screen and (max-width:1680px) {

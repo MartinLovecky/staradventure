@@ -8,17 +8,9 @@ class Article
 {
     public function __construct(
         private ArticleRepository $articleRepository,
+        public ?string $articleBody = null,
         public ?string $articleID = null,
-        public ?string $articleBody = null
-    ) {
-    }
-
-    public function getArticleID(): ?string
-    {
-        $this->articleID = $this->articleRepository->getCurrentArticle('article_id');
-
-        return $this->articleID;
-    }
+    ) {}
 
     public function setArticleID(string $articleID): self
     {
@@ -27,17 +19,20 @@ class Article
         return $this;
     }
 
-    public function getArticleBody(): ?string
-    {
-        $this->articleBody = $this->articleRepository->getCurrentArticle('article_body');
-
-        return $this->articleBody;
-    }
-
     public function setArticleBody(string $body): self
     {
         $this->articleBody = $body;
 
         return $this;
+    }
+
+    public function getArticleBody(string $articleID): ?string
+    {
+        $articleBody = $this->articleRepository->getCurrentArticle('article_body', $articleID);
+        // articleBody can be null if $articleID don't exist in database
+        // we need check if ['article_body'] is set 
+        $this->articleBody = $articleBody['article_body'] ?? $articleBody;
+
+        return $this->articleBody;
     }
 }

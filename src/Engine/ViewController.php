@@ -8,10 +8,44 @@ class ViewController
 {
     public function __construct(private ViewModel $viewModel)
     {
+        $this->setQueryMessage();
+        $this->setUserData();
+        $this->setArticle();
     }
 
     public function view(): string
     {
         return $this->viewModel->render();
+    }
+
+    private function setQueryMessage(): void
+    {
+        $queryMessage = $this->viewModel->pagnition->selector->getQueryMessage('message');
+        $messageClass = $this->viewModel->form->memberController->validator->memberRepository->messages;
+        $validator = $this->viewModel->form->memberController->validator;
+
+        if ($queryMessage && $validator->isBase64($queryMessage)) {
+            $messageClass->addMessage($queryMessage);
+        }
+    }
+
+    private function setUserData(): void
+    {
+        if (!isset($_SESSION['member_id'])) {
+            $this->viewModel->form->memberController->setMember('visitor');
+        } elseif (isset($_SESSION['member_id'])) {
+            $username = explode('|', $_SESSION['member_id'])[0];
+            $this->viewModel->form->memberController->setMember($username);
+        }
+    }
+
+    private function setArticle(): void
+    {
+        $article = $this->viewModel->articleController->article;
+        $selector = $this->viewModel->pagnition->selector;
+        match ($selector->action) {
+            'create', 'update', 'delete', 'show' => $article->getArticleBody($this->viewModel->articleID),
+            default => null
+        };
     }
 }

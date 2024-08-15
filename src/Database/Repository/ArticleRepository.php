@@ -3,36 +3,25 @@
 namespace Mlkali\Sa\Database\Repository;
 
 use Mlkali\Sa\Database\Fluent;
-use Mlkali\Sa\Support\Selector;
 use Mlkali\Sa\Database\Entity\Article;
 
 class ArticleRepository
 {
-    public function __construct(
-        public Selector $selector,
-        public Fluent $fluent,
-        protected ?string $repoID = null
-    ) {
-        $this->repoID = ($this->selector->article && $this->selector->page) ? $this->selector->article . '|' . $this->selector->page : null;
-    }
+    public function __construct(public Fluent $fluent) {}
 
-    /**
-     * Can get specific column for articleID or all columns
-     * @param string|null $articleID is handled by selector
-     * @param string|null $column array if null, otherwise $column value
-     * @return string|null
-     */
-    public function getCurrentArticle(?string $column = null): string|null
+    public function getCurrentArticle(string $column, string $articleID)
     {
-        if (!$this->exist($this->repoID)) {
+        if (!$this->exist($articleID)) {
             return null;
         }
         $stmt = $this->fluent?->query
             ?->from('articles')
             ?->select($column)
-            ?->where('article_id', $this->repoID);
-
-        return $stmt?->fetch($column);
+            ?->where('article_id', $articleID)
+            ?->fetch($column);
+        if ($stmt) {
+            return json_decode($stmt, true);
+        }
     }
 
     /**
