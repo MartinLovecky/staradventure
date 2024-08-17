@@ -98,23 +98,24 @@ class Validator
     public function validateAvatar(Request $request): ?string
     {
         $validationError = $this->commonValidation($request);
+
         if ($validationError) {
             return $validationError;
         }
-        if (!isset($avatar['tmp_name']) || !is_uploaded_file($request->avatar['tmp_name'])) {
+        if (!isset($request->avatar['tmp_name']) || !is_uploaded_file($request->avatar['tmp_name'])) {
             return Messages::AVATAR_UPLOAD;
         }
-        if (!isset($avatar['name'])) {
+        if (!isset($request->avatar['name'])) {
             return Messages::AVATAR_UPLOAD;
         }
-        if ($avatar['size'] === 0) {
+        if ($request->avatar['size'] === 0) {
             return Messages::AVATAR_UPLOAD;
         }
-        if ($avatar['size'] > 5145728) {
+        if ($request->avatar['size'] > 5145728) {
             return Messages::AVATAR_SIZE;
         }
         $allowedMimeTypes = ['png', 'jpg', 'jpeg'];
-        if (!in_array(pathinfo($avatar['name'], PATHINFO_EXTENSION), $allowedMimeTypes)) {
+        if (!in_array(pathinfo($request->avatar['name'], PATHINFO_EXTENSION), $allowedMimeTypes)) {
             return Messages::AVATAR_MIME_TYPE;
         }
         return null;

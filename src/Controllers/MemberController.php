@@ -91,7 +91,8 @@ class MemberController
         $tokenDB = $memberRepository->getMemberInfo('member_id', $memberID, 'active');
 
         if (strcmp($memberID, $memberDB) == 0 && strcmp($token, $tokenDB) == 0) {
-            $memberRepository->update(['active' => 'yes'], $memberID);
+            $this->member->active = 'yes';
+            $memberRepository->updateMembersTable($this->member);
 
             return new Response('/login?message=', Messages::REQUEST_ACTIVATE, '#login');
         }
@@ -137,9 +138,6 @@ class MemberController
         $_SESSION['member'] = serialize($memberData);
     }
 
-
-
-
     public function proccessResetToken(Request $request): array|Response
     {
         $memberRepository = $this->validator->memberRepository;
@@ -152,8 +150,8 @@ class MemberController
         }
 
         $memberID = $memberRepository->getMemberInfo('email', $request->email, 'member_id');
-
-        $memberRepository->update(['reset_token' => $this->token], $memberID);
+        $this->member->reset_token = $this->token;
+        $memberRepository->updateMembersTable($this->member);
 
         $memberID = $this->validator->encryption->encrypt($memberID);
 
@@ -201,8 +199,8 @@ class MemberController
             return new Response('/?message=', $validate, '#newpassword');
         }
 
-        $set = ['password' => password_hash($request->password, PASSWORD_BCRYPT)];
-        $memberRepository->update($set, $request->user_id);
+        $this->member->password = password_hash($request->password, PASSWORD_BCRYPT);
+        $memberRepository->updateMembersTable($this->member);
 
         return new Response('/?message=', Messages::REQUEST_RESET_PASSWORD, '#login');
     }
@@ -222,7 +220,7 @@ class MemberController
         $validate = $this->validator->validateAvatar($request);
 
         if (isset($validate)) {
-            return new Response('/reset?message=', $validate, '#updatemember');
+            return new Response('/updatemember?message=', $validate, '#updatemember');
         }
 
         $allowedTypes = [
@@ -239,13 +237,14 @@ class MemberController
         move_uploaded_file($request->avatar['tmp_name'], $newFilePath);
         unlink($request->avatar['tmp_name']);
 
-        $this->member->username = $request->username ?? $this->member->username;
-        $this->member->email = $request->email ?? $this->member->email;
-        $this->member->name = $request->name ?? $this->member->name;
-        $this->member->surname = $request->surname ?? $this->member->surname;
-        $this->member->age = $request->age ?? $this->member->age;
-        $this->member->location = $request->location ?? $this->member->location;
-        $this->member->visible = $request->visible ?? $this->member->visible;
+        // Set $member entity with current data or new data from update form
+        $this->member->username = !empty($request->username) ? $request->username : $this->member->username;
+        $this->member->email = !empty($request->email) ? $request->email : $this->member->email;
+        $this->member->name = !empty($request->name) ? $request->name : $this->member->name;
+        $this->member->surname = !empty($request->surname) ? $request->surname : $this->member->surname;
+        $this->member->age = !empty($request->age) ? $request->age : $this->member->age;
+        $this->member->location = !empty($request->location) ? $request->uselocationrname : $this->member->location;
+        $this->member->visible = !empty($request->visible) ? $request->visible : $this->member->visible;
         $this->member->avatar = $uploadName;
 
         $this->update($this->member);
@@ -253,13 +252,17 @@ class MemberController
         return new Response("/member/{$request->username}?message=", 'success_Informace upraveny');
     }
 
-    public function permission(string $permission, string $memberID): Response
-    {
-        $memberRepository = $this->validator->memberRepository;
-        $memberRepository->update(['permission' => $permission], $memberID);
+    //TODO - this needs to be re-coded
+    // 1st get user from database based on $memberID -> then update it based on $permission
+    // public function permission(string $permission, string $memberID): Response
+    // {
+    //     $memberRepository = $this->validator->memberRepository;
+    //     $this->member->permission = $permission;
+    //     $this->member
+    //     $memberRepository->update(['permission' => $permission], $memberID);
 
-        return new Response('/usertable?message=', Messages::REQUEST_PERMISSION);
-    }
+    //     return new Response('/usertable?message=', Messages::REQUEST_PERMISSION);
+    // }
 
     public function delete(string $memberID): Response
     {
@@ -278,16 +281,8 @@ class MemberController
     private function update(Member $member): void
     {
         $memberRepository = $this->validator->memberRepository;
-        $memberRepository->update(
-            [
-                'username' => $member->username,
-                'email' => $member->email,
-                'avatar' => $member->avatar
-            ],
-            $member->memberID
-        );
-
-        $memberRepository->updateInfoMember($member);
+        $memberRepository->updateMembersTable($member);
+        $memberRepository->updateInfoTable($member);
     }
 
     private function getMessageForType(string $type, string $replace)

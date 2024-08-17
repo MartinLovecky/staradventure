@@ -88,6 +88,32 @@ class MemberRepository
             ?->where('member_id', $memberID)
             ?->execute();
     }
+    /**
+     * Updates member information in the members table.
+     *
+     * @param  Member $member The Member entity containing updated information.
+     * @return void
+     */
+    public function updateMembersTable(Member $member)
+    {
+        $set = [
+            "username" => $member->username,
+            "email" => $member->email,
+            "password" => $member->password,
+            "avatar" => $member->avatar,
+            "active" => $member->active,
+            "permission" => $member->permission,
+            "reset_token" => $member->reset_token,
+            "reset_complete" => $member->reset_complete,
+            "member_id" => $member->member_id
+        ];
+
+        $this->fluent?->query
+            ?->update('members')
+            ?->set($set)
+            ?->where('member_id', $member->memberID)
+            ?->execute();
+    }
 
     /**
      * Updates member information in the info table.
@@ -95,36 +121,21 @@ class MemberRepository
      * @param  Member $member The Member entity containing updated information.
      * @return void
      */
-    public function updateInfoMember(Member $member): void
+    public function updateInfoTable(Member $member)
     {
         $set = [
-            'member_name' => $member?->name,
-            'member_surname' => $member?->surname,
-            'visible' => $member?->visible,
-            'location' => $member?->location,
-            'age' => $member?->age
+            "member_name" => $member->member_name,
+            "member_surname" => $member->member_surname,
+            "visible" => $member->visible,
+            "location" => $member->location,
+            "age" => $member->age,
+            "member" => $member->member_id
         ];
 
         $this->fluent?->query
             ?->update('info')
             ?->set($set)
-            ?->where('member', $member?->memberID)
-            ?->execute();
-    }
-
-    /**
-     * Updates the members table with specified fields.
-     *
-     * @param  array   $set      An associative array of fields and their new values.
-     * @param  ?string $memberID The ID of the member to update. If null, it must be specified in the $set array.
-     * @return void
-     */
-    public function update(array $set, ?string $memberID): void
-    {
-        $this->fluent?->query
-            ?->update('members')
-            ?->set($set)
-            ?->where('member_id', $memberID)
+            ?->where('member', $member->memberID)
             ?->execute();
     }
 }

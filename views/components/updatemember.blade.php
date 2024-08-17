@@ -4,7 +4,7 @@
 @endif
 <article id="updatemember">
     <h2 class="major">Upravit profil</h2>
-        @form()
+        @form(['enctype' => 'multipart/form-data'])
         <div class="fields">
             <div class="field half">
                 <input class="form-control text-white" type="text" name="username" placeholder="{{  $member->username  }}*">

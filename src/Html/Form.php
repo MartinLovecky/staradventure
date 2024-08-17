@@ -38,7 +38,7 @@ class Form
         return $this;
     }
 
-    public function run(?array $options = null)
+    public function run(?array $options = null): mixed
     {
         if (isset($options)) {
             $this->options($options);
@@ -51,10 +51,11 @@ class Form
                 'forgotenUsername' => $this->handleDataProcessing('proccessForgottenUser', 'user', 'user'),
                 'passwordResetSend' => $this->handleDataProcessing('proccessResetToken', 'reset', 'reset'),
                 'new_password' => $this->memberController->setNewPassword($this->request),
-                'updateMember' => $this->memberController->updateMember($this->request),
+                'update_member' => $this->memberController->updateMember($this->request),
                 'update' => $this->articleController->update($this->request),
                 'create' => $this->articleController->create($this->request),
-                'delete' => $this->articleController->delete($this->request)
+                'delete' => $this->articleController->delete($this->request),
+                default => null
             };
         }
         return "<form method='{$this->method}' target='_self' class='{$this->class}' id='{$this->id}' autocomplete='{$this->autocomplete}' enctype='{$this->enctype}'>";
