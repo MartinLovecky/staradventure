@@ -10,7 +10,8 @@ class Article
         private ArticleRepository $articleRepository,
         public ?string $articleBody = null,
         public ?string $articleID = null,
-    ) {}
+    ) {
+    }
 
     public function setArticleID(string $articleID): self
     {
@@ -30,7 +31,7 @@ class Article
     {
         $articleBody = $this->articleRepository->getCurrentArticle('article_body', $articleID);
         // articleBody can be null if $articleID don't exist in database
-        // we need check if ['article_body'] is set 
+        // we need check if ['article_body'] is set
         $this->articleBody = $articleBody['article_body'] ?? $articleBody;
 
         return $this->articleBody;

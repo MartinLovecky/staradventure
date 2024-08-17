@@ -11,7 +11,7 @@ use Mlkali\Sa\Support\Messages;
 
 /**
  * Class ArticleController
- * 
+ *
  * This controller handles the creation, updating, and deletion of articles.
  * It interacts with the Article entity and the ArticleRepository to manage
  * article data.
@@ -20,7 +20,7 @@ use Mlkali\Sa\Support\Messages;
  */
 class ArticleController
 {
-    //TODO - only trusted user have access to editor if we should sanitaze Request $data anyway 
+    //TODO - only trusted user have access to editor if we should sanitaze Request $data anyway
     private const UPDATE_PATH = "/update/%s/%s?message=";
     private const EDITOR_SELECTOR = '#edit';
 
@@ -28,7 +28,8 @@ class ArticleController
         public Article $article,
         protected ArticleRepository $articleRepository,
         protected MessageFormatter $messageFormatter
-    ) {}
+    ) {
+    }
 
     /**
      * Updates an existing article.

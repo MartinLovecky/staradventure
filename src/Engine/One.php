@@ -24,7 +24,7 @@ trait One
     /**
      * @form([options]) default are used when array not provided
      * - check \Mlkali\Sa\Html\Form options
-     * @param string $expression
+     * @param           string $expression
      *
      * @return void
      */
@@ -35,7 +35,8 @@ trait One
 
     /**
      * IF we need convert $expression to array
-     * @param string $expression
+     *
+     * @param  string $expression
      * @return array $args[0] , $args[1] ...
      */
     protected function args(string $expression): array
@@ -63,9 +64,10 @@ trait One
     /**
      * start of  @match()
      * - preset is optional for default value
-     * @param mixed $expression
+     *
+     * @param   mixed $expression
      * @example - @match(x) @state('this')@do(1..)@preset()@endmatch()
-     * @return string
+     * @return  string
      */
     protected function compileMatch($expression): string
     {
@@ -76,8 +78,8 @@ trait One
 
     /**
      * @do(action that should happen)
-     * @example usage: @case(1) @do()
-     * @param string $expression
+     * @example   usage: @case(1) @do()
+     * @param     string $expression
      *
      * @return mixed
      */
@@ -114,7 +116,7 @@ trait One
 
     /**
      * @preset($value) can be used in @match before @endmatch
-     * @param string $expression
+     * @param          string $expression
      *
      * @return string
      */

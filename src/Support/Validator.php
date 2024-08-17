@@ -11,7 +11,8 @@ class Validator
     public function __construct(
         public MemberRepository $memberRepository,
         public Encryption $encryption
-    ) {}
+    ) {
+    }
 
     /**
      * Validates registration input data.

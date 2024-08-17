@@ -1,5 +1,6 @@
 compiles
 vendor/
+logs
 public/img/
 .*
 !public/.env

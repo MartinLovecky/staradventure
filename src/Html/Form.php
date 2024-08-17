@@ -63,10 +63,10 @@ class Form
     /**
      * Handles the common workflow of processing data, generating email data, and returning a response.
      *
-     * @param string $processMethod The name of the memberController method for processing data.
-     * @param string $templateName The name of the email template to use.
-     * @param string $responseType The type of response to return.
-     * @param bool $generateEmailData Whether to generate email data or not.
+     * @param string $processMethod     The name of the memberController method for processing data.
+     * @param string $templateName      The name of the email template to use.
+     * @param string $responseType      The type of response to return.
+     * @param bool   $generateEmailData Whether to generate email data or not.
      *
      * @return Response The response object.
      */
@@ -90,7 +90,7 @@ class Form
      * Collects email data including body, subject, and recipient email address.
      *
      * @param string $templateName The name of the email template file (without extension).
-     * @param array $data An associative array of data to be passed to the template for rendering.
+     * @param array  $data         An associative array of data to be passed to the template for rendering.
      *
      * @return array An associative array containing:
      *               - 'body' (string): The rendered email body.
@@ -110,7 +110,7 @@ class Form
      * Generates the email body by rendering the specified template with the provided data.
      *
      * @param string $templateName The name of the template file (without extension).
-     * @param array $data An associative array of data to be used within the template.
+     * @param array  $data         An associative array of data to be used within the template.
      *
      * @return string The rendered email content.
      *

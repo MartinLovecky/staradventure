@@ -38,6 +38,7 @@ class ViewModel
     /**
      * changes the name of the file we want to run from /action in views/componets,
      * or assigns multiple actions to a single view.
+     *
      * @return string
      */
     private function componentName(): string

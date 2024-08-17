@@ -170,15 +170,15 @@ a:hover {
     content: none;
 }
 
-.link-info {
+.info {
     color: #6D03A6 !important;
 }
 
-.link-info a {
+.info a {
     color: #000 !important;
 }
 
-.link-info a:hover {
+.info a:hover {
     color: #000 !important;
 }
 

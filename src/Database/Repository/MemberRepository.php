@@ -13,15 +13,17 @@ class MemberRepository
         public Messages $messages,
         public Fluent $fluent,
         public Mailer $mailer
-    ) {}
+    ) {
+    }
 
     /**
      * Retrieves member information
      * -  IF $column is provided , $value must be also provided -> same if not provided
      *  - IF you want just specific $item you must also provide $column and $value
-     * @param ?string $column to search in the database. If null, fetch all members.
-     * @param ?string $value  to match in the specified column. If null, fetch all members.
-     * @param ?string $item The specific item to fetch. If null, return array.
+     *
+     * @param  ?string $column to search in the database. If null, fetch all members.
+     * @param  ?string $value  to match in the specified column. If null, fetch all members.
+     * @param  ?string $item   The specific item to fetch. If null, return array.
      * @return mixed
      */
     public function getMemberInfo(
@@ -48,8 +50,8 @@ class MemberRepository
     /**
      * Inserts a new record into the specified table.
      *
-     * @param string $table The name of the table to insert into.
-     * @param array $values An associative array of column-value pairs to insert.
+     * @param  string $table  The name of the table to insert into.
+     * @param  array  $values An associative array of column-value pairs to insert.
      * @return void
      */
     public function insert(string $table, array $values): void
@@ -60,9 +62,9 @@ class MemberRepository
     /**
      * Sends an email using the Mailer class.
      *
-     * @param string $body The body of the email.
-     * @param string $subject The subject of the email.
-     * @param string $to The recipient email address.
+     * @param  string $body    The body of the email.
+     * @param  string $subject The subject of the email.
+     * @param  string $to      The recipient email address.
      * @return void
      */
     public function sendEmail(
@@ -76,7 +78,7 @@ class MemberRepository
     /**
      * Deletes a member from the members table by member ID.
      *
-     * @param string $memberID The ID of the member to delete.
+     * @param  string $memberID The ID of the member to delete.
      * @return void
      */
     public function deleteMember(string $memberID): void
@@ -90,7 +92,7 @@ class MemberRepository
     /**
      * Updates member information in the info table.
      *
-     * @param Member $member The Member entity containing updated information.
+     * @param  Member $member The Member entity containing updated information.
      * @return void
      */
     public function updateInfoMember(Member $member): void
@@ -113,8 +115,8 @@ class MemberRepository
     /**
      * Updates the members table with specified fields.
      *
-     * @param array $set An associative array of fields and their new values.
-     * @param ?string $memberID The ID of the member to update. If null, it must be specified in the $set array.
+     * @param  array   $set      An associative array of fields and their new values.
+     * @param  ?string $memberID The ID of the member to update. If null, it must be specified in the $set array.
      * @return void
      */
     public function update(array $set, ?string $memberID): void

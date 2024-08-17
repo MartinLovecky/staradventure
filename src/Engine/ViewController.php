@@ -9,7 +9,6 @@ class ViewController
     public function __construct(private ViewModel $viewModel)
     {
         $this->setQueryMessage();
-        $this->setUserData();
         $this->setArticle();
     }
 
@@ -26,16 +25,6 @@ class ViewController
 
         if ($queryMessage && $validator->isBase64($queryMessage)) {
             $messageClass->addMessage($queryMessage);
-        }
-    }
-
-    private function setUserData(): void
-    {
-        if (!isset($_SESSION['member_id'])) {
-            $this->viewModel->form->memberController->setMember('visitor');
-        } elseif (isset($_SESSION['member_id'])) {
-            $username = explode('|', $_SESSION['member_id'])[0];
-            $this->viewModel->form->memberController->setMember($username);
         }
     }
 

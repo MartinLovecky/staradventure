@@ -2,7 +2,6 @@
 
 namespace Mlkali\Sa\Controllers;
 
-
 use Mlkali\Sa\Http\Request;
 use Mlkali\Sa\Http\Response;
 use Mlkali\Sa\Support\Messages;
@@ -35,6 +34,7 @@ class MemberController
     /**
      * - if validation fail redirect to form
      * - if success return valid data
+     *
      * @param Request $request
      *
      * @return array|Response
@@ -110,18 +110,9 @@ class MemberController
             @$_SESSION = ['old_username' => $request->username];
 
             return new Response('/login?message=', $validate, '#login');
-        } elseif (isset($request->remember)) {
-
-            setcookie('remember', $request->username, time() + (86400 * 7), '/');
-
-            return new Response(
-                "member/{$request->username}?message=",
-                sprintf(Messages::REQUEST_LOGIN, $request->username),
-                '#member'
-            );
         }
 
-        $this->setMember($request->username);
+        $this->setMember($request);
 
         return new Response(
             "member/{$request->username}?message=",
@@ -130,18 +121,24 @@ class MemberController
         );
     }
 
-    public function setMember(string $username): void
+    public function setMember(Request $request): void
     {
         $memberRepository = $this->validator->memberRepository;
-        $memberData = $memberRepository->getMemberInfo('username', $username);
-        if ($memberData['member_id'] !== 'visitor|visitor@gmail.com') {
-            $_SESSION['member_id'] = $memberData['member_id'];
+        $memberData = $memberRepository->getMemberInfo('username', $request->username);
+
+        if (isset($request->remember)) {
+            $id = $this->validator->encryption->encrypt($_SERVER['REMOTE_ADDR']);
+            $username = $this->validator->encryption->encrypt($request->username);
+            $userID = $username . '|' . $id;
+            setcookie('remember', $userID, time() + (86400 * 7), '/');
         }
 
-        foreach ($memberData as $key => $value) {
-            $this->member->{$key} = $value;
-        }
+        $this->member->logged = true;
+        $_SESSION['member'] = serialize($memberData);
     }
+
+
+
 
     public function proccessResetToken(Request $request): array|Response
     {

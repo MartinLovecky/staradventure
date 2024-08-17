@@ -24,9 +24,8 @@ if ($_ENV['MODE'] == 'dev') {
 $container = new League\Container\Container();
 $container->delegate(new League\Container\ReflectionContainer(true));
 
-$repo = $container->get(\Mlkali\Sa\Database\Fluent::class);
-
 $viewController = $container->get(\Mlkali\Sa\Engine\ViewController::class);
 
+
 echo $viewController->view();
-//TODO -  story
+//TODO -  story, handle coockie better
