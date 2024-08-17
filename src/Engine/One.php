@@ -24,7 +24,7 @@ trait One
     /**
      * @form([options]) default are used when array not provided
      * - check \Mlkali\Sa\Html\Form options
-     * @param           string $expression
+     * @param string $expression
      *
      * @return void
      */
@@ -116,7 +116,7 @@ trait One
 
     /**
      * @preset($value) can be used in @match before @endmatch
-     * @param          string $expression
+     * @param string $expression
      *
      * @return string
      */
