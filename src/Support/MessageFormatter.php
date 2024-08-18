@@ -12,7 +12,7 @@ class MessageFormatter
      *
      * @return string The formatted message.
      */
-    public function formatMessage(string $message, array $data): string
+    public function formatString(string $message, array $data): string
     {
         return sprintf($message, ...$data);
     }

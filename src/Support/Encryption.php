@@ -56,6 +56,13 @@ class Encryption
         return $decrypted;
     }
 
+    public function generateCSRF(): string
+    {
+        // static key inside $_ENV
+        $parts = explode('|', $_ENV['CSRFKEY']);
+        return $this->encrypt($parts[0], $parts[1]);
+    }
+
     /**
      * token can be used for reset password
      *

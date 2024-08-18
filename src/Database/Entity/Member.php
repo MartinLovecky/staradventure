@@ -37,6 +37,8 @@ class Member
     private function getMember(): void
     {
         if (isset($_SESSION['member'])) {
+            ;
+            $this->logged = true;
             $member = unserialize($_SESSION['member']);
             foreach ($member as $key => $value) {
                 $this->{$key} = $value;

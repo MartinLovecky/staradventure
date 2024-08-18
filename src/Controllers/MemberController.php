@@ -132,10 +132,9 @@ class MemberController
             $username = $this->validator->encryption->encrypt($request->username);
             $userID = $username . '|' . $id;
             setcookie('remember', $userID, time() + (86400 * 7), '/');
+        } else {
+            $_SESSION['member'] = serialize($memberData);
         }
-
-        $this->member->logged = true;
-        $_SESSION['member'] = serialize($memberData);
     }
 
     public function proccessResetToken(Request $request): array|Response

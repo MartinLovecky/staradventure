@@ -73,7 +73,7 @@ class ViewModel
             'member' => $this->form->memberController->member,
             'component' => $componentName,
             'title' =>  'SA | ' . $componentName,
-            'csrf' => $_ENV['CSRFKEY'],
+            'csrf' => $this->form->memberController->validator->encryption->generateCSRF(),
             'response' => $this->response,
         ];
     }

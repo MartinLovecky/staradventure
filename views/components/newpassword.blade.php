@@ -15,7 +15,7 @@
         <ul class="actions">
             <li><button class="button primary" name="submit" value="submit" type="submit">Změnit heslo</button></li>
         </ul>
-        <input type='hidden' name="token" value="{{  $encryption->encrypt($csrf)  }}">
+        <input type='hidden' name="token" value="{{  $csrf  }}">
         <input type="hidden" id="g-recaptcha-response" name="grecaptcharesponse">
         <input type="hidden" name="action" value="validate_captcha">
         <input type="hidden" name="type" value="new_password">

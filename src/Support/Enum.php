@@ -24,6 +24,7 @@ class Enum
     // Warning Messages
     public const string ARTICLE_ALREADY_EXISTS = 'warning_Page %s already exists. Use <a href="/update/%s/%s">update</a>';
     public const string ARTICLE_DOES_NOT_EXIST = 'warning_Page %s does not exist. Use <a href="/create/%s/%s">create</a>';
+    public const string EMPTY_ARTICLE = 'warning_Page %s is empty to remove it. Use <a href="/delete/%s/%s">delete</a>';
     public const string USER_LOGGED = 'warning_You cannot access the reset page while logged in';
 
     // Danger Messages

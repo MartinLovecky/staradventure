@@ -211,15 +211,16 @@ class Validator
     /**
      * Validates CSRF token.
      *
-     * @param string $token The CSRF token to validate.
+     * @param string $token CSRF token to validate.
      *
      * @return bool Returns true if the token is valid, otherwise false.
      */
     private function validToken(string $token): bool
     {
-        if (strcmp($this->encryption->decrypt($token), $_ENV['CSRFKEY']) === 0) {
-            return true;
-        }
-        return false;
+        $parts = explode('|', $_ENV['CSRFKEY']);
+        $token = $this->encryption->decrypt($token, $parts[1]);
+
+        return $parts[0] === $token;
+
     }
 }
