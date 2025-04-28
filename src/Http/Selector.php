@@ -1,17 +1,20 @@
 <?php
 
-namespace Mlkali\Sa\Support;
+declare(strict_types=1);
+
+namespace Mlkali\Sa\Http;
 
 class Selector
 {
-    public function __construct(
-        public string $action = '',
-        public string $title = '',
-        public ?string $article = null,
-        public ?string $page = null,
-        private array $queryValues = [],
-        private array $url = []
-    ) {
+    public string $action = '';
+    public string $title = '';
+    public ?string $article = null;
+    public ?string $page = null;
+    private array $queryValues = [];
+    private array $url = [];
+
+    public function __construct()
+    {
         $this->url = $this->parseUrl();
         $this->action = $this->url[0] ?? $this->action;
         $this->article = $this->url[1] ?? $this->article;

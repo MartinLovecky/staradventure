@@ -1,4 +1,4 @@
-@include('includes.head')
+
 @if ($message->hasAny())
     @include('includes.message')
 @endif

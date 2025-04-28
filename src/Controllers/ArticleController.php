@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mlkali\Sa\Controllers;
 
-use Mlkali\Sa\Http\Request;
-use Mlkali\Sa\Http\Response;
 use Mlkali\Sa\Database\Entity\Article;
 use Mlkali\Sa\Database\Repository\ArticleRepository;
-use Mlkali\Sa\Support\MessageFormatter;
-use Mlkali\Sa\Support\Messages;
+use Mlkali\Sa\Http\{Request, Response};
+use Mlkali\Sa\Support\{Messages, MessageFormatter};
 
 /**
  * Class ArticleController
@@ -30,6 +30,22 @@ class ArticleController
     ) {
     }
 
+    public function article(string $articleId = ''): Article
+    {
+        $result = $this->articleRepository->getArticle(
+            column:'article_id',
+            value:$articleId
+        );
+
+        if (isset($article)) {
+            $this->article
+                ->setArticleID($result['article_id'])
+                ->setArticleBody(json_decode($result['article_body'], true));
+            return $this->article;
+        }
+        return $this->article;
+    }
+
     /**
      * Updates an existing article.
      *
@@ -40,7 +56,7 @@ class ArticleController
     public function update(Request $request): Response
     {
         // generate redirect path
-        $path = $this->path(self::UPDATE_PATH, $request);
+        $path = $this->path(message:self::UPDATE_PATH, request:$request);
 
         if (!$this->articleRepository->exist($request->articleID)) {
             $message = $this->messageFormatter->formatString(
@@ -65,21 +81,21 @@ class ArticleController
             );
             return new Response($path, $message, self::HASH);
         }
-
         $articleBody = json_encode(['article_body' => mb_convert_encoding($request->content, 'UTF-8')]);
         // Article entity
-        $this->article->setArticleID($request->articleID)->setArticleBody($articleBody);
+        $this->article
+            ->setArticleID($request->articleID)
+            ->setArticleBody($articleBody);
         // Update article
         $this->articleRepository->update($this->article);
 
-        $url = "<a href='/show/{$request->articleName}/{$request->articlePage}#story'>{$request->articleID}</a>";
-        $message = $this->messageFormatter->formatString(
-            Messages::ARTICLE_UPDATED,
-            [
+        $url = "<a href='/show/{$request->articleName}/{$request->articlePage}"
+            . "#story'>{$request->articleID}</a>";
+        $message = $this->messageFormatter
+            ->formatString(Messages::ARTICLE_UPDATED, [
                 $request->articleID,
                 $url
-            ]
-        );
+        ]);
 
         return new Response($path, $message, self::HASH);
     }
@@ -93,36 +109,36 @@ class ArticleController
      */
     public function create(Request $request): Response
     {
-        // generate redirect path
-        $path = $this->path(self::UPDATE_PATH, $request);
+        $path = $this->path(message:self::UPDATE_PATH, request:$request);
 
         if ($this->articleRepository->exist($request->articleID)) {
-            $message = $this->messageFormatter->formatString(
-                Messages::ARTICLE_ALREADY_EXISTS,
-                [
+            $message = $this->messageFormatter
+                ->formatString(Messages::ARTICLE_ALREADY_EXISTS, [
                     $request->articleID,
                     $request->articleName,
                     $request->articlePage . self::HASH
-                ]
-            );
+            ]);
 
             return new Response($path, $message, self::HASH);
         }
-        // Data from editor or dummy data that can be edited latter
-        $articleBody = $request->content ? json_encode(['article_body' => $request->content]) : '{"article_body":"<p>dummy data</p>"}';
+
+        $articleBody = $request->content
+            ? json_encode(['article_body' => $request->content])
+            : '{"article_body":"<p>dummy data</p>"}';
         // Article entity
-        $this->article->setArticleID($request->articleID)->setArticleBody($articleBody);
-        // add Article to DB that can be edited
+        $this->article
+            ->setArticleID($request->articleID)
+            ->setArticleBody($articleBody);
+        // add Article to DB
         $this->articleRepository->add($this->article);
         // redirect message
-        $url = "<a href='/show/{$request->articleName}/{$request->articlePage}#story'>{$request->articleID}</a>";
-        $message = $this->messageFormatter->formatString(
-            Messages::ARTICLE_CREATED,
-            [
+        $url = "<a href='/show/{$request->articleName}/{$request->articlePage}"
+            . "#story'>{$request->articleID}</a>";
+        $message = $this->messageFormatter
+            ->formatString(Messages::ARTICLE_CREATED, [
                 $request->articleID,
                 $url
-            ]
-        );
+        ]);
 
         return new Response($path, $message, self::HASH);
     }
@@ -136,31 +152,25 @@ class ArticleController
      */
     public function delete(Request $request): Response
     {
-        // generate redirect path
-        $path = $this->path(self::UPDATE_PATH, $request);
+        $path = $this->path(message:self::UPDATE_PATH, request:$request);
 
         if (!$this->articleRepository->exist($request->articleID)) {
-            // generate error message for redirect
-            $message = $this->messageFormatter->formatString(
-                Messages::ARTICLE_DOES_NOT_EXIST,
-                [
+            $message = $this->messageFormatter
+                ->formatString(Messages::ARTICLE_DOES_NOT_EXIST, [
                     $request->articleID,
                     $request->articleName,
                     $request->articlePage . self::HASH
-                ]
-            );
-
+            ]);
             return new Response($path, $message, self::HASH);
         }
         // redirect message
-        $url = "<a href='/show/{$request->articleName}/{$request->articlePage}#story'>{$request->articleID}</a>";
-        $message = $this->messageFormatter->formatString(
-            Messages::ARTICLE_DELETED,
-            [
+        $url = "<a href='/show/{$request->articleName}/{$request->articlePage}"
+            . "#story'>{$request->articleID}</a>";
+        $message = $this->messageFormatter
+            ->formatString(Messages::ARTICLE_DELETED, [
                 $request->articleID,
                 $url
-            ]
-        );
+        ]);
         $this->articleRepository->remove($request->articleID);
 
         return new Response($path, $message, self::HASH);

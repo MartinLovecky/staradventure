@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mlkali\Sa\Engine;
 
 trait One
@@ -128,6 +130,8 @@ trait One
         if ($expression) {
             return 'default => ' . $this->args($expression)[0] . ',';
         }
+
+        return '';
     }
 
     /**

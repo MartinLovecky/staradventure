@@ -1,6 +1,6 @@
 @use(Mlkali\Sa\Support\Enum)
 @if ($member->logged)
-    @redirect("/member/{$member->username}?message=", Enum::USER_LOGGED, '#member')
+@redirect("/member/{$member->username}?message=", Messages::USER_LOGGED, '#member')
 @endif
 <article id="login">
     <h2 class="major">Přihlášení</h2>
@@ -19,18 +19,18 @@
             </div>
         </div>
     </div>
-        <ul class="actions">
-            <li><button class="button primary" name="submit" type="submit">Přihlásit</button></li>
-        </ul>
-        <p class="text-secondary text-center"><a href="/register#register">Nemáte účet?</a><br>
-            <a href="/resetUsername#reset">Zapomenutné heslo?</a><br>
-            <a href="/resetPassword#reset">Zapomenutný Username?</a>
-        </p>
-        <input type='hidden' name="token" value="{{  $csrf  }}">
-        <input type="hidden" id="g-recaptcha-response" name="grecaptcharesponse">
-    	<input type="hidden" name="action" value="validate_captcha">
-        <input type="hidden" name="type" value="login"> 
+    <ul class="actions">
+        <li><button class="button primary" name="submit" type="submit">Přihlásit</button></li>
+    </ul>
+    <p class="text-secondary text-center"><a href="/register#register">Nemáte účet?</a><br>
+        <a href="/resetUsername#reset">Zapomenutné heslo?</a><br>
+        <a href="/resetPassword#reset">Zapomenutný Username?</a>
+    </p>
+    <input type='hidden' name="token" value="{{  $csrf  }}">
+    <input type="hidden" id="g-recaptcha-response" name="grecaptcharesponse">
+    <input type="hidden" name="action" value="validate_captcha">
+    <input type="hidden" name="type" value="login">
     </form>
-    <script src="https://www.google.com/recaptcha/api.js?render={{$_ENV['RECAPTCHA_PUBLIC']}}"></script>
-    <script src="@asset("js/recaptcha.js")"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render={{$captha}}"></script>
+    <script src="@asset(" js/recaptcha.js")"></script>
 </article>

@@ -1,45 +1,45 @@
 @use(Mlkali\Sa\Support\Enum)
 @if ($member->logged)
-    @redirect("/member/{$member->username}?message=", Enum::USER_LOGGED, '#member')
+@redirect("/member/{$member->username}?message=", Messages::USER_LOGGED, '#member')
 @endif
 <article id="register">
     <h2 class="major">Přidej se</h2>
-        @form()
-        <div class="fields">
-            <div class="field half">
-                <input class="form-control text-white" type="text" name="username" placeholder="Username" value="@isset($_SESSION['old_username']){{ $_SESSION['old_username'] }}@endisset" required>
-            </div>
-            <div class="field half">
-                <input class="form-control text-white" type="email" name="email" placeholder="Email" value="@isset($_SESSION['old_email']){{ $_SESSION['old_email'] }}@endisset" required>
-            </div>
-            <div class="field">
-                <input class="form-control text-white" type="password" name="password" placeholder="Heslo" passwordrules="required: upper, lower, digit, [-().&@?'#,/&quot;+]; minlength: 25; max-consecutive: 2" autocomplete="new-password" required>
-            </div>
-            <div class="field">
-                <input class="form-control text-white" type="password" name="password_again" placeholder="Heslo (znovu)" passwordrules="required: upper, lower, digit, [-().&@?'#,/&quot;+]; max-consecutive: 2" required>
-            </div>
-            <div class="field half">
-                <div class="form-check">
+    @form()
+    <div class="fields">
+        <div class="field half">
+            <input class="form-control text-white" type="text" name="username" placeholder="Username" value="@isset($_SESSION['old_username']){{ $_SESSION['old_username'] }}@endisset" required>
+        </div>
+        <div class="field half">
+            <input class="form-control text-white" type="email" name="email" placeholder="Email" value="@isset($_SESSION['old_email']){{ $_SESSION['old_email'] }}@endisset" required>
+        </div>
+        <div class="field">
+            <input class="form-control text-white" type="password" name="password" placeholder="Heslo" passwordrules="required: upper, lower, digit, [-().&@?'#,/&quot;+]; minlength: 25; max-consecutive: 2" autocomplete="new-password" required>
+        </div>
+        <div class="field">
+            <input class="form-control text-white" type="password" name="password_again" placeholder="Heslo (znovu)" passwordrules="required: upper, lower, digit, [-().&@?'#,/&quot;+]; max-consecutive: 2" required>
+        </div>
+        <div class="field half">
+            <div class="form-check">
                 <input class="form-check-input" type="radio" id="formCheck-2" name="terms" required>
                 <label class="form-check-label" for="formCheck-2"><a href="/terms#terms">Terms of Service</a></label>
-                </div>
-            </div>
-            <div class="field half">
-                <div class="form-check">
-                <input class="form-check-input" type="radio" id="formCheck-1" name="vops" required>
-                <label class="form-check-label" for="formCheck-1"><a href="/vop#vop">Privacy Policy</a></label>
-                </div>
             </div>
         </div>
-        <ul class="actions">
-            <li><button class="button primary" name="submit" value="submit" type="submit">Registrovat</button></li>
-        </ul>
-        <p class="text-secondary text-center"><a href="/login#login">Máte již účet?</a></p>
-        <input type='hidden' name="token" value="{{  $csrf  }}">
-        <input type="hidden" id="g-recaptcha-response" name="grecaptcharesponse">
-    	<input type="hidden" name="action" value="validate_captcha">
-        <input type="hidden" name="type" value="register">
+        <div class="field half">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="formCheck-1" name="vops" required>
+                <label class="form-check-label" for="formCheck-1"><a href="/vop#vop">Privacy Policy</a></label>
+            </div>
+        </div>
+    </div>
+    <ul class="actions">
+        <li><button class="button primary" name="submit" value="submit" type="submit">Registrovat</button></li>
+    </ul>
+    <p class="text-secondary text-center"><a href="/login#login">Máte již účet?</a></p>
+    <input type='hidden' name="token" value="{{  $csrf  }}">
+    <input type="hidden" id="g-recaptcha-response" name="grecaptcharesponse">
+    <input type="hidden" name="action" value="validate_captcha">
+    <input type="hidden" name="type" value="register">
     </form>
-    <script src="https://www.google.com/recaptcha/api.js?render={{$_ENV['RECAPTCHA_PUBLIC']}}"></script>
-    <script src="@asset("js/recaptcha.js")"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render={{$captha}}"></script>
+    <script src="@asset(" js/recaptcha.js")"></script>
 </article>

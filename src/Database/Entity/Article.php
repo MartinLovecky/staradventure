@@ -1,17 +1,13 @@
 <?php
 
-namespace Mlkali\Sa\Database\Entity;
+declare(strict_types=1);
 
-use Mlkali\Sa\Database\Repository\ArticleRepository;
+namespace Mlkali\Sa\Database\Entity;
 
 class Article
 {
-    public function __construct(
-        private ArticleRepository $articleRepository,
-        public ?string $articleBody = null,
-        public ?string $articleID = null,
-    ) {
-    }
+    private ?string $articleBody = null;
+    private ?string $articleID = null;
 
     public function setArticleID(string $articleID): self
     {
@@ -27,13 +23,13 @@ class Article
         return $this;
     }
 
-    public function getArticleBody(string $articleID): ?string
+    public function getArticleID(): ?string
     {
-        $articleBody = $this->articleRepository->getCurrentArticle('article_body', $articleID);
-        // articleBody can be null if $articleID don't exist in database
-        // we need check if ['article_body'] is set
-        $this->articleBody = $articleBody['article_body'] ?? $articleBody;
+        return $this->articleID;
+    }
 
+    public function getArticleBody(): ?string
+    {
         return $this->articleBody;
     }
 }

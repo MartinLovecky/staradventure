@@ -1,6 +1,6 @@
-@use(Mlkali\Sa\Support\Enum)
+@use(Mlkali\Sa\Support\Messages)
 @if(!$member->logged)
-    @redirect('/?message=', Enum::USER_NOT_LOGGED)
+    @redirect('/?message=', Messages::USER_NOT_LOGGED)
 @endif
 <article id="member" style="width: 80vw;">
     @include('includes.menu')
