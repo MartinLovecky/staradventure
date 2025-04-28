@@ -17,3 +17,10 @@ $container->delegate(new League\Container\ReflectionContainer(true));
 
 $viewController = $container->get(\Mlkali\Sa\Controllers\ViewController::class);
 echo $viewController->render();
+<<<<<<< HEAD
+=======
+//TODO -  story, admin page
+//yuhzel|respect9888@gmail.com,
+//Sensei|lovecky92@seznam.cz,
+//visitor|visitor@gmail.com
+>>>>>>> 910359bbb8bba1455894d3acb556ad9a3f3852a6

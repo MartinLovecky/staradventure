@@ -1,6 +1,10 @@
 @use(Mlkali\Sa\Support\Enum)
 @if ($member->logged)
+<<<<<<< HEAD
 @redirect("/member/{$member->username}?message=", Messages::USER_LOGGED, '#member')
+=======
+@redirect("/member/{$member->username}?message=", Enum::USER_LOGGED, '#member')
+>>>>>>> 910359bbb8bba1455894d3acb556ad9a3f3852a6
 @endif
 <article id="register">
     <h2 class="major">Přidej se</h2>
@@ -41,5 +45,9 @@
     <input type="hidden" name="type" value="register">
     </form>
     <script src="https://www.google.com/recaptcha/api.js?render={{$captha}}"></script>
+<<<<<<< HEAD
     <script src="@asset(" js/recaptcha.js")"></script>
+=======
+    <script src="@asset("js/recaptcha.js")"></script>
+>>>>>>> 910359bbb8bba1455894d3acb556ad9a3f3852a6
 </article>
