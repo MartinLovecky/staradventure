@@ -106,7 +106,7 @@ class MemberRepository
                 "age" => $member->age,
                 "member" => $member->member_id
             ])
-            ->where('member', $member->memberID)
+            ->where('member', $member->member_id)
             ->execute();
     }
 

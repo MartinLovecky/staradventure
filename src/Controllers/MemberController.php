@@ -293,9 +293,9 @@ class MemberController
         );
     }
 
-    private function update(Member $member): void
+    public function update(Member $member): void
     {
-        if ($this->memberRepository->exist($member->memberID)) {
+        if ($this->memberRepository->exist($member->member_id)) {
             $this->memberRepository->updateMembersTable([
                 "username" => $member->username,
                 "email" => $member->email,
@@ -304,7 +304,7 @@ class MemberController
                 "permission" => $member->permission,
                 "reset_token" => $member->reset_token,
                 "reset_complete" => $member->reset_complete,
-                "member_id" => $member->memberID
+                "member_id" => $member->member_id
             ]);
             $this->memberRepository->updateInfoTable($member);
         }

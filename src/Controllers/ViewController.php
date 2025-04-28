@@ -9,6 +9,7 @@ use Mlkali\Sa\Http\{Form, Response, Selector};
 use Mlkali\Sa\Support\MessageBag;
 use Mlkali\Sa\Security\Encryption;
 use Mlkali\Sa\Controllers\{ArticleController, MemberController};
+use Mlkali\Sa\Database\Entity\Member;
 use Mlkali\Sa\Security\Validator;
 
 class ViewController
@@ -18,6 +19,7 @@ class ViewController
         private Blade $blade,
         private Encryption $encryption,
         private Form $form,
+        private Member $member,
         private MemberController $memberController,
         private MessageBag $messageBag,
         private Selector $selector,
@@ -80,7 +82,8 @@ class ViewController
             'articleController' => $this->articleController,
             'pagnition' => null,
             'validator' => $this->validator,
-            'captha' => $_ENV['PUBLIC']
+            'captha' => $_ENV['PUBLIC'],
+            'member' => $this->member
         ];
     }
 }

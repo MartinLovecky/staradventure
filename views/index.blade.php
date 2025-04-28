@@ -1,5 +1,4 @@
-
-@if ($message->hasAny())
+@if($message->hasAny())
     @include('includes.message')
 @endif
 {{-- header need be outside <div id="main"> --}}

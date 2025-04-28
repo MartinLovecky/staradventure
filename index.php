@@ -14,6 +14,5 @@ $dotenv->required(['DB_NAME', 'DB_USER', 'DB_HOST', 'DB_PASS']);
 // Class container with auto-wire
 $container = new League\Container\Container();
 $container->delegate(new League\Container\ReflectionContainer(true));
-
 $viewController = $container->get(\Mlkali\Sa\Controllers\ViewController::class);
 echo $viewController->render();
