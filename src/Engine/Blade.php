@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mlkali\Sa\Engine;
 
 use Mlkali\Sa\Engine\One;
@@ -10,22 +12,22 @@ class Blade extends BladeOne
     // costum @functions for view
     use One;
 
-    public function __construct(
-        private string $path = '',
-        private string $viewPath = '',
-        private string $compilesPath = '',
-        private string $publicPath = ''
-    ) {
-        $this->path = dirname(__DIR__, 2) . '\\';
+    private string $path = '';
+    private string $viewPath = '';
+    private string $compilesPath = '';
+    private string $publicPath = '';
+
+    public function __construct()
+    {
+        $this->path = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR;
         $this->viewPath = $this->path . 'views';
         $this->compiledPath = $this->path . 'compiles';
-        $this->publicPath = '/public';
+        $this->publicPath = DIRECTORY_SEPARATOR . 'public';
 
         $this->setPath($this->viewPath, $this->compiledPath);
         $this->setBaseUrl($this->publicPath);
-        //ANCHOR DEBUG ONLY FOR DEV !!!
-        // $mode [MODE_AUTO, MODE_DEBUG, MODE_FAST, MODE_SLOW]
-        $this->setMode(BladeOne::MODE_DEBUG);
+        //[MODE_AUTO, MODE_DEBUG, MODE_FAST, MODE_SLOW]
+        $this->setMode(BladeOne::MODE_AUTO);
         $this->pipeEnable = true;
     }
 }

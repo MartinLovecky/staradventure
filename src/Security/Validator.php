@@ -1,19 +1,14 @@
 <?php
 
-namespace Mlkali\Sa\Support;
+declare(strict_types=1);
+
+namespace Mlkali\Sa\Security;
 
 use Mlkali\Sa\Http\Request;
 use Mlkali\Sa\Support\Messages;
-use Mlkali\Sa\Database\Repository\MemberRepository;
 
 class Validator
 {
-    public function __construct(
-        public MemberRepository $memberRepository,
-        public Encryption $encryption
-    ) {
-    }
-
     /**
      * Validates registration input data.
      *
@@ -23,48 +18,34 @@ class Validator
      */
     public function validateRegister(Request $request): ?string
     {
-        $validationError = $this->commonValidation($request);
-        if ($validationError) {
-            return $validationError;
+        if (!$this->commonValidation($request)) {
+            return 'danger_CSRF validation failed';
         }
         if ($request->vops !== 'on' && $request->terms !== 'on') {
-            return Messages::VALIDATION_REG_CHECKBOX_FAIL;
+            return Messages::VALID_REG_CHECKBOX_FAIL;
         }
-        if ($this->memberRepository->getMemberInfo('member_id', $request->username . '|' . $request->email)) {
-            return sprintf(Messages::VALIDATION_USER_ALREADY_EXISTS, $request->username);
-        }
-        // email validation structure
         if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $request->email)) {
-            return sprintf(Messages::VALIDATION_EMAIL_FORMAT, $request->email);
+            return sprintf(Messages::VALID_EMAIL_FORMAT, $request->email);
         }
         if (mb_strlen($request->username) < 4) {
-            return sprintf(Messages::VALIDATION_LEN_USER, $request->username);
+            return sprintf(Messages::VALID_LEN_USER, $request->username);
         }
         return $this->validatePassword($request);
     }
 
-    /**
-     * Validates login input data.
-     *
-     * @param Request $request The HTTP request containing login data.
-     * @param string $activeMember The activation status of the member ('yes' or other values).
-     *
-     * @return string|null Returns an error message if validation fails, or null if validation passes.
-     */
-    public function validateLogin(Request $request, string $activeMember): ?string
+    public function validateLogin(Request $request, ?string $active = null): ?string
     {
-        $validationError = $this->commonValidation($request);
-        if ($validationError) {
-            return $validationError;
+        if (!is_string($active)) {
+            return Messages::VALID_ACTIVE_MEMBER;
         }
-        if (strcmp($activeMember, 'yes') !== 0) {
-            return Messages::VALIDATION_ACTIVE_MEMBER;
+        if (!$this->commonValidation($request)) {
+            return 'danger_CSRF validation failed';
+        }
+        if (strcmp($active, 'yes') !== 0) {
+            return Messages::VALID_ACTIVE_MEMBER;
         }
         if (!$this->validToken($request->token)) {
-            return Messages::VALIDATION_CSRF_ERROR;
-        }
-        if (!$this->memberRepository->getMemberInfo('username', $request->username, 'username')) {
-            return sprintf(Messages::VALIDATION_USER_NOT_EXIST, $request->username);
+            return Messages::VALID_CSRF_ERROR;
         }
         return null;
     }
@@ -78,12 +59,8 @@ class Validator
      */
     public function validateResetSend(Request $request): ?string
     {
-        $validationError = $this->commonValidation($request);
-        if ($validationError) {
-            return $validationError;
-        }
-        if (!$this->memberRepository->getMemberInfo('email', $request->email, 'email')) {
-            return sprintf(Messages::VALIDATION_USER_NOT_EXIST, $request->email);
+        if (!$this->commonValidation($request)) {
+            return 'danger_CSRF validation failed';
         }
         return $this->validatePassword($request);
     }
@@ -97,10 +74,8 @@ class Validator
      */
     public function validateAvatar(Request $request): ?string
     {
-        $validationError = $this->commonValidation($request);
-
-        if ($validationError) {
-            return $validationError;
+        if (!$this->commonValidation($request)) {
+            return 'danger_CSRF validation failed';
         }
         if (!isset($request->avatar['tmp_name']) || !is_uploaded_file($request->avatar['tmp_name'])) {
             return Messages::AVATAR_UPLOAD;
@@ -131,14 +106,13 @@ class Validator
     public function validatePassword(Request $request): ?string
     {
         if (mb_strlen($request->password) < 6) {
-            return Messages::VALIDATION_LEN_PASSWORD;
+            return Messages::VALID_LEN_PASSWORD;
         }
         if ($request->password != $request->password_again) {
-            return Messages::VALIDATION_PASSWORD_AGAIN;
+            return Messages::VALID_PASSWORD_AGAIN;
         }
-        //lowercase,uppercase,special symbol,number
         if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$%^&*]).*$/', $request->password)) {
-            return Messages::VALIDATION_PASSWORD_REGEX;
+            return Messages::VALID_PASSWORD_REGEX;
         }
         return null;
     }
@@ -152,7 +126,7 @@ class Validator
      */
     public function isBase64(string $str): bool
     {
-        return preg_match('/^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$/', $str);
+        return preg_match('/^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$/', $str) !== false;
     }
 
     /**
@@ -162,50 +136,40 @@ class Validator
      *
      * @param Request $request containing the data to be validated.
      *
-     * @return string|null Returns a validation error message if any of the checks fail, or `null` if all checks pass.
+     * @return bool
      *
      */
-    private function commonValidation(Request $request): ?string
+    private function commonValidation(Request $request): bool
     {
-        if (!is_null($this->validateCaptcha($request->grecaptcharesponse))) {
-            return $this->validateCaptcha($request->grecaptcharesponse);
-        }
-        if (!$this->validToken($request->token)) {
-            return Messages::VALIDATION_CSRF_ERROR;
-        }
-        return null;
+        return $this->validateCaptcha($request->grecaptcharesponse)
+            && $this->validToken($request->token);
     }
+
 
     /**
      * Validates CAPTCHA response with Google's reCAPTCHA API.
      *
      * @param ?string $response The CAPTCHA response from the user.
      *
-     * @return string|null Returns an error message if CAPTCHA validation fails, or null if validation passes.
+     * @return mixed Returns an error message, or true if validation passes.
      */
-    private function validateCaptcha(?string $response): ?string
+    private function validateCaptcha(?string $response): mixed
     {
+        return $response;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, 'https://www.google.com/recaptcha/api/siteverify');
         curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(
-            [
-                'secret' => $_ENV['RECAPTCHA_PRIVATE'],
-                'response' => $response
-            ]
-        ));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+            'secret' => $_ENV['PRIVATE'],
+            'response' => $response
+        ]));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         $response = curl_exec($ch);
         curl_close($ch);
         $res = json_decode($response, true);
 
-        if (isset($res['error-codes'])) {
-            foreach ($res['error-codes'] as $msg) {
-                return 'danger_' . $msg;
-            }
-        }
-        return null;
+        return $res['error-codes'] ?? true;
     }
 
     /**
@@ -215,12 +179,12 @@ class Validator
      *
      * @return bool Returns true if the token is valid, otherwise false.
      */
-    private function validToken(string $token): bool
+    public function validToken(string $token): bool
     {
-        $parts = explode('|', $_ENV['CSRFKEY']);
-        $token = $this->encryption->decrypt($token, $parts[1]);
+        $encryption = new Encryption();
+        $og = explode('|', $_ENV['CSRFKEY']);
+        $decrypted = $encryption->decrypt($token, $og[1]);
 
-        return $parts[0] === $token;
-
+        return $_ENV['CSRFKEY'] === $decrypted;
     }
 }

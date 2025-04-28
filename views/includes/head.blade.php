@@ -15,6 +15,7 @@
     @if ($component == 'editor')    
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.css">
     @endif
+    
 </head>
     <body class="is-preload">
         <div id="wrapper">

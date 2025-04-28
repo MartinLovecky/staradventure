@@ -8,14 +8,17 @@ use Envms\FluentPDO\Query;
 
 class Fluent
 {
-    public function __construct(
-        public $pdo = null,
-        public $query = null,
-        public string $dir = ''
-    ) {
-        $this->dir = dirname(__DIR__, 2) . '\\';
+    public $pdo = null;
+    public $query = null;
+    public string $dir = '';
+
+    public function __construct()
+    {
+        $this->dir = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR;
         try {
-            $conn = "mysql:host={$_ENV['DB_HOST']};port={$_ENV['DB_PORT']};dbname={$_ENV['DB_NAME']};sslmode=verify-ca;sslrootcert=ca.pem;charset={$_ENV['CHAR']}";
+            $conn = "mysql:host={$_ENV['DB_HOST']};"
+            . "port={$_ENV['DB_PORT']};dbname={$_ENV['DB_NAME']};"
+            . "sslmode=verify-ca;sslrootcert=ca.pem;charset={$_ENV['CHAR']}";
             $this->pdo = new PDO($conn, $_ENV['DB_USER'], $_ENV['DB_PASS']);
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);

@@ -1,6 +1,8 @@
 <?php
 
-namespace Mlkali\Sa\Support;
+declare(strict_types=1);
+
+namespace Mlkali\Sa\Security;
 
 use Exception;
 
@@ -14,10 +16,15 @@ class Encryption
      *
      * @return string
      */
-    public function encrypt(string $message, string $aad = ''): string
+    public function encrypt(string $message = '', string $aad = ''): string
     {
         $nonce = random_bytes(SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES);
-        $ciphertext = sodium_crypto_aead_xchacha20poly1305_ietf_encrypt($message, $aad, $nonce, base64_decode($_ENV['EKEY']));
+        $ciphertext = sodium_crypto_aead_xchacha20poly1305_ietf_encrypt(
+            $message,
+            $aad,
+            $nonce,
+            base64_decode($_ENV['EKEY'])
+        );
 
         return bin2hex($nonce . $ciphertext);
     }
@@ -30,7 +37,7 @@ class Encryption
      *
      * @return string
      */
-    public function decrypt(string $ciphertext, string $aad = ''): string
+    public function decrypt(string $ciphertext = '', string $aad = ''): string
     {
         if (empty($ciphertext)) {
             return '';
@@ -47,7 +54,12 @@ class Encryption
         $nonce = mb_substr($decoded, 0, SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES, '8bit');
         $data = mb_substr($decoded, SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES, null, '8bit');
 
-        $decrypted = sodium_crypto_aead_xchacha20poly1305_ietf_decrypt($data, $aad, $nonce, base64_decode($_ENV['EKEY']));
+        $decrypted = sodium_crypto_aead_xchacha20poly1305_ietf_decrypt(
+            $data,
+            $aad,
+            $nonce,
+            base64_decode($_ENV['EKEY'])
+        );
 
         if ($decrypted === false) {
             throw new Exception('Decryption failed');
@@ -56,11 +68,15 @@ class Encryption
         return $decrypted;
     }
 
+    public function encode(string $text): string
+    {
+        return password_hash($text, PASSWORD_BCRYPT);
+    }
+
     public function generateCSRF(): string
     {
-        // static key inside $_ENV
         $parts = explode('|', $_ENV['CSRFKEY']);
-        return $this->encrypt($parts[0], $parts[1]);
+        return $this->encrypt($_ENV['CSRFKEY'], $parts[1]);
     }
 
     /**

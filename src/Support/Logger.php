@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mlkali\Sa\Support;
 
 class Logger
 {
-    public function log_error_with_trace($message)
+    public function logError(string $message): void
     {
         $backtrace = debug_backtrace();
         $formatted_trace = '';

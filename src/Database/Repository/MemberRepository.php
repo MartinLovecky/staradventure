@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mlkali\Sa\Database\Repository;
 
+use Dotenv\Parser\Value;
+use Mlkali\Sa\Http\Mailer;
 use Mlkali\Sa\Database\Fluent;
-use Mlkali\Sa\Support\Mailer;
 use Mlkali\Sa\Support\Messages;
 use Mlkali\Sa\Database\Entity\Member;
 
@@ -16,47 +19,40 @@ class MemberRepository
     ) {
     }
 
-    /**
-     * Retrieves member information
-     * -  IF $column is provided , $value must be also provided -> same if not provided
-     *  - IF you want just specific $item you must also provide $column and $value
-     *
-     * @param  ?string $column to search in the database. If null, fetch all members.
-     * @param  ?string $value  to match in the specified column. If null, fetch all members.
-     * @param  ?string $item   The specific item to fetch. If null, return array.
-     * @return mixed
-     */
     public function getMemberInfo(
         ?string $column = null,
         ?string $value = null,
         ?string $item = null
     ): mixed {
-        $stmt = $this->fluent?->query
-            ?->from('members')
-            ?->leftJoin('info ON members.member_id = info.member')
-            ?->select('info.*')
-            ?->where($column, $value);
+        $stmt = $this->fluent->query
+            ->from('members')
+            ->leftJoin('info ON members.member_id = info.member')
+            ->select('info.*')
+            ->where($column, $value);
         if ($column && $value && $item) {
             // specific value
-            return $stmt?->fetch($item);
+            return $stmt->fetch($item);
         } elseif ($column && $value) {
             // array data for specific member
-            return $stmt?->fetch();
+            return $stmt->fetch();
         }
         // all members data
-        return $stmt?->fetchAll();
+        return $stmt->fetchAll();
     }
 
     /**
      * Inserts a new record into the specified table.
      *
      * @param  string $table  The name of the table to insert into.
-     * @param  array  $values An associative array of column-value pairs to insert.
+     * @param  array  $values An associative array to insert.
      * @return void
      */
     public function insert(string $table, array $values): void
     {
-        $this->fluent?->query?->insertInto($table)?->values($values)?->execute();
+        $this->fluent->query
+            ->insertInto($table)
+            ->values($values)
+            ->execute();
     }
 
     /**
@@ -83,59 +79,43 @@ class MemberRepository
      */
     public function deleteMember(string $memberID): void
     {
-        $this->fluent?->query
-            ?->deleteFrom('members')
-            ?->where('member_id', $memberID)
-            ?->execute();
-    }
-    /**
-     * Updates member information in the members table.
-     *
-     * @param  Member $member The Member entity containing updated information.
-     * @return void
-     */
-    public function updateMembersTable(Member $member)
-    {
-        $set = [
-            "username" => $member->username,
-            "email" => $member->email,
-            "password" => $member->password,
-            "avatar" => $member->avatar,
-            "active" => $member->active,
-            "permission" => $member->permission,
-            "reset_token" => $member->reset_token,
-            "reset_complete" => $member->reset_complete,
-            "member_id" => $member->member_id
-        ];
-
-        $this->fluent?->query
-            ?->update('members')
-            ?->set($set)
-            ?->where('member_id', $member->memberID)
-            ?->execute();
+        $this->fluent->query
+            ->deleteFrom('members')
+            ->where('member_id', $memberID)
+            ->execute();
     }
 
-    /**
-     * Updates member information in the info table.
-     *
-     * @param  Member $member The Member entity containing updated information.
-     * @return void
-     */
-    public function updateInfoTable(Member $member)
+    public function updateMembersTable(array $member): void
     {
-        $set = [
-            "member_name" => $member->member_name,
-            "member_surname" => $member->member_surname,
-            "visible" => $member->visible,
-            "location" => $member->location,
-            "age" => $member->age,
-            "member" => $member->member_id
-        ];
+        $this->fluent->query
+            ->update('members')
+            ->set($member)
+            ->where('member_id', $member['member_id'])
+            ->execute();
+    }
 
-        $this->fluent?->query
-            ?->update('info')
-            ?->set($set)
-            ?->where('member', $member->memberID)
-            ?->execute();
+    public function updateInfoTable(Member $member): void
+    {
+        $this->fluent->query
+            ->update('info')
+            ->set([
+                "member_name" => $member->member_name,
+                "member_surname" => $member->member_surname,
+                "visible" => $member->visible,
+                "location" => $member->location,
+                "age" => $member->age,
+                "member" => $member->member_id
+            ])
+            ->where('member', $member->memberID)
+            ->execute();
+    }
+
+    public function exist(string $id = ''): bool
+    {
+        return $this->getMemberInfo(
+            column:'member_id',
+            value:$id,
+            item:'member_id'
+        ) == ! false;
     }
 }

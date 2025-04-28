@@ -1,6 +1,6 @@
 @use(Mlkali\Sa\Support\Enum)
 @if ($member->logged)
-    @redirect("/member/{$member->username}?message=", Enum::USER_LOGGED, '#member')
+@redirect("/member/{$member->username}?message=", Enum::USER_LOGGED, '#member')
 @endif
 <article id="reset">
     <h2>Reset hesla</h2>
@@ -18,6 +18,6 @@
     <input type="hidden" name="action" value="validate_captcha">
     <input type="hidden" name="type" value="passwordResetSend">
     </form>
-    <script src="https://www.google.com/recaptcha/api.js?render={{$_ENV['RECAPTCHA_PUBLIC']}}"></script>
-    <script src="@asset("js/recaptcha.js")"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render={{$captha}}"></script>
+    <script src="@asset(" js/recaptcha.js")"></script>
 </article>

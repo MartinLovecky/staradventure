@@ -1,9 +1,9 @@
 <?php
 
-namespace Mlkali\Sa\Support;
+declare(strict_types=1);
 
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
+namespace Mlkali\Sa\Http;
+
 use PHPMailer\PHPMailer\PHPMailer;
 
 class Mailer extends PHPMailer
@@ -20,7 +20,7 @@ class Mailer extends PHPMailer
 
     public function sender(string $body, string $subject, string $to): bool
     {
-        $dir = dirname(__DIR__, 2) . '\\';
+        $dir = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR;
         $this->IsSMTP();
         $this->body($body);
         $this->Host = $_ENV['EMAIL_HOST'];
