@@ -18,15 +18,17 @@ class Encryption
      */
     public function encrypt(string $message = '', string $aad = ''): string
     {
+        [$version, $key] = $this->getLatestKey();
+
         $nonce = random_bytes(SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES);
         $ciphertext = sodium_crypto_aead_xchacha20poly1305_ietf_encrypt(
             $message,
             $aad,
             $nonce,
-            base64_decode($_ENV['EKEY'])
+            $key
         );
 
-        return bin2hex($nonce . $ciphertext);
+        return $version . ':' . bin2hex($nonce . $ciphertext);
     }
 
     /**
@@ -43,14 +45,23 @@ class Encryption
             return '';
         }
 
-        $decoded = hex2bin($ciphertext);
+        [$version, $hex] = explode(':', $ciphertext, 2);
 
+        if (!isset($_ENV["EKEY_$version"])) {
+            throw new Exception("Encryption key for version $version not found.");
+        }
+
+        $key = $this->decodeKey($_ENV["EKEY_$version"]);
+
+        $decoded = hex2bin($hex);
         if ($decoded === false) {
             throw new Exception('Invalid data format');
         }
+
         if (mb_strlen($decoded, '8bit') < SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES) {
             throw new Exception('Invalid data length');
         }
+
         $nonce = mb_substr($decoded, 0, SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES, '8bit');
         $data = mb_substr($decoded, SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES, null, '8bit');
 
@@ -58,7 +69,7 @@ class Encryption
             $data,
             $aad,
             $nonce,
-            base64_decode($_ENV['EKEY'])
+            $key
         );
 
         if ($decrypted === false) {
@@ -97,6 +108,44 @@ class Encryption
      */
     public function generateKey(): string
     {
-        return base64_encode(sodium_crypto_aead_xchacha20poly1305_ietf_keygen());
+        $version = 'v' . date('YmdHis');
+        $key = base64_encode(sodium_crypto_aead_xchacha20poly1305_ietf_keygen());
+
+        return $version . ':' . $key;
+    }
+
+    private function getLatestKey(): array
+    {
+        $keys = array_filter($_ENV, fn ($k) => str_starts_with($k, 'EKEY_'), ARRAY_FILTER_USE_KEY);
+
+        if (empty($keys)) {
+            throw new Exception('No encryption key found');
+        }
+
+        $versions = array_map(fn ($k) => str_replace('EKEY_', '', $k), array_keys($keys));
+        rsort($versions, SORT_NATURAL);
+
+        $latestVersion = $versions[0];
+        $key = $this->decodeKey($_ENV["EKEY_$latestVersion"]);
+
+        return [$latestVersion, $key];
+    }
+
+    /**
+     * Decode and validate a key from an env string like "v20250501035806:base64key"
+     *
+     * @param string $envKey
+     * @return string
+     */
+    private function decodeKey(string $envKey): string
+    {
+        [$ver, $b64key] = explode(':', $envKey, 2);
+        $key = base64_decode($b64key, true);
+
+        if ($key === false || strlen($key) !== SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_KEYBYTES) {
+            throw new Exception("Invalid encryption key format or length.");
+        }
+
+        return $key;
     }
 }

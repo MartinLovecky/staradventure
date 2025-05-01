@@ -1,9 +1,13 @@
-@use(Mlkali\Sa\Support\Enum)
+@use(Mlkali\Sa\Support\Messages)
 @if (!$member->logged)
-@redirect('/?message=', Messages::USER_NOT_LOGGED)
+@redirect('/?message=', Messages::DANGER_USER_NOT_LOGGED)
 @endif
 @if (!$member->permission == 'admin' || !$member->permission == 'rewriter')
-@redirect("/member/{$member->username}?message=", Messages::USER_PERMISSION, '#member')
+@redirect(
+    "/member/{$member->username}?message=", 
+    Messages::DANGER_USER_PERMISSION, 
+    '#member'
+)
 @endif
 <article id="edit" style="width: 90vw;">
     <div class="article-list">

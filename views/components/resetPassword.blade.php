@@ -1,6 +1,10 @@
 @use(Mlkali\Sa\Support\Messages)
 @if ($member->logged)
-@redirect("/member/{$member->username}?message=", Messages::USER_LOGGED, '#member')
+@redirect(
+    "/member/{$member->username}?message=", 
+    Messages::WARNING_USER_LOGGED, 
+    '#member'
+)
 @endif
 <article id="reset">
     <h2>Reset hesla</h2>
@@ -19,5 +23,5 @@
     <input type="hidden" name="type" value="passwordResetSend">
     </form>
     <script src="https://www.google.com/recaptcha/api.js?render={{$captha}}"></script>
-    <script src="@asset(" js/recaptcha.js")"></script>
+    <script src="@asset("js/recaptcha.js")"></script>
 </article>

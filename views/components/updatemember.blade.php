@@ -1,6 +1,9 @@
-@use(Mlkali\Sa\Support\Enum)
+@use(Mlkali\Sa\Support\Messages)
 @if (!$member->logged)
-@redirect("/member/{$member->username}?message=", Messages::USER_NOT_LOGGED)
+@redirect(
+    "/?message=", 
+    Messages::DANGER_USER_NOT_LOGGED
+)
 @endif
 <article id="updatemember">
     <h2 class="major">Upravit profil</h2>
@@ -41,5 +44,5 @@
     <input type="hidden" name="type" value="update_member">
     </form>
     <script src="https://www.google.com/recaptcha/api.js?render={{$captha}}"></script>
-    <script src="@asset(" js/recaptcha.js")"></script>
+    <script src="@asset("js/recaptcha.js")"></script>
 </article>

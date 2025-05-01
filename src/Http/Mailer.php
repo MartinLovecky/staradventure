@@ -4,10 +4,16 @@ declare(strict_types=1);
 
 namespace Mlkali\Sa\Http;
 
+use Mlkali\Sa\Engine\Blade;
+use Mlkali\Sa\Support\Arr;
 use PHPMailer\PHPMailer\PHPMailer;
 
 class Mailer extends PHPMailer
 {
+    public function __construct(private Blade $blade)
+    {
+    }
+
     public function subject($subject): void
     {
         $this->Subject = $subject;
@@ -37,5 +43,38 @@ class Mailer extends PHPMailer
         $this->addAddress($to);
         $this->addEmbeddedImage("{$dir}public/img/favicon_io/android-chrome-192x192.png", 'image_cid');
         return parent::send();
+    }
+
+    public function getEmailData(string $template, array $data = []): array
+    {
+        $body = $this->emailMessage(t:$template, d:$data);
+        $subject = 'SA|' . $this->emailSubject(t:$template);
+
+        return [
+            'body' => $body,
+            'subject' => $subject,
+            'to' => Arr::pick($data, ['email'])
+        ];
+    }
+
+    private function emailMessage(string $t, array $d): string
+    {
+        $path = Arr::$path . "views/templates/";
+        $tFile = "{$path}{$t}.blade.php";
+        if (!is_file($tFile)) {
+            throw new \Exception("Template: {$t}.blade.php not found at {$path}");
+        }
+
+        return $this->blade->run('templates.' . $t, $d);
+    }
+
+    private function emailSubject(string $t): string
+    {
+        return match ($t) {
+            'reset' => 'Reset hesla',
+            'activate' => 'Potvrzení registrace',
+            'user' => 'Zapomenutý username',
+            default => 'No Subject'
+        };
     }
 }

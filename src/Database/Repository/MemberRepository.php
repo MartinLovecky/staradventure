@@ -71,17 +71,11 @@ class MemberRepository
         $this->mailer->sender($body, $subject, $to);
     }
 
-    /**
-     * Deletes a member from the members table by member ID.
-     *
-     * @param  string $memberID The ID of the member to delete.
-     * @return void
-     */
-    public function deleteMember(string $memberID): void
+    public function deleteMember(string $id = ''): void
     {
         $this->fluent->query
             ->deleteFrom('members')
-            ->where('member_id', $memberID)
+            ->where('member_id', $id)
             ->execute();
     }
 

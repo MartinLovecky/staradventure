@@ -1,6 +1,6 @@
-@use(Mlkali\Sa\Support\Enum)
+@use(Mlkali\Sa\Support\Messages)
 @if($member->logged)
 {!! $memberController->logout() !!}
 @else
-@redirect('/index?message=', Messages::USER_NOT_LOGGED)
+@redirect('/index?message=', Messages::DANGER_USER_NOT_LOGGED)
 @endif

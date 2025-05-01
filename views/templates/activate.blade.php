@@ -7,8 +7,8 @@
                         <tbody>
                             <tr>
                                 <td class="m_-3655226564915594624header__logo" style="padding:10px 0;text-align:left">
-                                    <a href="http://{{$url}}/#index" style="color:#ec028c" target="_blank"><img src="cid:image_cid" width="200" height="44" border="0" class="CToWUd" alt="logo"></a>
-
+                                    <a href="http://{{$url}}/#index" style="color:#ec028c" target="_blank">
+                                    <img src="cid:image_cid" width="200" height="44" border="0" class="CToWUd" alt="logo"></a>
                                 </td>
                             </tr>
                         </tbody>
@@ -17,10 +17,9 @@
 <p style="font-size:15px;line-height:22px;margin:15px 0;padding:0;color:#000">Přihlášení na StarAdventure provedete
     pomocí uživatelského jména <strong>{{$username}}</strong>. Z bezpečnostních důvodů neposíláme Vaše heslo.</p>
 <span style="text-align:center;display:block">
-    <a href="http://{{$url}}/activate?id={{$encryptedID}}&token={{$token}}#activation" style="background:#28a745;border-radius:4px;color:#fff;display:inline-block;font-weight:700;margin:16px auto 32px;padding:15px 25px;text-decoration:none" target="_blank">Aktivovat účet &nbsp;»</a>
+    <a href="http://{{$url}}/activate?id={{$member_id}}&token={{$active}}#activation" style="background:#28a745;border-radius:4px;color:#fff;display:inline-block;font-weight:700;margin:16px auto 32px;padding:15px 25px;text-decoration:none" target="_blank">Aktivovat účet &nbsp;»</a>
 </span>
-<p style="font-size:15px;line-height:22px;margin:15px 0;padding:0">Hezký den Vám přeje Admin StarAdventure &#169; Sensei
-</p>
+<p style="font-size:15px;line-height:22px;margin:15px 0;padding:0">Hezký den Vám přeje Admin StarAdventure &#169; Sensei</p>
                 </td>
             </tr>
         </tbody>

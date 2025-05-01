@@ -6,6 +6,9 @@ session_start();
 
 require(__DIR__ . '/vendor/autoload.php');
 
+// enables usage of Arr::$path
+Mlkali\Sa\Support\Arr::init();
+
 // Load environment variables.
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->safeLoad();
@@ -15,4 +18,5 @@ $dotenv->required(['DB_NAME', 'DB_USER', 'DB_HOST', 'DB_PASS']);
 $container = new League\Container\Container();
 $container->delegate(new League\Container\ReflectionContainer(true));
 $viewController = $container->get(\Mlkali\Sa\Controllers\ViewController::class);
+
 echo $viewController->render();

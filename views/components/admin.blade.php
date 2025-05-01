@@ -1,6 +1,6 @@
-@use(Mlkali\Sa\Support\Enum)
+@use(Mlkali\Sa\Support\Messages)
 @if ($member->permission != 'admin')
-@redirect('/?message=', Messages::USER_PERMISSION)
+@redirect('/?message=', Messages::DANGER_USER_PERMISSION)
 @endif
 <table class="table table-bordered table-dark">
     <thead>

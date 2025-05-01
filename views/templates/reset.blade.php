@@ -7,7 +7,8 @@
                         <tbody>
                             <tr>
                                 <td class="m_-3655226564915594624header__logo" style="padding:10px 0;text-align:left">
-                                    <a href="{{$_ENV['URL']}}/#index" style="color:#ec028c" target="_blank"><img src="cid:image_cid" width="200" height="44" border="0" class="CToWUd" alt="logo"></a>
+                                    <a href="http://{{$url}}/#index" style="color:#ec028c" target="_blank"><img src="cid:image_cid" width="200" height="44" border="0" class="CToWUd" alt="logo"></a>
+
                                 </td>
                             </tr>
                         </tbody>
@@ -17,7 +18,7 @@
     obnovení hesla účtu <strong>{{$username}}</strong>. dokončete proces kliknutím na "Reset Hesla". Pokud jste to nebyli vy, kdo
     požadavek poslal, můžete tento e-mail ignorovat.</p>
 <span style="text-align:center;display:block">
-    <a href="{{$_ENV['URL']}}/newpassword?action=reset&amp;id={!! $encryptedID !!}&amp;token={{$token}}#newpassword"
+    <a href="http://{{$url}}/newpassword?action=reset&id={{$encryptedID}}&token={{$token}}#newpassword"
         style="background:#28a745;border-radius:4px;color:#fff;display:inline-block;font-weight:700;margin:16px auto 32px;padding:15px 25px;text-decoration:none"
         target="_blank">Reset Hesla &nbsp;»</a>
 </span>

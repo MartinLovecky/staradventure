@@ -1,6 +1,6 @@
 @use(Mlkali\Sa\Support\Messages)
 @if(!$memberID)
-    @redirect('/?message=', Messages::INVALID_URL)
+    @redirect('/?message=', Messages::DANGER_INVALID_URL)
 @else
 <article id="newpassword">
     <h2 class="major">Nové heslo</h2>

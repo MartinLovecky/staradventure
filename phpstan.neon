@@ -1,0 +1,28 @@
+parameters:
+  level: 6
+
+  paths:
+    - src
+    - tests
+
+  excludes_analyse:
+    - vendor
+
+  checkMissingIterableValueType: true
+  checkGenericClassInNonGenericObjectType: true
+  checkMissingCallableSignature: true
+  checkUninitializedProperties: true
+
+  inferPrivatePropertyTypeFromConstructor: true
+
+  reportUnmatchedIgnoredErrors: false
+
+  # Optional: If you use these
+  scanFiles:
+    - bootstrap.php
+
+  # Autoload any stubs or helper files here
+  autoload_files:
+    - helpers.php
+
+  # Tip: Add more extensions if you use Laravel, Doctrine, etc.

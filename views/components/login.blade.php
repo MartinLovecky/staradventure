@@ -1,40 +1,40 @@
-@use(Mlkali\Sa\Support\Enum)
+@use(Mlkali\Sa\Support\Messages)
 @if ($member->logged)
-<<<<<<< HEAD
-@redirect("/member/{$member->username}?message=", Messages::USER_LOGGED, '#member')
-=======
-@redirect("/member/{$member->username}?message=", Enum::USER_LOGGED, '#member')
->>>>>>> 910359bbb8bba1455894d3acb556ad9a3f3852a6
+@redirect(
+    "/member/{$member->username}?message=", 
+    Messages::WARNING_USER_LOGGED,
+    '#member'
+)
 @endif
-<article id="login">
-    <h2 class="major">Přihlášení</h2>
-    @form()
-    <div class="fields">
-        <div class="field">
-            <input class="form-control text-white" type="text" name="username" value="@isset($_SESSION['old_username']){{$_SESSION['old_username']}}@endisset" placeholder="Username">
-        </div>
-        <div class="field">
-            <input class="form-control text-white" type="password" name="password" placeholder="Heslo" autocomplete="new-password">
-        </div>
-        <div class="field half">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="formCheck-3" name="remember">
-                <label class="form-check-label text-secondary" for="formCheck-3">Pamatovat si mě</label>
+    <article id="login">
+        <h2 class="major">Přihlášení</h2>
+        @form()
+        <div class="fields">
+            <div class="field">
+                <input class="form-control text-white" type="text" name="username" value="@isset($_SESSION['old_username']){{$_SESSION['old_username']}}@endisset" placeholder="Username">
+            </div>
+            <div class="field">
+                <input class="form-control text-white" type="password" name="password" placeholder="Heslo" autocomplete="new-password">
+            </div>
+            <div class="field half">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="formCheck-3" name="remember">
+                    <label class="form-check-label text-secondary" for="formCheck-3">Pamatovat si mě</label>
+                </div>
             </div>
         </div>
-    </div>
-    <ul class="actions">
-        <li><button class="button primary" name="submit" type="submit">Přihlásit</button></li>
-    </ul>
-    <p class="text-secondary text-center"><a href="/register#register">Nemáte účet?</a><br>
-        <a href="/resetUsername#reset">Zapomenutné heslo?</a><br>
-        <a href="/resetPassword#reset">Zapomenutný Username?</a>
-    </p>
-    <input type='hidden' name="token" value="{{  $csrf  }}">
-    <input type="hidden" id="g-recaptcha-response" name="grecaptcharesponse">
-    <input type="hidden" name="action" value="validate_captcha">
-    <input type="hidden" name="type" value="login">
-    </form>
-    <script src="https://www.google.com/recaptcha/api.js?render={{$captha}}"></script>
-    <script src="@asset(" js/recaptcha.js")"></script>
-</article>
+        <ul class="actions">
+            <li><button class="button primary" name="submit" type="submit">Přihlásit</button></li>
+        </ul>
+        <p class="text-secondary text-center"><a href="/register#register">Nemáte účet?</a><br>
+            <a href="/resetUsername#reset">Zapomenutné heslo?</a><br>
+            <a href="/resetPassword#reset">Zapomenutný Username?</a>
+        </p>
+        <input type='hidden' name="token" value="{{  $csrf  }}">
+        <input type="hidden" id="g-recaptcha-response" name="grecaptcharesponse">
+        <input type="hidden" name="action" value="validate_captcha">
+        <input type="hidden" name="type" value="login">
+        </form>
+        <script src="https://www.google.com/recaptcha/api.js?render={{$captha}}"></script>
+        <script src="@asset("js/recaptcha.js")"></script>
+    </article>

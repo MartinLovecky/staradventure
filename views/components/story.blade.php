@@ -1,4 +1,4 @@
-@use(Mlkali\Sa\Support\Enum)
+@use(Mlkali\Sa\Support\Messages)
 @if(!$selector->page)
 @redirect('/storylist#storylist')
 @elseif($member->permission == "visit")
