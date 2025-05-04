@@ -1,3 +1,4 @@
+@de($memberController->member('Sensei|lovecky92@seznam.cz', ['username']))
 @if($message->hasAny())
     @include('includes.message')
 @endif

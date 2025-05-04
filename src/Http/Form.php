@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Mlkali\Sa\Http;
 
-use Exception;
 use Mlkali\Sa\Engine\Blade;
 use Mlkali\Sa\Http\Request;
 use Mlkali\Sa\Controllers\{ArticleController, MemberController};
@@ -47,10 +46,10 @@ class Form
 
         if ($_POST) {
             match ($this->request->type) {
-                'register' => $this->handleDataProcessing('register', 'activate', 'register'),
-                'login' =>   $this->handleDataProcessing('login', '', 'member', false),
-                'forgotenUsername' => $this->handleDataProcessing('proccessForgottenUser', 'user', 'user'),
-                'passwordResetSend' => $this->handleDataProcessing('proccessResetToken', 'reset', 'reset'),
+                'register' => $this->memberController->register($this->request),
+                'login' => $this->memberController->login($this->request),
+                'forgotenUsername' => $this->memberController->forgottenUser($this->request),
+                'passwordResetSend' => $this->memberController->lostPassword($this->request),
                 'new_password' => $this->memberController->setNewPassword($this->request),
                 'update_member' => $this->memberController->updateMember($this->request),
                 'update' => $this->articleController->update($this->request),
@@ -61,49 +60,5 @@ class Form
         }
         return "<form method='{$this->method}' target='_self' class='{$this->class}'"
             . "id='{$this->id}' autocomplete='{$this->autocomplete}' enctype='{$this->enctype}'>";
-    }
-
-    private function handleDataProcessing(
-        string $processMethod,
-        string $templateName = '',
-        string $responseType = '',
-        bool $generateEmailData = true
-    ): Response {
-        // Process the data using the specified method
-        $cleanData = $this->memberController->$processMethod($this->request);
-        $emailData = $generateEmailData ? $this->getEmailData($templateName, $cleanData) : [];
-        $data = array_merge($cleanData, $emailData);
-        // Return the response
-        return $this->memberController->response($responseType, $data);
-    }
-
-    private function getEmailData(string $template = '', array $data = []): array
-    {
-        $body = $this->createEmailMessage($template, $data);
-        $subject = $this->getSubject($template);
-        $to = $this->request->email;
-
-        return ['body' => $body, 'subject' => $subject, 'to' => $to];
-    }
-
-    private function createEmailMessage(string $template = '', array $data = []): string
-    {
-        $templateFile = "{$this->templatePath}{$template}.blade.php";
-
-        if (!is_file($templateFile)) {
-            throw new Exception("File: {$templateFile} cant be found");
-        }
-
-        return $this->blade->run('templates.' . $template, $data);
-    }
-
-    private function getSubject(string $template): string
-    {
-        return match ($template) {
-            'reset' => 'Reset hesla',
-            'activate' => 'Potvrzení registrace',
-            'user' =>  'Zapomenutné username',
-            default => 'No Subject'
-        };
     }
 }

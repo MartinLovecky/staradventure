@@ -9,7 +9,7 @@ use Mlkali\Sa\Http\{Mailer, Request, Response};
 use Mlkali\Sa\Security\{Encryption, Validator};
 use Mlkali\Sa\Support\{Arr, Messages};
 
-class MemController
+class MemberController
 {
     public function __construct(
         private Encryption $encryption,
@@ -141,11 +141,89 @@ class MemController
         $this->sendMail(t:'user', d:[]);
     }
 
-    public function setNewPassword(Request $request)
+    public function setNewPassword(Request $request): Response
     {
         if ($validate = $this->validator->validatePassword($request)) {
             return new Response('/message=', $validate, '#newpassword');
         }
+
+        $this->memberRepository->updateMembersTable([
+            'password' => password_hash($request->password, PASSWORD_BCRYPT),
+            'member_id' => $request->memberID
+        ]);
+
+        return new Response(
+            'login?message=',
+            Messages::SUCCESS_RESET_PASSWORD,
+            '#login'
+        );
+    }
+
+    //TODO view page need be changed
+    public function updateMember(Request $request): Response
+    {
+        $this->stroreOldInput(r:$request);
+
+        if ($validate = $this->validator->validateAvatar($request)) {
+            return new Response(
+                "/member/{$request->username}/update?message=",
+                $validate,
+                '#member'
+            );
+        }
+
+        $allowedTypes = [
+            'image/png' => 'png',
+            'image/jpeg' => 'jpeg',
+            'image/jpg' => 'jpg'
+        ];
+
+        $extension = $allowedTypes[$request->avatar['type']];
+        $uploadName = htmlspecialchars($request->avatar['name'], ENT_QUOTES, 'UTF-8') . '.' . $extension;
+        $tagetDir = Arr::$path . 'public' . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'avatars';
+        $newFilePath = $tagetDir . $request->avatar['name'] . '.' . $extension;
+
+        move_uploaded_file($request->avatar['tmp_name'], $newFilePath);
+        unlink($request->avatar['tmp_name']);
+
+        $this->memberRepository->updateMembersTable([]);
+        $this->memberRepository->updateInfoTable([]);
+
+        return new Response(
+            "/member/{$request->username}?message=",
+            sprintf(Messages::SUCCESS_UPDATED, [$request->username, ':-)']),
+            '#member'
+        );
+    }
+
+    //TODO: Admin page will change redirect will change /
+    public function delete(string $memberID): Response
+    {
+        // only admin has access to this function
+        if ($this->memberRepository->exist(id:$memberID)) {
+            $this->memberRepository->delete(id:$memberID);
+            return new Response(
+                '/index?message=',
+                sprintf(Messages::SUCCESS_DELETE, $memberID),
+                '#index'
+            );
+        }
+
+        return new Response(
+            '/index?message=',
+            sprintf(Messages::DANGER_USER_NOT_EXIST, $memberID),
+            '#index'
+        );
+    }
+
+    public function member(string $memberID = '', array $fetch = [])
+    {
+        $column = $memberID === '' ? null : 'member_id';
+        return $this->memberRepository->getMemberInfo(
+            column:$column,
+            value:$memberID,
+            item:$fetch
+        );
     }
 
     private function stroreOldInput(Request $r): void
@@ -195,7 +273,7 @@ class MemController
         if (!isset($d['remember'])) {
             $_SESSION['member'] = serialize($d);
         } else {
-            //TODO:
+            //TODO: rember user
         }
     }
 }

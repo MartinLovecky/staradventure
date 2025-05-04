@@ -60,7 +60,7 @@ class ArticleController
 
         if (!$this->articleRepository->exist($request->articleID)) {
             $message = $this->messageFormatter->formatString(
-                Messages::ARTICLE_DOES_NOT_EXIST,
+                Messages::WARNING_NOT_EXIST,
                 [
                     $request->articleID,
                     $request->articleName,
@@ -72,7 +72,7 @@ class ArticleController
         }
         if (empty($request->content)) {
             $message = $this->messageFormatter->formatString(
-                Messages::EMPTY_ARTICLE,
+                Messages::WARNING_EMPTY,
                 [
                     $request->articleID,
                     $request->articleName,
@@ -92,10 +92,13 @@ class ArticleController
         $url = "<a href='/show/{$request->articleName}/{$request->articlePage}"
             . "#story'>{$request->articleID}</a>";
         $message = $this->messageFormatter
-            ->formatString(Messages::ARTICLE_UPDATED, [
-                $request->articleID,
-                $url
-        ]);
+            ->formatString(
+                Messages::SUCCESS_UPDATED,
+                [
+                    $request->articleID,
+                    $url
+                ]
+            );
 
         return new Response($path, $message, self::HASH);
     }
@@ -113,11 +116,14 @@ class ArticleController
 
         if ($this->articleRepository->exist($request->articleID)) {
             $message = $this->messageFormatter
-                ->formatString(Messages::ARTICLE_ALREADY_EXISTS, [
+                ->formatString(
+                    Messages::WARNING_EXISTS,
+                    [
                     $request->articleID,
                     $request->articleName,
                     $request->articlePage . self::HASH
-            ]);
+                    ]
+                );
 
             return new Response($path, $message, self::HASH);
         }
@@ -135,10 +141,13 @@ class ArticleController
         $url = "<a href='/show/{$request->articleName}/{$request->articlePage}"
             . "#story'>{$request->articleID}</a>";
         $message = $this->messageFormatter
-            ->formatString(Messages::ARTICLE_CREATED, [
+            ->formatString(
+                Messages::SUCCESS_CREATED,
+                [
                 $request->articleID,
                 $url
-        ]);
+                ]
+            );
 
         return new Response($path, $message, self::HASH);
     }
@@ -156,21 +165,27 @@ class ArticleController
 
         if (!$this->articleRepository->exist($request->articleID)) {
             $message = $this->messageFormatter
-                ->formatString(Messages::ARTICLE_DOES_NOT_EXIST, [
+                ->formatString(
+                    Messages::WARNING_NOT_EXIST,
+                    [
                     $request->articleID,
                     $request->articleName,
                     $request->articlePage . self::HASH
-            ]);
+                    ]
+                );
             return new Response($path, $message, self::HASH);
         }
         // redirect message
         $url = "<a href='/show/{$request->articleName}/{$request->articlePage}"
             . "#story'>{$request->articleID}</a>";
         $message = $this->messageFormatter
-            ->formatString(Messages::ARTICLE_DELETED, [
+            ->formatString(
+                Messages::SUCCESS_DELETED,
+                [
                 $request->articleID,
                 $url
-        ]);
+                ]
+            );
         $this->articleRepository->remove($request->articleID);
 
         return new Response($path, $message, self::HASH);

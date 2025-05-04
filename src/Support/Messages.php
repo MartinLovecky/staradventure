@@ -7,9 +7,9 @@ namespace Mlkali\Sa\Support;
 class Messages
 {
     // Success Messages
-    public const string SUCCESS_CREATED = 'success_Page %s created %s';
-    public const string SUCCESS_UPDATED = 'success_Page %s updated %s';
-    public const string SUCCESS_DELETED = 'success_Page %s deleted %s';
+    public const string SUCCESS_CREATED = 'success_%s created %s';
+    public const string SUCCESS_UPDATED = 'success_%s updated %s';
+    public const string SUCCESS_DELETED = 'success_%s deleted %s';
     public const string SUCCESS_REGISTER = 'success_Activation link has been sent to %s';
     public const string SUCCESS_LOGIN = 'success_Welcome back %s';
     public const string SUCCESS_RESET_SEND = 'success_Reset link has been sent to %s';
@@ -21,9 +21,9 @@ class Messages
     public const string SUCCESS_DELETE = 'success_deleted %s';
 
     // Warning Messages
-    public const string WARNING_EXISTS = 'warning_Page %s already exists.<a href="/update/%s/%s">update</a>';
-    public const string WARNING_NOT_EXIST = 'warning_Page %s does not exist.<a href="/create/%s/%s">create</a>';
-    public const string WARNING_EMPTY = 'warning_Page %s is empty to remove it. Use <a href="/delete/%s/%s">delete</a>';
+    public const string WARNING_EXISTS = 'warning_%s already exists.<a href="/update/%s/%s">update</a>';
+    public const string WARNING_NOT_EXIST = 'warning_%s does not exist.<a href="/create/%s/%s">create</a>';
+    public const string WARNING_EMPTY = 'warning_%s is empty to remove it. Use <a href="/delete/%s/%s">delete</a>';
     public const string WARNING_USER_LOGGED = 'warning_You cannot access page while logged in';
 
     // Danger Messages
