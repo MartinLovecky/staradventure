@@ -1,9 +1,8 @@
-@de($memberController->member('Sensei|lovecky92@seznam.cz', ['username']))
 @if($message->hasAny())
     @include('includes.message')
 @endif
 {{-- header need be outside <div id="main"> --}}
-@if($component == 'header')
+@if($component === 'header')
     @component('components.header')@endcomponent 
 @else  
 <div id="main">

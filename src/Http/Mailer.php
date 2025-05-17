@@ -45,7 +45,17 @@ class Mailer extends PHPMailer
         return parent::send();
     }
 
-    public function getEmailData(string $template, array $data = []): array
+    public function sendMail(string $t, array $d): void
+    {
+        $emailData = $this->getEmailData(template:$t, data:$d);
+        $this->sender(
+            body: $emailData['body'],
+            subject: $emailData['subject'],
+            to: $emailData['to']
+        );
+    }
+
+    private function getEmailData(string $template, array $data = []): array
     {
         $body = $this->emailMessage(t:$template, d:$data);
         $subject = 'SA|' . $this->emailSubject(t:$template);
@@ -53,7 +63,7 @@ class Mailer extends PHPMailer
         return [
             'body' => $body,
             'subject' => $subject,
-            'to' => Arr::pick($data, ['email'])
+            'to' => $data['email']
         ];
     }
 

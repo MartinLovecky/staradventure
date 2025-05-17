@@ -11,7 +11,7 @@ Mlkali\Sa\Support\Arr::init();
 
 // Load environment variables.
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->safeLoad();
+$dotenv->load();
 $dotenv->required(['DB_NAME', 'DB_USER', 'DB_HOST', 'DB_PASS']);
 
 // Class container with auto-wire

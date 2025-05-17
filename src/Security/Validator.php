@@ -23,39 +23,68 @@ class Validator
         if (mb_strlen($r->username) < 4) {
             return sprintf(Messages::DANGER_LEN_USER, $r->username);
         }
-        return $this->validatePassword($r);
+        if ($r->password != $r->password_again) {
+            return Messages::DANGER_PASSWORD_AGAIN;
+        }
+        return $this->validatePassword(r:$r);
     }
 
-    public function validateLogin(Request $request, ?string $active = null): ?string
+    public function validatePassword(Request $r): ?string
     {
-        if (!is_string($active)) {
-            return Messages::DANGER_ACTIVE_MEMBER;
+        if (mb_strlen($r->password) < 6) {
+            return Messages::DANGER_LEN_PASSWORD;
         }
-        if (!$this->commonValidation($request)) {
-            return 'danger_CSRF validation failed';
-        }
-        if (strcmp($active, 'yes') !== 0) {
-            return Messages::DANGER_ACTIVE_MEMBER;
-        }
-        if (!$this->validToken($request->token)) {
-            return Messages::DANGER_CSRF_ERROR;
+        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$%^&*]).*$/', $r->password)) {
+            return Messages::DANGER_PASSWORD_REGEX;
         }
         return null;
     }
 
-    public function validateResetSend(Request $request): ?string
+    public function validateLogin(Request $r): ?string
     {
-        if (!$this->commonValidation($request)) {
+        if (!$this->commonValidation($r)) {
             return 'danger_CSRF validation failed';
         }
-        return $this->validatePassword($request);
+        if (!is_string($r->active)) {
+            return Messages::DANGER_ACTIVE_MEMBER;
+        }
+        if (strcmp($r->active, 'yes') !== 0) {
+            return Messages::DANGER_ACTIVE_MEMBER;
+        }
+        if (!$this->validToken($r->token)) {
+            return Messages::DANGER_CSRF_ERROR;
+        }
+        return $this->validatePassword(r:$r);
+    }
+
+    public function validateFogoten(Request $r): ?string
+    {
+        if (!$this->commonValidation($r)) {
+            return 'danger_CSRF validation failed';
+        }
+        if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $r->email)) {
+            return sprintf(Messages::DANGER_EMAIL_FORMAT, $r->email);
+        }
+        return null;
+    }
+
+    public function validateUpdate(Request $r): ?string
+    {
+        if (!$this->commonValidation($r)) {
+            return 'danger_CSRF validation failed';
+        }
+        if (isset($request->avatar)) {
+            return $this->validateAvatar($r);
+        }
+        if (isset($request->password)) {
+            return $this->validatePassword($r);
+        }
+
+        return null;
     }
 
     public function validateAvatar(Request $request): ?string
     {
-        if (!$this->commonValidation($request)) {
-            return 'danger_CSRF validation failed';
-        }
         if (!isset($request->avatar['tmp_name']) || !is_uploaded_file($request->avatar['tmp_name'])) {
             return Messages::DANGER_AVATAR_UPLOAD;
         }
@@ -71,20 +100,6 @@ class Validator
         $allowedMimeTypes = ['png', 'jpg', 'jpeg'];
         if (!in_array(pathinfo($request->avatar['name'], PATHINFO_EXTENSION), $allowedMimeTypes)) {
             return Messages::DANGER_AVATAR_MIME_TYPE;
-        }
-        return null;
-    }
-
-    public function validatePassword(Request $request): ?string
-    {
-        if (mb_strlen($request->password) < 6) {
-            return Messages::DANGER_LEN_PASSWORD;
-        }
-        if ($request->password != $request->password_again) {
-            return Messages::DANGER_PASSWORD_AGAIN;
-        }
-        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$%^&*]).*$/', $request->password)) {
-            return Messages::DANGER_PASSWORD_REGEX;
         }
         return null;
     }

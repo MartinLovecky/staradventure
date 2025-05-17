@@ -16,9 +16,9 @@
         </div>
         <nav aria-label="...">
             <ul class="pagination justify-content-center">
-                {!! $pagnition->previous_page() !!}
-                {!! $pagnition->main_pagnation() !!}
-                {!! $pagnition->next_page() !!}
+                {!! $pagnition->previous() !!}
+                {!! $pagnition->main() !!}
+                {!! $pagnition->next() !!}
             </ul>
         </nav>
     </div>

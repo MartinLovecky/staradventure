@@ -17,6 +17,10 @@
                         <p>Příjmení: {{$member->memberSurname}}</p>
                         <p>Datum narození: {{$member->age}}</p>
                         <p>Město: {{$member->location}}</p>
+                        ----------------------------------
+                        @foreach($memberController->member(fetch:['username', 'member_id']) as $key => $data)
+                            {{$data['username']}}
+                        @endforeach
                     @endif
                 </div>
             </div>

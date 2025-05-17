@@ -7,7 +7,7 @@
 )
 @endif
 <article id="reset">
-    <h2>Zapomenutný Username</h2>
+    <h2>Reset hesla | Uživatel</h2>
     @form()
     <div class="fields">
         <div class="field">
@@ -20,7 +20,7 @@
     <input type='hidden' name="token" value="{{  $csrf  }}">
     <input type="hidden" id="g-recaptcha-response" name="grecaptcharesponse">
     <input type="hidden" name="action" value="validate_captcha">
-    <input type="hidden" name="type" value="forgotenUsername">
+    <input type="hidden" name="type" value="forgoten">
     </form>
     <script src="https://www.google.com/recaptcha/api.js?render={{$captha}}"></script>
     <script src="@asset("js/recaptcha.js")"></script>

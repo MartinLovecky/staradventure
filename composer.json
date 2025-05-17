@@ -1,15 +1,18 @@
 {
     "name": "mlkali/sa",
-    "description": "personal website for my story",
+    "description": "Personal website for my story",
     "type": "project",
     "require": {
-        "symfony/var-dumper": "6.2.x-dev",
-        "eftec/bladeone": "dev-master",
-        "phpmailer/phpmailer": "dev-master",
-        "vlucas/phpdotenv": "5.5.*",
-        "envms/fluentpdo": "dev-master",
-        "league/container": "4.x-dev",
-        "voku/html-min": "dev-master"
+        "symfony/var-dumper": "^6.2",
+        "eftec/bladeone": "^4.0",
+        "phpmailer/phpmailer": "^6.8",
+        "vlucas/phpdotenv": "^5.5",
+        "envms/fluentpdo": "^2.2",
+        "league/container": "^4.0",
+        "voku/html-min": "^4.0"
+    },
+    "require-dev": {
+        "roave/security-advisories": "dev-latest"
     },
     "license": "none",
     "autoload": {
@@ -23,5 +26,15 @@
             "email": "mlovecky@seznam.cz"
         }
     ],
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "lint": "phpcs --standard=PSR12 src",
+        "fix": "phpcbf --standard=PSR12 src",
+        "test": "phpunit tests"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist"
+    }
 }

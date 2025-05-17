@@ -49,7 +49,7 @@
                     <input type="hidden" name="type" value="{{  $selector->action  }}">
                     <input type="hidden" name="articleName" value="{{  $selector->article  }}">
                     <input type="hidden" name="articlePage" value="{{  $selector->page  }}">
-                    <input type="hidden" name="articleID" value="{{  $selector->article. '|' . $selector->page  }}">
+                    <input type="hidden" name="articleID" value="{{  $selector->article }} | {{ $selector->page }}">
                     <button class="btn btn-success btn-block" value="submit" name="submit" type="submit" style="margin-top:2vh;">Odeslat na server</button>
                     <p class="text-white" style="margin-top:2vh;"> * Pro vykonání jakékoliv akce je nutné kliknout na Odeslat na server nestačí pouze změnit url a dát ENTRER !!!!!</p>
                     </form>
@@ -80,9 +80,9 @@
                 <hr />
                 @isset($selector->article)
                 <div class="pagination justify-content-center">
-                    {!! $pagnition->previous_page() !!}
-                    {!! $pagnition->main_pagnation() !!}
-                    {!! $pagnition->next_page() !!}
+                    {!! $pagnition->previous() !!}
+                    {!! $pagnition->main() !!}
+                    {!! $pagnition->next() !!}
                 </div>
                 @endisset
             </div>

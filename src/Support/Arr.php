@@ -13,6 +13,14 @@ class Arr
         self::$path = realpath(__DIR__ . '/../../') . DIRECTORY_SEPARATOR;
     }
 
+    public static function removeIndexes(array $array, array $indexesToRemove): array
+    {
+        foreach ($indexesToRemove as $index) {
+            unset($array[$index]);
+        }
+        return array_values($array);
+    }
+
     public static function pick(array $source, array $keys): array
     {
         return array_intersect_key($source, array_flip($keys));

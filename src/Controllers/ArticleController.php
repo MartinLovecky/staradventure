@@ -9,15 +9,6 @@ use Mlkali\Sa\Database\Repository\ArticleRepository;
 use Mlkali\Sa\Http\{Request, Response};
 use Mlkali\Sa\Support\{Messages, MessageFormatter};
 
-/**
- * Class ArticleController
- *
- * This controller handles the creation, updating, and deletion of articles.
- * It interacts with the Article entity and the ArticleRepository to manage
- * article data.
- *
- * @package Mlkali\Sa\Controllers
- */
 class ArticleController
 {
     private const UPDATE_PATH = "/update/%s/%s?message=";
@@ -144,8 +135,8 @@ class ArticleController
             ->formatString(
                 Messages::SUCCESS_CREATED,
                 [
-                $request->articleID,
-                $url
+                    $request->articleID,
+                    $url
                 ]
             );
 
@@ -168,9 +159,9 @@ class ArticleController
                 ->formatString(
                     Messages::WARNING_NOT_EXIST,
                     [
-                    $request->articleID,
-                    $request->articleName,
-                    $request->articlePage . self::HASH
+                        $request->articleID,
+                        $request->articleName,
+                        $request->articlePage . self::HASH
                     ]
                 );
             return new Response($path, $message, self::HASH);
@@ -182,8 +173,8 @@ class ArticleController
             ->formatString(
                 Messages::SUCCESS_DELETED,
                 [
-                $request->articleID,
-                $url
+                    $request->articleID,
+                    $url
                 ]
             );
         $this->articleRepository->remove($request->articleID);

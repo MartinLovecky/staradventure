@@ -48,8 +48,7 @@ class Form
             match ($this->request->type) {
                 'register' => $this->memberController->register($this->request),
                 'login' => $this->memberController->login($this->request),
-                'forgotenUsername' => $this->memberController->forgottenUser($this->request),
-                'passwordResetSend' => $this->memberController->lostPassword($this->request),
+                'forgoten' => $this->memberController->forgoten($this->request),
                 'new_password' => $this->memberController->setNewPassword($this->request),
                 'update_member' => $this->memberController->updateMember($this->request),
                 'update' => $this->articleController->update($this->request),

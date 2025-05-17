@@ -1,6 +1,6 @@
 {{ 
     $memberController->activate(
-        $selector->getQueryMessage('id'), 
-        $selector->getQueryMessage('token')
+        $selector->getQueryMessage('id') ?? '', 
+        $selector->getQueryMessage('token') ?? ''
     )
 }}

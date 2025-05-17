@@ -6,6 +6,7 @@ namespace Mlkali\Sa\Controllers;
 
 use Mlkali\Sa\Engine\Blade;
 use Mlkali\Sa\Http\{Form, Response, Selector};
+use Mlkali\Sa\Html\Pagnition;
 use Mlkali\Sa\Support\MessageBag;
 use Mlkali\Sa\Security\Encryption;
 use Mlkali\Sa\Controllers\{ArticleController, MemberController};
@@ -25,6 +26,7 @@ class ViewController
         private Selector $selector,
         private Response $response,
         private Validator $validator,
+        private Pagnition $pagnition,
     ) {
         $this->setQueryMessage();
     }
@@ -32,11 +34,6 @@ class ViewController
     public function render(): string
     {
         return $this->blade->run(view:'index', variables:$this->data());
-    }
-
-    public function delete(string $memberID)
-    {
-        $this->memberController->delete($memberID);
     }
 
     private function setQueryMessage(): void
@@ -83,7 +80,8 @@ class ViewController
             'pagnition' => null,
             'validator' => $this->validator,
             'captha' => $_ENV['PUBLIC'],
-            'member' => $this->member
+            'member' => $this->member,
+            'pagnition' => $this->pagnition,
         ];
     }
 }

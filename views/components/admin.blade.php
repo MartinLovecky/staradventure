@@ -1,5 +1,5 @@
 @use(Mlkali\Sa\Support\Messages)
-@if ($member->permission != 'admin')
+@if ($member->permission !== 'admin')
 @redirect('/?message=', Messages::DANGER_USER_PERMISSION)
 @endif
 <table class="table table-bordered table-dark">
@@ -13,7 +13,7 @@
     </thead>
 
     <tbody>
-        @foreach ($memberController->allMembers() as $key => $data)
+        @foreach ($memberController->member() as $key => $data)
         <tr>
             <th scope="row">{{$data['id']}}</th>
             <td>{{$data['username']}}</td>
@@ -23,14 +23,14 @@
                         <span>{{$data['permission']}}</span>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a href="/usertable?id={{$enc->encrypt($data['member_id'])}}&action={{$enc->encrypt('visitor')}}" class="dropdown-item">visitor</a>
-                        <a href="/usertable?id={{$enc->encrypt($data['member_id'])}}&action={{$enc->encrypt('user')}}" class="dropdown-item">user</a>
-                        <a href="/usertable?id={{$enc->encrypt($data['member_id'])}}&action={{$enc->encrypt('rewriter')}}" class="dropdown-item">rewriter</a>
-                        <a href="/usertable?id={{$enc->encrypt($data['member_id'])}}&action={{$enc->encrypt('admin')}}" class="dropdown-item">admin</a>
+                        <a href="/admin?id={{$enc->encrypt($data['member_id'])}}&action={{$enc->encrypt('visitor')}}" class="dropdown-item">visitor</a>
+                        <a href="/admin?id={{$enc->encrypt($data['member_id'])}}&action={{$enc->encrypt('user')}}" class="dropdown-item">user</a>
+                        <a href="/admin?id={{$enc->encrypt($data['member_id'])}}&action={{$enc->encrypt('rewriter')}}" class="dropdown-item">rewriter</a>
+                        <a href="/admin?id={{$enc->encrypt($data['member_id'])}}&action={{$enc->encrypt('admin')}}" class="dropdown-item">admin</a>
                     </ul>
                 </div>
             </td>
-            <td><a class="text-danger" href="/usertable?id={{$data['id']}}&action={{$enc->encrypt('delete')}}">Delete</a></td>
+            <td><a class="text-danger" href="/admin?id={{$data['id']}}&action={{$enc->encrypt('delete')}}">Delete</a></td>
         </tr>
         @endforeach
     </tbody>
@@ -45,10 +45,15 @@ $memberID = $selector->getQueryMessage("id");
 @endphp
 @if($action)
 @match($enc->decrypt($action))
-@state('visitor')@do($memberController->permission('visitor', $enc->decrypt($memberID)))
-@state('user')@do($memberController->permission('user', $enc->decrypt($memberID)))
-@state('rewriter')@do($memberController->permission('rewriter', $enc->decrypt($memberID)))
-@state('admin')@do($memberController->permission('admin', $enc->decrypt($memberID)))
-@state('delete')@do($memberController->delete($enc->decrypt($memberID)))
+    @state('visitor')
+        @do($memberController->permission('visitor', $memberID))
+    @state('user')
+        @do($memberController->permission('user', $memberID))
+    @state('rewriter')
+        @do($memberController->permission('rewriter', $memberID))
+    @state('admin')
+        @do($memberController->permission('admin', $memberID))
+    @state('delete')
+        @do($memberController->delete($enc->decrypt($memberID)))
 @endmatch()
 @endif()

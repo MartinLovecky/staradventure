@@ -17,7 +17,7 @@
 <p style="font-size:15px;line-height:22px;margin:15px 0;padding:0;color:#000">Přihlášení na StarAdventure provedete
     pomocí uživatelského jména <strong>{{$username}}</strong>. Z bezpečnostních důvodů neposíláme Vaše heslo.</p>
 <span style="text-align:center;display:block">
-    <a href="http://{{$url}}/activate?id={{$member_id}}&token={{$active}}#activation" style="background:#28a745;border-radius:4px;color:#fff;display:inline-block;font-weight:700;margin:16px auto 32px;padding:15px 25px;text-decoration:none" target="_blank">Aktivovat účet &nbsp;»</a>
+    <a href="http://{{$url}}/activate?id={{$member_id}}&token={{$active}}" style="background:#28a745;border-radius:4px;color:#fff;display:inline-block;font-weight:700;margin:16px auto 32px;padding:15px 25px;text-decoration:none" target="_blank">Aktivovat účet &nbsp;»</a>
 </span>
 <p style="font-size:15px;line-height:22px;margin:15px 0;padding:0">Hezký den Vám přeje Admin StarAdventure &#169; Sensei</p>
                 </td>

@@ -79,6 +79,29 @@ class Encryption
         return $decrypted;
     }
 
+    public function isEncrypted(string $input): bool
+    {
+        if (empty($input) || strpos($input, ':') === false) {
+            return false;
+        }
+
+        [$version, $hex] = explode(':', $input, 2);
+
+        if (!isset($_ENV["EKEY_{$version}"])) {
+            return false;
+        }
+
+        if (!ctype_xdigit($hex)) {
+            return false;
+        }
+
+        if (!$decoded = hex2bin($hex)) {
+            return false;
+        }
+
+        return mb_strlen($decoded, '8bit') > SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES;
+    }
+
     public function encode(string $text): string
     {
         return password_hash($text, PASSWORD_BCRYPT);
