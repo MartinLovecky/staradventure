@@ -8,10 +8,9 @@ use Mlkali\Sa\Engine\Blade;
 use Mlkali\Sa\Http\{Form, Response, Selector};
 use Mlkali\Sa\Html\Pagnition;
 use Mlkali\Sa\Support\MessageBag;
-use Mlkali\Sa\Security\Encryption;
+use Mlkali\Sa\Security\{Encryption, Validator};
 use Mlkali\Sa\Controllers\{ArticleController, MemberController};
 use Mlkali\Sa\Database\Entity\Member;
-use Mlkali\Sa\Security\Validator;
 
 class ViewController
 {
@@ -77,7 +76,6 @@ class ViewController
             'encryption' => $this->encryption,
             'memberController' => $this->memberController,
             'articleController' => $this->articleController,
-            'pagnition' => null,
             'validator' => $this->validator,
             'captha' => $_ENV['PUBLIC'],
             'member' => $this->member,

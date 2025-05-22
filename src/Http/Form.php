@@ -49,7 +49,7 @@ class Form
                 'register' => $this->memberController->register($this->request),
                 'login' => $this->memberController->login($this->request),
                 'forgoten' => $this->memberController->forgoten($this->request),
-                'new_password' => $this->memberController->setNewPassword($this->request),
+                'newPassword' => $this->memberController->updateMember($this->request),
                 'update_member' => $this->memberController->updateMember($this->request),
                 'update' => $this->articleController->update($this->request),
                 'create' => $this->articleController->create($this->request),

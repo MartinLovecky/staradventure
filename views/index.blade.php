@@ -1,3 +1,7 @@
+@if(is_array($memberController->loginWithRememberCookie()))
+    @redirect("/member/{{$member['username']}}")
+@endif
+@include('includes.head')
 @if($message->hasAny())
     @include('includes.message')
 @endif

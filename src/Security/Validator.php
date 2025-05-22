@@ -57,13 +57,18 @@ class Validator
         return $this->validatePassword(r:$r);
     }
 
-    public function validateFogoten(Request $r): ?string
+    public function validateForgotten(Request $r): ?string
     {
         if (!$this->commonValidation($r)) {
             return 'danger_CSRF validation failed';
         }
         if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $r->email)) {
             return sprintf(Messages::DANGER_EMAIL_FORMAT, $r->email);
+        }
+        if ($r->reset === 'username' || $r->reset === 'password') {
+            return null;
+        } else {
+            return 'danger_Invalid reset action';
         }
         return null;
     }

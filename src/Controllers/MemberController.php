@@ -23,16 +23,17 @@ class MemberController
 
     public function register(Request $request): Response
     {
-        $this->stroreOldInput(r:$request);
+        $this->storeOldInput(r:$request);
         $request->memberID = "{$request->username}|{$request->email}";
+        $err = $this->validator->validateRegister(r:$request);
 
-        if ($err = $this->validator->validateRegister(r:$request)) {
-            return new Response('/regiter?message=', $err, '#register');
+        if (is_string($err)) {
+            return new Response('/register?message=', $err, '#register');
         }
 
         if (
-            $this->member('email', $request->email)
-            || $this->member('username', $request->username)
+            $this->findMember('email', $request->email)
+            || $this->findMember('username', $request->username)
         ) {
             return new Response(
                 '/register?message=',
@@ -55,11 +56,10 @@ class MemberController
 
     public function activate(string $memberID = '', string $token = ''): Response
     {
-        if (!$db = $this->member('member_id', $memberID)) {
-            return new Response(
-                '/index?message=',
-                sprintf(Messages::DANGER_USER_NOT_EXIST, $memberID)
-            );
+        $db = $this->ensureMemberExists('member_id', $memberID, 'index');
+
+        if ($db instanceof Response) {
+            return $db;
         }
 
         if (
@@ -80,58 +80,86 @@ class MemberController
 
     public function login(Request $request): Response
     {
-        $this->stroreOldInput(r:$request);
+        $this->storeOldInput(r:$request);
 
-        $column = preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $request->username)
-            ? 'email'
-            : 'username';
+        $column = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        $db = $this->ensureMemberExists($column, $request->username, 'login');
 
-        if (
-            !$user = $this->memberRepository->getMemberInfo(
-                column:$column,
-                value:$request->username
-            )
-        ) {
-            return new Response(
-                '/login?message=',
-                sprintf(Messages::DANGER_USER_NOT_EXIST, $request->username . '|' . $request->email),
-                '#login'
-            );
+        if ($db instanceof Response) {
+            return $db;
         }
 
-        $request->active = $user['active'];
-        $request->username = $user['username'];
-        $request->email = $user['email'];
+        $request->active = $db['active'];
+        $request->username = $db['username'];
+        $request->email = $db['email'];
 
-        if ($validate = $this->validator->validateLogin(r:$request)) {
+        $validate = $this->validator->validateLogin(r:$request);
+
+        if (is_string($validate)) {
             return new Response('/login?message=', $validate, '#login');
         }
 
-        $this->setMember($user);
+        $remember = $request->remember ?? false;
+        $this->setMember(array_merge($db, ['remember' => $remember]));
 
         return new Response("/member/{$request->username}", null, '#member');
     }
 
-    public function forgoten(Request $request): Response
+    public function loginWithRememberCookie(): ?array
     {
-        $this->stroreOldInput(r:$request);
-
-        if ($validate = $this->validator->validateFogoten(r:$request)) {
-            return new Response('/reset?message=', $validate, '#reset');
+        if (empty($_COOKIE['remember_me'])) {
+            return null;
         }
 
-        if (!$db = $this->member('email', $request->email)) {
-            return new Response(
-                '/index?message=',
-                sprintf(Messages::DANGER_USER_NOT_EXIST, $request->email)
-            );
+        $token = $_COOKIE['remember_me'];
+        $member = $this->findMember('remember_token', $token);
+
+        if ($member) {
+            $_SESSION['member'] = serialize($member);
+            return $member;
+        }
+
+        setcookie('remember_me', '', time() - 3600, '/', '', false, true);
+        return null;
+    }
+
+    public function logout(): void
+    {
+        if (isset($_SESSION['member'])) {
+            $member = unserialize($_SESSION['member']);
+            if ($member && isset($member['member_id'])) {
+                $this->memberRepository->updateMembersTable(
+                    ['remember_token' => null],
+                    $member['member_id']
+                );
+            }
+        }
+
+        setcookie('remember_me', '', time() - 3600, '/', '', false, true);
+        session_destroy();
+    }
+
+    public function forgoten(Request $request): Response
+    {
+        $this->storeOldInput(r:$request);
+        $err = $this->validator->validateForgotten(r:$request);
+
+        if (is_string($err)) {
+            return new Response('/reset?message=', $err, '#reset');
+        }
+
+        $db = $this->ensureMemberExists('email', $request->email, 'reset');
+
+        if ($db instanceof Response) {
+            return $db;
         }
 
         $this->mailer->sendMail(t:'reset', d:[
             'url' => $_SERVER['HTTP_HOST'],
             'username' => $db['username'],
             'member_id' => $db['member_id'],
-            'active' => $this->encryption->token()
+            'active' => $this->encryption->token(),
+            'email' => $request->email
         ]);
 
         return new Response(
@@ -141,118 +169,106 @@ class MemberController
         );
     }
 
-    public function updateMember(Request $request)
+    public function updateMember(Request $request): Response
     {
-        $this->stroreOldInput(r:$request);
+        $this->storeOldInput($request);
+        $validate = $this->validator->validateUpdate($request);
 
-        if ($validate = $this->validator->validateUpdate(r:$request)) {
+        if (is_string($validate)) {
             return new Response('/index?message=', $validate, '#index');
         }
 
-        //TODO GET MemberID
+        $db = $this->ensureMemberExists('username', $request->username, 'member');
 
-        $avatar = $this->processAvatar(r: $request);
+        if ($db instanceof Response) {
+            return $db;
+        }
+
+        $avatar = $this->processAvatar($request);
         $pwd = $request->password ? password_hash($request->password, PASSWORD_BCRYPT) : $this->member->password;
-        $permission = isset($request->permission) ? $this->member->permission : $request->permission;
+        $permission = $request->permission ?? $this->member->permission;
 
         $this->memberRepository->updateMembersTable([
-            'username' => $request->username ?? $this->member->usernme,
+            'username' => $request->username ?? $this->member->username,
             'email' => $request->email ?? $this->member->email,
             'password' => $pwd,
             'avatar' => $avatar,
             'permission' => $permission,
-            ], 'nocllue');
+        ], $db['member_id']);
 
         $this->memberRepository->updateInfoTable([
             'member_name' => $request->name ?? null,
             'member_surname' => $request->surname ?? null,
             'visible' => $request->visible ?? 0,
             'age' => $request->ageDate ?? null,
-        ], 'yep');
-    }
+        ], $db['member_id']);
 
-    private function processAvatar(Request $r): string
-    {
-        if (!isset($r->avatar)) {
-            return 'empty_profile.png';
-        }
-
-        $allowedTypes = [
-            'image/png' => 'png',
-            'image/jpeg' => 'jpeg',
-            'image/jpg' => 'jpg'
-        ];
-
-        $extension = $allowedTypes[$r->avatar['type']];
-        $uploadName = htmlspecialchars($r->avatar['name'], ENT_QUOTES, 'UTF-8') . '.' . $extension;
-        $tagetDir = Arr::$path . 'public' . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'avatars';
-        $newFilePath = $tagetDir . $r->avatar['name'] . '.' . $extension;
-
-        move_uploaded_file($r->avatar['tmp_name'], $newFilePath);
-        unlink($r->avatar['tmp_name']);
-
-        return $uploadName;
+        return new Response('/member?message=', Messages::SUCCESS_UPDATED, '#member');
     }
 
     public function delete(Request $request): Response
     {
-        $id = explode('|', $request->memberID);
-        $request->username = $id[0] ?? '';
-        $request->email = $id[1] ?? '';
+        $db = $this->ensureMemberExists('member_id', $request->memberID, 'admin');
 
-        if (
-            $this->member('username', $request->username)
-            || $this->member('email', $request->email)
-        ) {
-            $this->memberRepository->delete($request->memberID);
-            return new Response(
-                '/admin?message=',
-                sprintf(Messages::SUCCESS_DELETE, $request->memberID),
-                '#admin'
-            );
+        if ($db instanceof Response) {
+            return $db;
         }
+
+        $this->memberRepository->delete($request->memberID);
 
         return new Response(
             '/admin?message=',
-            sprintf(Messages::DANGER_USER_NOT_EXIST, $request->memberID),
+            sprintf(Messages::SUCCESS_DELETE, $request->memberID),
             '#admin'
         );
     }
 
-    //TODO
-    public function permission(string $value, string $memberID): mixed
+    public function permission(string $value, string $memberID): Response
     {
-        $this->memberRepository->updateMembersTable(
-            ['permission' => $value],
-            $memberID
+        $db = $this->ensureMemberExists('member_id', $memberID, 'admin');
+
+        if ($db instanceof Response) {
+            return $db;
+        }
+
+        $this->memberRepository->updateMembersTable(['permission' => $value], $memberID);
+        $this->setMember($db);
+
+        return new Response(
+            'admin?message=',
+            Messages::SUCCESS_PERMISSION,
+            '#admin'
         );
-
-        $memberData = $this->member('member_id', $memberID);
-
-        $this->setMember($memberData);
-
-        return $this->member;
     }
 
     /**
-     *
-     * @param mixed ...$args
-     * @return mixed
+     * @return array|string|false|null
      */
-    public function member(mixed ...$args): mixed
+    public function findMember(mixed ...$args): mixed
     {
-        $c = count($args) === 0 ? null : $args[0];
-        $v = $args[1] ?? null;
-        $i = !isset($args[2]) ? [] : Arr::removeIndexes($args, [0, 1]);
-
-        return $this->memberRepository->getMemberInfo(
-            column:$c,
-            value:$v,
-            item:$i
-        );
+        [$c, $v] = $args + [null, null];
+        $i = count($args) > 2 ? Arr::removeIndexes($args, [0, 1]) : [];
+        return $this->memberRepository->getMemberInfo(column: $c, value: $v, item: $i);
     }
 
-    private function stroreOldInput(Request $r): void
+    public function ensureMemberExists(
+        string $column,
+        string $value,
+        string $action
+    ): Response|array {
+            $db = $this->findMember($column, $value);
+        if (!$db) {
+            return new Response(
+                "/{$action}?message=",
+                sprintf(Messages::DANGER_USER_NOT_EXIST, $value),
+                "#{$action}"
+            );
+        }
+
+            return $db;
+    }
+
+    private function storeOldInput(Request $r): void
     {
         $_SESSION['old_username'] = $r->username ?? '';
         $_SESSION['old_email'] = $r->email ?? '';
@@ -272,17 +288,44 @@ class MemberController
         ];
     }
 
+    private function processAvatar(Request $r): string
+    {
+        if (empty($r->avatar['tmp_name'])) {
+            return 'empty_profile.png';
+        }
+
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_file($finfo, $r->avatar['tmp_name']);
+        finfo_close($finfo);
+
+        $allowedTypes = [
+            'image/png'  => 'png',
+            'image/jpeg' => 'jpeg',
+            'image/jpg'  => 'jpg'
+        ];
+
+        if (!array_key_exists($mime, $allowedTypes)) {
+            throw new \RuntimeException("Invalid avatar file type: $mime");
+        }
+
+        $extension = $allowedTypes[$mime];
+        $safeName = pathinfo($r->avatar['name'], PATHINFO_FILENAME);
+        $filename = htmlspecialchars($safeName, ENT_QUOTES, 'UTF-8') . '.' . $extension;
+
+        $targetDir = Arr::$path . 'public' . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'avatars';
+        $newFilePath = $targetDir . DIRECTORY_SEPARATOR . $filename;
+
+        if (!move_uploaded_file($r->avatar['tmp_name'], $newFilePath)) {
+            throw new \RuntimeException("Failed to upload avatar");
+        }
+
+        return $filename;
+    }
+
     private function persistMember(array $d): void
     {
-        $this->memberRepository->insert(
-            table:'info',
-            values:Arr::pick($d, ['member'])
-        );
-
-        $this->memberRepository->insert(
-            table:'members',
-            values:Arr::except($d, ['url', 'member'])
-        );
+        $this->memberRepository->insert('info', Arr::pick($d, ['member']));
+        $this->memberRepository->insert('members', Arr::except($d, ['url', 'member']));
     }
 
     private function setMember(array $d): void
@@ -290,7 +333,22 @@ class MemberController
         if (!isset($d['remember'])) {
             $_SESSION['member'] = serialize($d);
         } else {
-            //TODO: rember user
+            $token = $this->encryption->token();
+            $this->memberRepository->updateMembersTable(
+                ['remember_token' => $token],
+                $d['member_id']
+            );
+            setcookie(
+                'remember_me',
+                $token,
+                time() + 60 * 60 * 24 * 30,
+                '/',
+                '',
+                false,
+                true
+            );
+
+            $_SESSION['member'] = serialize($d);
         }
     }
 }

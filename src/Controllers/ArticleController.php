@@ -37,13 +37,6 @@ class ArticleController
         return $this->article;
     }
 
-    /**
-     * Updates an existing article.
-     *
-     * @param Request $request containing article data.
-     *
-     * @return Response indicating the outcome of the update operation.
-     */
     public function update(Request $request): Response
     {
         // generate redirect path
@@ -61,6 +54,7 @@ class ArticleController
 
             return new Response($path, $message, self::HASH);
         }
+
         if (empty($request->content)) {
             $message = $this->messageFormatter->formatString(
                 Messages::WARNING_EMPTY,
@@ -72,6 +66,7 @@ class ArticleController
             );
             return new Response($path, $message, self::HASH);
         }
+
         $articleBody = json_encode(['article_body' => mb_convert_encoding($request->content, 'UTF-8')]);
         // Article entity
         $this->article
@@ -94,13 +89,6 @@ class ArticleController
         return new Response($path, $message, self::HASH);
     }
 
-    /**
-     * Creates a new article.
-     *
-     * @param Request $request containing article data.
-     *
-     * @return Response indicating the outcome of the creation operation.
-     */
     public function create(Request $request): Response
     {
         $path = $this->path(message:self::UPDATE_PATH, request:$request);
@@ -143,13 +131,6 @@ class ArticleController
         return new Response($path, $message, self::HASH);
     }
 
-    /**
-     * Deletes an existing article.
-     *
-     * @param Request $request identifying the article to be deleted.
-     *
-     * @return Response indicating the outcome of the deletion operation.
-     */
     public function delete(Request $request): Response
     {
         $path = $this->path(message:self::UPDATE_PATH, request:$request);

@@ -1,5 +1,5 @@
 @use(Mlkali\Sa\Support\Messages)
-@if(!$memberID)
+@if(!$selector->getQueryMessage('id'))
     @redirect('/?message=', Messages::DANGER_INVALID_URL)
 @else
 <article id="newpassword">
@@ -18,7 +18,9 @@
         <input type='hidden' name="token" value="{{  $csrf  }}">
         <input type="hidden" id="g-recaptcha-response" name="grecaptcharesponse">
         <input type="hidden" name="action" value="validate_captcha">
-        <input type="hidden" name="type" value="new_password">
+        <input type="hidden" name="type" value="newPassword">
+        <input type="hidden" name="id" value="{{  $selector->getQueryMessage('id')  }}">
+        <input type="hidden" name="token" value="{{  $selector->getQueryMessage('token')  }}">
     </form>
     <script src="https://www.google.com/recaptcha/api.js?render=6LclhVIjAAAAAAUcH7r8tvwJl3GIUg8bLJmr2alF"></script>
     <script src="@asset("js/recaptcha.js")"></script>

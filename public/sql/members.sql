@@ -32,6 +32,7 @@ CREATE TABLE `members` (
   `username` varchar(255) NOT NULL DEFAULT 'visitor',
   `email` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
+  `remember_token` varchar(255) DEFAULT NULL,
   `avatar` varchar(255) NOT NULL DEFAULT 'empty_profile.png',
   `active` varchar(255) NOT NULL DEFAULT 'no',
   `permission` varchar(255) NOT NULL DEFAULT 'visit',

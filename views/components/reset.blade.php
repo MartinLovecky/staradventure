@@ -21,6 +21,7 @@
     <input type="hidden" id="g-recaptcha-response" name="grecaptcharesponse">
     <input type="hidden" name="action" value="validate_captcha">
     <input type="hidden" name="type" value="forgoten">
+    <input type="hidden" name="reset" value="{{ $selector->getQueryMessage('action') }}">
     </form>
     <script src="https://www.google.com/recaptcha/api.js?render={{$captha}}"></script>
     <script src="@asset("js/recaptcha.js")"></script>

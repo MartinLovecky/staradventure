@@ -27,8 +27,8 @@
             <li><button class="button primary" name="submit" type="submit">Přihlásit</button></li>
         </ul>
         <p class="text-secondary text-center"><a href="/register#register">Nemáte účet?</a><br>
-            <a href="/resetUsername#reset">Zapomenutné heslo?</a><br>
-            <a href="/resetPassword#reset">Zapomenutný Username?</a>
+            <a href="/reset?action=username#reset">Zapomenutné heslo?</a><br>
+            <a href="/reset?action=password#reset">Zapomenutný Username?</a>
         </p>
         <input type='hidden' name="token" value="{{  $csrf  }}">
         <input type="hidden" id="g-recaptcha-response" name="grecaptcharesponse">
